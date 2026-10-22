@@ -341,7 +341,8 @@ figcaption{
 
 /* ── TAKEAWAY GRID ── */
 .takes{margin-top:clamp(48px,6vw,80px);display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
-@media(max-width:700px){.takes{grid-template-columns:1fr}}
+.takes.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:700px){.takes,.takes.three{grid-template-columns:1fr}}
 .take{padding:24px;border-bottom:1px solid var(--fg);border-right:1px solid var(--fg)}
 .take-num{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-top:0;margin-bottom:16px}
 .take h3{
@@ -627,13 +628,26 @@ function pwCheck(){
   <section id="why">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="hdr">Why we built our own CRM</h2>
+        <p class="label">Why we built it</p>
+        <h2 class="hdr">Three reasons we stopped syncing to someone else&#8217;s CRM.</h2>
       </div>
 
-      <div class="body">
-        <p><strong>Dealerships kept asking.</strong> Not once, not gently: multiple clients, over time, making the same case. They wanted a CRM that understood what the agents were doing and could keep up with it.</p>
-        <p><strong>Fullpath already held the data.</strong> A significant portion of each dealership&#8217;s customer data was already in the system: purchase history, engagement signals, equity position. We were syncing that into third-party CRMs to make the agents useful, which meant maintaining a constant bridge between our system and someone else&#8217;s. Building around the data we already owned made more sense than routing it through another platform.</p>
-        <p><strong>The last piece was timing.</strong> AI made it possible to build something in weeks that would have taken a year before. Nothing like this existed in the automotive CRM space, and the window was open.</p>
+      <div class="takes three">
+        <div class="take">
+          <p class="take-num">01</p>
+          <h3>Dealerships kept asking.</h3>
+          <p>Multiple clients, over time, making the same case. They wanted a CRM that understood what the agents were doing &#8211; not one they had to explain it to.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">02</p>
+          <h3>We already had the data.</h3>
+          <p>Purchase history, engagement signals, equity position &#8211; all in the system. We were routing it through third-party CRMs and maintaining a bridge to make the agents useful. Building around what we owned made more sense.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">03</p>
+          <h3>The window was open.</h3>
+          <p>AI made it possible to build in weeks what would have taken a year. Nothing like this existed in the automotive CRM space. We moved.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -642,7 +656,8 @@ function pwCheck(){
   <section id="october">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="hdr">October 2025 &#8212; Three people, two days, one prototype</h2>
+        <p class="label" style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="0.75" y="1.75" width="11.5" height="10.5" rx="1"/><path d="M0.75 5.5h11.5"/><path d="M4 0.75v2M9 0.75v2"/></svg>October 2025</p>
+        <h2 class="hdr">Three people, two days, one prototype.</h2>
       </div>
 
       <div class="body">
