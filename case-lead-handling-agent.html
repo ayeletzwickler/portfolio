@@ -645,25 +645,25 @@ details .ans{padding-bottom:32px;max-width:60ch}
 <style>
 #pw-gate{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
 #pw-gate.hidden{display:none}
-.pw-box{display:flex;flex-direction:column;align-items:center;gap:24px;width:320px}
-.pw-title{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;opacity:0.45}
+.pw-box{display:flex;flex-direction:column;align-items:flex-start;gap:16px;width:320px}
+.pw-copy{font-size:14px;font-weight:400;color:#000;line-height:1.5;margin-bottom:8px}
 .pw-field-wrap{width:100%;position:relative}
-.pw-field{width:100%;border:1px solid #000;border-radius:0;padding:14px 16px;font-size:16px;background:#fff;outline:none;letter-spacing:0.12em}
+.pw-field{width:100%;border:1px solid #000;border-radius:0;padding:0 16px;height:40px;font-size:14px;background:#fff;outline:none;letter-spacing:0.06em}
 .pw-field:focus{border-color:#000;box-shadow:none}
 .pw-field.shake{animation:pw-shake 300ms ease}
 @keyframes pw-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.pw-btn{width:100%;padding:14px;background:#000;color:#fff;border:none;border-radius:0;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:background 150ms}
+.pw-btn{width:100%;height:40px;background:#000;color:#fff;border:none;border-radius:0;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:background 150ms}
 .pw-btn:hover{background:#222}
 .pw-error{font-size:12px;color:#000;opacity:0;transition:opacity 200ms;letter-spacing:0.04em}
 .pw-error.visible{opacity:0.5}
 </style>
 <div id="pw-gate">
   <div class="pw-box">
-    <span class="pw-title">Enter password to continue</span>
+    <p class="pw-copy">Hey,<br>Thanks for stopping by.</p>
     <div class="pw-field-wrap">
       <input id="pw-field" class="pw-field" type="password" placeholder="········" autocomplete="off" autocapitalize="none" spellcheck="false">
     </div>
-    <button class="pw-btn" onclick="pwCheck()">Enter</button>
+    <button class="pw-btn" onclick="pwCheck()">Come on in 🫐</button>
     <span id="pw-error" class="pw-error">Incorrect password</span>
   </div>
 </div>
