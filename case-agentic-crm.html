@@ -28,55 +28,6 @@ body{
   font-family:'Red Hat Display',system-ui,sans-serif;
   font-weight:400;font-size:16px;line-height:1.55;
   -webkit-font-smoothing:antialiased;
-  /* `hidden` here would make <body>
-<style>
-#pw-gate{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
-#pw-gate.hidden{display:none}
-.pw-box{display:flex;flex-direction:column;align-items:center;gap:24px;width:320px}
-.pw-title{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;opacity:0.45}
-.pw-field-wrap{width:100%;position:relative}
-.pw-field{width:100%;border:1px solid #000;border-radius:0;padding:14px 16px;font-size:16px;background:#fff;outline:none;letter-spacing:0.12em}
-.pw-field:focus{border-color:#000;box-shadow:none}
-.pw-field.shake{animation:pw-shake 300ms ease}
-@keyframes pw-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.pw-btn{width:100%;padding:14px;background:#000;color:#fff;border:none;border-radius:0;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:background 150ms}
-.pw-btn:hover{background:#222}
-.pw-error{font-size:12px;color:#000;opacity:0;transition:opacity 200ms;letter-spacing:0.04em}
-.pw-error.visible{opacity:0.5}
-</style>
-<div id="pw-gate">
-  <div class="pw-box">
-    <span class="pw-title">Enter password to continue</span>
-    <div class="pw-field-wrap">
-      <input id="pw-field" class="pw-field" type="password" placeholder="········" autocomplete="off" autocapitalize="none" spellcheck="false">
-    </div>
-    <button class="pw-btn" onclick="pwCheck()">Enter</button>
-    <span id="pw-error" class="pw-error">Incorrect password</span>
-  </div>
-</div>
-<script>
-(function(){
-  var KEY="portfolio_auth";
-  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden")}
-  document.getElementById("pw-field").addEventListener("keydown",function(e){if(e.key==="Enter")pwCheck()});
-})();
-function pwCheck(){
-  var v=document.getElementById("pw-field").value.trim().toLowerCase();
-  if(v==="blueberry"){
-    localStorage.setItem("portfolio_auth","1");
-    document.getElementById("pw-gate").classList.add("hidden");
-  } else {
-    var f=document.getElementById("pw-field");
-    f.classList.remove("shake");
-    void f.offsetWidth;
-    f.classList.add("shake");
-    document.getElementById("pw-error").classList.add("visible");
-    f.value="";
-    setTimeout(function(){document.getElementById("pw-error").classList.remove("visible")},2000);
-  }
-}
-</script> a scroll container and break position:sticky,
-     which the pinned horizontal rails depend on. `clip` prevents that. */
   overflow-x:hidden;
   overflow-x:clip;
 }
@@ -129,7 +80,6 @@ strong{font-weight:600}
 .label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
 section{padding-block:clamp(72px,9vw,128px)}
 section+section{border-top:none}
-/* the label sits on top of the section, with everything flush left under it */
 .sec-head{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .sec-head.two-col{display:grid;grid-template-columns:1fr 2fr;align-items:start;gap:clamp(24px,4vw,56px)}
 @media(max-width:700px){.sec-head.two-col{grid-template-columns:1fr;gap:8px}}
@@ -158,7 +108,6 @@ p{font-size:14px;line-height:1.72}
   border-top:0;
 }
 
-/* title, hook and the spec list on the left; the shot on the right */
 .hero-top{
   display:grid;
   grid-template-columns:minmax(0,40fr) minmax(0,60fr);
@@ -187,7 +136,7 @@ h1{
   padding:0 4px;
 }
 
-/* ── META — one line per fact, stacked ── */
+/* ── META ── */
 .meta{
   display:flex;flex-direction:column;
   margin-top:clamp(24px,3vw,40px);
@@ -212,7 +161,7 @@ h1{
 }
 
 
-/* ── HORIZONTAL PINNED SCROLL (vertical scroll drives horizontal pan) ── */
+/* ── HORIZONTAL PINNED SCROLL ── */
 .hscroll{position:relative}
 .hscroll-stage{overflow:hidden}
 .hscroll-track{
@@ -267,7 +216,6 @@ h1{
 .hcard-text p{font-size:14px;line-height:1.7;color:var(--fg);margin-top:16px}
 .hcard-text p:first-of-type{margin-top:16px}
 
-/* fallback: stack vertically on narrow screens and for reduced motion */
 @media(prefers-reduced-motion:reduce){
   .hscroll-stage{position:static;height:auto;overflow:visible}
   .hscroll-track{display:block;height:auto;width:auto;transform:none !important;padding:0}
@@ -280,8 +228,9 @@ h1{
   margin-top:clamp(40px,5vw,56px);
 }
 .stats.three{grid-template-columns:repeat(3,1fr)}
-@media(max-width:860px){.stats,.stats.three{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.stats,.stats.three{grid-template-columns:1fr}}
+.stats.five{grid-template-columns:repeat(5,1fr)}
+@media(max-width:860px){.stats,.stats.three,.stats.five{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.stats,.stats.three,.stats.five{grid-template-columns:1fr}}
 .stat{padding:24px 24px 24px 0}
 .stat-n{
   font-weight:700;
@@ -321,6 +270,7 @@ h1{
   transition:background 150ms ease;
 }
 #img-lb-close:hover{background:rgba(255,255,255,1)}
+
 /* ── ZOOM CURSOR ── */
 #img-zoom-cursor{
   position:fixed;top:0;left:0;z-index:200;pointer-events:none;
@@ -374,7 +324,7 @@ figcaption{
 @media(max-width:800px){.figs{grid-template-columns:1fr}}
 .figs figure{margin-top:0}
 
-/* ── DECISIONS / VERSIONS ── */
+/* ── BLOCKS (label column + content column) ── */
 .block{
   padding-top:clamp(48px,5.5vw,72px);
   display:grid;grid-template-columns:150px 1fr;gap:40px;align-items:start;
@@ -389,7 +339,7 @@ figcaption{
   padding:8px 16px;margin-top:24px;
 }
 
-/* ── TAKEAWAY LIST ── */
+/* ── TAKEAWAY GRID ── */
 .takes{margin-top:clamp(48px,6vw,80px);display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
 @media(max-width:700px){.takes{grid-template-columns:1fr}}
 .take{padding:24px;border-bottom:1px solid var(--fg);border-right:1px solid var(--fg)}
@@ -415,35 +365,7 @@ summary:hover{opacity:.5}
 summary .mk{font-size:20px;font-weight:300;flex-shrink:0;line-height:1}
 details .ans{padding-bottom:32px;max-width:60ch}
 
-/* ── TK FLAG ── */
-.tk{
-  display:inline-block;
-  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-  background:var(--accent);color:var(--accent-fg);
-  border-radius:30px;padding:4px 8px;
-}
-.tk-line{
-  margin-top:24px;padding:24px 24px;
-  border:1px solid var(--fg);border-radius:16px;
-  font-size:14px;max-width:62ch;line-height:1.7;
-}
-
-/* ── CTA ── */
-
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .hero-top{grid-template-columns:1fr;gap:24px}
-  h1{max-width:14ch}
-}
-@media(max-width:700px){
-  .hcard{padding:0 24px clamp(40px,7vw,64px)}
-  .wrap{padding:0 24px}
-  .site-nav{padding:16px 24px}
-  .nav-links{gap:16px}
-}
-
-/* ── SECTION MENU — sits in the left gutter, outside the content column ── */
+/* ── SECTION NAV (left rail) ── */
 .secnav{
   position:fixed;left:40px;top:128px;z-index:90;
   opacity:0;visibility:hidden;transform:translateY(-6px);
@@ -463,15 +385,12 @@ details .ans{padding-bottom:32px;max-width:60ch}
 @media(max-width:1340px) and (min-width:701px){.wrap{padding:0 80px}}
 @media(max-width:700px){.hero>.wrap,.footer-above .wrap,.site-footer .wrap{padding:0 24px}}
 
-/* ── FOOTER — same strip as the home page ── */
+/* ── FOOTER ── */
 .site-footer{position:relative;border-top:1px solid var(--fg);padding-block:40px 32px}
-/* the hero and the footer keep the site's regular gutter, not the case study's */
 .hero>.wrap,
 .footer-above .wrap,
 .site-footer .wrap{max-width:none;padding:0 32px}
-/* the shortcuts sit above the line, lit from behind by the glow */
 .footer-above{position:relative;padding-block:112px 32px}
-/* here the glow rests on the bottom edge, which is where the line runs */
 .footer-above .footer-glow{bottom:0}
 .footer-shortcuts{
   position:relative;z-index:1;
@@ -506,7 +425,7 @@ details .ans{padding-bottom:32px;max-width:60ch}
 .footer-cv:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
 .footer-egg{width:100%;font-size:14px;color:var(--muted);margin-top:8px}
 
-/* ── FOOTER GLOW — a wide green fade resting on the footer line ── */
+/* ── FOOTER GLOW ── */
 .footer-glow{
   position:absolute;left:0;right:0;bottom:100%;
   width:100%;height:150px;pointer-events:none;z-index:0;
@@ -520,24 +439,75 @@ details .ans{padding-bottom:32px;max-width:60ch}
 </style>
 </head>
 <body>
+<style>
+#pw-gate{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#pw-gate.hidden{display:none}
+.pw-box{display:flex;flex-direction:column;align-items:center;gap:24px;width:320px}
+.pw-title{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;opacity:0.45}
+.pw-field-wrap{width:100%;position:relative}
+.pw-field{width:100%;border:1px solid #000;border-radius:0;padding:14px 16px;font-size:16px;background:#fff;outline:none;letter-spacing:0.12em}
+.pw-field:focus{border-color:#000;box-shadow:none}
+.pw-field.shake{animation:pw-shake 300ms ease}
+@keyframes pw-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pw-btn{width:100%;padding:14px;background:#000;color:#fff;border:none;border-radius:0;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:background 150ms}
+.pw-btn:hover{background:#222}
+.pw-error{font-size:12px;color:#000;opacity:0;transition:opacity 200ms;letter-spacing:0.04em}
+.pw-error.visible{opacity:0.5}
+</style>
+<div id="pw-gate">
+  <div class="pw-box">
+    <span class="pw-title">Enter password to continue</span>
+    <div class="pw-field-wrap">
+      <input id="pw-field" class="pw-field" type="password" placeholder="········" autocomplete="off" autocapitalize="none" spellcheck="false">
+    </div>
+    <button class="pw-btn" onclick="pwCheck()">Enter</button>
+    <span id="pw-error" class="pw-error">Incorrect password</span>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY="portfolio_auth";
+  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden")}
+  document.getElementById("pw-field").addEventListener("keydown",function(e){if(e.key==="Enter")pwCheck()});
+})();
+function pwCheck(){
+  var v=document.getElementById("pw-field").value.trim().toLowerCase();
+  if(v==="blueberry"){
+    localStorage.setItem("portfolio_auth","1");
+    document.getElementById("pw-gate").classList.add("hidden");
+  } else {
+    var f=document.getElementById("pw-field");
+    f.classList.remove("shake");
+    void f.offsetWidth;
+    f.classList.add("shake");
+    document.getElementById("pw-error").classList.add("visible");
+    f.value="";
+    setTimeout(function(){document.getElementById("pw-error").classList.remove("visible")},2000);
+  }
+}
+</script>
 
+<div class="progress" id="progress"></div>
 
 <nav class="secnav" aria-label="Sections">
   <a href="#overview">Overview</a>
-  <a href="#challenge">Challenge</a>
+  <a href="#why">Why we built it</a>
+  <a href="#origin">How it started</a>
   <a href="#users">The users</a>
-  <a href="#decisions">Solution</a>
+  <a href="#decisions">Key decisions</a>
+  <a href="#patterns">Human-AI design</a>
+  <a href="#field">Field research</a>
   <a href="#agents">The agents</a>
   <a href="#results">Outcomes</a>
-  <a href="#scale">Where it stands</a>
+  <a href="#scale">What's next</a>
   <a href="#faq">Questions</a>
 </nav>
 
 <header class="site-nav">
-  <a class="nav-name" href="portfolio-v6.html"><svg class="nav-star" width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.7063 0L6.37748 3.93431L9.23301 1.1459L7.46348 4.72333L11.4126 4.1459L7.8783 6L11.4126 7.8541L7.46348 7.27667L9.23301 10.8541L6.37748 8.06569L5.7063 12L5.03511 8.06569L2.17959 10.8541L3.94911 7.27667L-4.00543e-05 7.8541L3.5343 6L-4.00543e-05 4.1459L3.94911 4.72333L2.17959 1.1459L5.03511 3.93431L5.7063 0Z" fill="currentColor"/></svg>Ayelet Zwickler Ackerman</a>
+  <a class="nav-name" href="index.html"><svg class="nav-star" width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.7063 0L6.37748 3.93431L9.23301 1.1459L7.46348 4.72333L11.4126 4.1459L7.8783 6L11.4126 7.8541L7.46348 7.27667L9.23301 10.8541L6.37748 8.06569L5.7063 12L5.03511 8.06569L2.17959 10.8541L3.94911 7.27667L-4.00543e-05 7.8541L3.5343 6L-4.00543e-05 4.1459L3.94911 4.72333L2.17959 1.1459L5.03511 3.93431L5.7063 0Z" fill="currentColor"/></svg>Ayelet Zwickler Ackerman</a>
   <nav class="nav-links" aria-label="Primary">
-    <a class="navlink" href="portfolio-v6.html#work">Work</a>
-    <a class="navlink" href="portfolio-v6.html#about">About</a>
+    <a class="navlink" href="index.html#work">Work</a>
+    <a class="navlink" href="index.html#about">About</a>
     <a class="navlink" href="./Ayelet-Zwickler-CV.pdf" download>CV</a>
   </nav>
 </header>
@@ -551,79 +521,100 @@ details .ans{padding-bottom:32px;max-width:60ch}
         <div class="hero-left">
           <h1>Agentic CRM</h1>
 
-          <p class="hook">Fullpath built its AI agents before it had a CRM. I led the design of that CRM end to end, web platform and
-            native mobile, <span class="hl">four AI agents, three user types, 0 to 1</span>. It started as a two day
-            offsite prototype and is now running live in dealerships.</p>
+          <p class="hook">Fullpath built its AI agents before it had a CRM. I led the design of that CRM end to end, web and native mobile, <span class="hl">four AI agents, three user types, 0 to 1</span>. It started as a two-day offsite prototype and ended in a COX Automotive acquisition.</p>
 
           <div class="meta">
             <div>
-              <p class="meta-k">Years</p>
-              <p class="meta-v">2025-2026</p>
+              <p class="meta-k">Timeline</p>
+              <p class="meta-v">Oct 2025 to present</p>
             </div>
             <div>
               <p class="meta-k">Role</p>
-              <p class="meta-v">Product Designer</p>
+              <p class="meta-v">Product Designer, end to end</p>
             </div>
             <div>
-              <p class="meta-k">Scope</p>
-              <p class="meta-v">0&rarr;1, Research, Agent Design, Web and native mobile</p>
+              <p class="meta-k">Team</p>
+              <p class="meta-v">CPO, COO, PM, Engineering</p>
             </div>
             <div>
-              <p class="meta-k">Stage</p>
-              <p class="meta-v">In beta. Two dealerships live.</p>
+              <p class="meta-k">Impact</p>
+              <p class="meta-v">Acquired by COX Automotive. Beta. Two dealerships live.</p>
             </div>
           </div>
         </div>
 
         <div class="hero-shot">
           <img src="crm-assets/crm-hero.png"
-               alt="The CRM rep home on web, with the day's counts, schedule, new leads and agent conversations">
+               alt="The CRM rep home on web, showing today's lead queue, schedule, and agent draft cards">
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── CHALLENGE ── -->
-  <section id="challenge">
+  <!-- ── WHY WE BUILT IT ── -->
+  <section id="why">
     <div class="wrap">
       <div class="sec-head">
-        <p class="label">Challenge</p>
-        <h2 class="hdr">Fullpath built its AI agents before it had a CRM.</h2>
+        <p class="label">Why we built it</p>
+        <h2 class="hdr">Fullpath had AI agents working before it had a CRM.</h2>
       </div>
 
       <div class="body">
-        <p>The agents handled leads, set appointments, and followed up with shoppers. But all of that work surfaced inside legacy systems Fullpath did not own and could not shape.</p>
-        <p>We built the CRM to close that gap. Not to replicate what existed, but to build the first place where AI agents and dealership staff work as one team.</p>
-        <p><strong>Three things converged at once:</strong></p>
+        <p>The agents handled leads, set appointments, and followed up with shoppers. But all of that work surfaced inside legacy systems Fullpath did not own and could not shape. We built the CRM to close that gap. Not to replicate what existed, but to build the first place where AI agents and the people managing them could work as one team.</p>
+        <p><strong>Three things converged at the same time.</strong></p>
       </div>
 
       <div class="stats three">
         <div class="stat">
           <p class="stat-n">01</p>
-          <p class="stat-l">Organic demand. Dealerships already had every shopper interaction unified in our CDP, and kept asking why they still needed a separate CRM.</p>
+          <p class="stat-l">Organic demand. Dealerships kept asking, multiple clients, over time, making the same case. They wanted a CRM that understood what the agents were doing.</p>
         </div>
         <div class="stat">
           <p class="stat-n">02</p>
-          <p class="stat-l">A stagnant market. Existing options were complex, slow, and built on technology from a different era.</p>
+          <p class="stat-l">Data we already held. A significant portion of each dealership's customer data was already in the system. Building around it made more sense than routing it through another platform.</p>
         </div>
         <div class="stat">
           <p class="stat-n">03</p>
-          <p class="stat-l">A rare technology window. The data layer and AI maturity were both ready at the same moment.</p>
+          <p class="stat-l">A rare technology window. AI made it possible to build in weeks what would have taken a year before. Nothing like this existed in automotive, and the window was open.</p>
         </div>
       </div>
 
       <div class="body">
-        <p>So we did not bolt AI onto an old system. We built a CRM that is agentic from day one, positioning Fullpath as the operating system of the dealership.</p>
+        <p>We did not bolt AI onto an old system. We built a CRM that is agentic from day one, designed around the data Fullpath already owned and the agents already at work.</p>
       </div>
     </div>
   </section>
 
-  <!-- ── USERS ── -->
+  <!-- ── HOW IT STARTED ── -->
+  <section id="origin">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">How it started</p>
+        <h2 class="hdr">Three people, two days, one prototype.</h2>
+      </div>
+
+      <div class="body">
+        <p>In October 2025, me, the CPO, and the COO took two days offsite with one question: could we actually build this?</p>
+        <p>We did not write a spec. We built a prototype, walked into a dealership, and showed it to a GM. The feedback was direct: what was missing, what felt wrong, what they actually needed on a Tuesday morning. You cannot get that from a requirements doc.</p>
+        <p>That session shaped the first six months of the product. In a 0 to 1 build, the fastest way to reduce risk is to make something real. The prototype was not a shortcut. It was the most important thing we could have done first.</p>
+      </div>
+
+      <figure>
+        <div class="shot">
+          <span class="shot-tag">Screenshot TK</span>
+          <p class="shot-what">The two-day offsite prototype, or a photo from the first dealership session where we showed it to the GM.</p>
+        </div>
+        <figcaption>October 2025. Prototype first, spec never.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── THE THREE USERS ── -->
   <section id="users">
     <div class="wrap">
       <div class="sec-head">
         <p class="label">The users</p>
-        <h2 class="hdr">Three users, two layers of pain.</h2>
+        <h2 class="hdr">Three roles, two layers of pain.</h2>
       </div>
 
       <div class="body">
@@ -632,62 +623,62 @@ details .ans{padding-bottom:32px;max-width:60ch}
       </div>
     </div>
 
-      <div class="hscroll">
-        <div class="hscroll-stage">
-          <div class="hscroll-track">
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">The sales rep view: today's leads, calls and tasks, with the agent's activity visible alongside.</p>
-                </div>
+    <div class="hscroll">
+      <div class="hscroll-stage">
+        <div class="hscroll-track">
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Sales rep home: today's leads, calls and tasks, with the agent's draft cards visible alongside.</p>
               </div>
-              <div class="hcard-text">
-                <p class="block-n">User 01</p>
-                <h3>The sales rep lives in the short term. They want to sell a car today.</h3>
+            </div>
+            <div class="hcard-text">
+              <p class="block-n">User 01</p>
+              <h3>The sales rep lives in the short term. They want to sell a car today.</h3>
               <p>Their day is leads, calls, follow-ups, appointments.</p>
-              <p><strong>The old pain.</strong> They are drowning in manual work: copying AI conversation summaries into the CRM, checking vehicle availability in a separate system, figuring out which lead to call next.</p>
-              <p><strong>The new pain.</strong> An AI agent is now talking to their customers. When do they step in? How do they know what the agent said? Can they trust it not to mess up a deal?</p>
-              </div>
+              <p><strong>The old pain.</strong> Manual work everywhere: copying AI conversation summaries into the CRM, checking vehicle availability in a separate system, figuring out which lead to call next.</p>
+              <p><strong>The new pain.</strong> An AI agent is now talking to their customers. When do they step in? How do they know what the agent said? Can they trust it not to damage a deal they have been working on?</p>
             </div>
-          </article>
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">The manager view: lead routing, rep workload and agent oversight in one place.</p>
-                </div>
-              </div>
-              <div class="hcard-text">
-                <p class="block-n">User 02</p>
-                <h3>The sales manager sits between the reps and the business.</h3>
-              <p><strong>The old pain.</strong> They are the manual bridge between everything. When the AI sets an appointment, the manager schedules it for the rep. When a customer reschedules with the agent, the rep has no way to know. Everything flows through the manager's inbox.</p>
-              <p><strong>The new pain.</strong> How do they maintain oversight over agents they did not configure and conversations they did not read?</p>
-              </div>
-            </div>
-          </article>
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">The GM view: dealership performance and the trust signal shown before activating an agent.</p>
-                </div>
-              </div>
-              <div class="hcard-text">
-                <p class="block-n">User 03</p>
-                <h3>The GM cares about the dealership as a whole.</h3>
-              <p>Revenue, performance, whether the investment in technology is paying off.</p>
-              <p><strong>The old pain.</strong> Zero visibility into what is actually happening on the floor.</p>
-              <p><strong>The new pain.</strong> They are being asked to activate AI agents they cannot see working. No trust signal before they flip the switch. They are accountable for results but cannot see the work.</p>
-              </div>
-            </div>
-          </article>
           </div>
+        </article>
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Sales manager overview: rep activity, lead routing, and agent handling status side by side.</p>
+              </div>
+            </div>
+            <div class="hcard-text">
+              <p class="block-n">User 02</p>
+              <h3>The sales manager sits between the reps and the business.</h3>
+              <p><strong>The old pain.</strong> They are the manual bridge between everything. When the AI sets an appointment, the manager schedules it for the rep. When a customer reschedules with the agent, the rep has no way to know.</p>
+              <p><strong>The new pain.</strong> They know what their team did. They have no visibility into what the AI did on the team's behalf. How do they maintain oversight over agents they did not configure and conversations they did not read?</p>
+            </div>
+          </div>
+        </article>
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">GM dashboard: dealership performance, agent activity log, and conversion by source.</p>
+              </div>
+            </div>
+            <div class="hcard-text">
+              <p class="block-n">User 03</p>
+              <h3>The GM cares about the dealership as a whole.</h3>
+              <p>Revenue, performance, whether the technology investment is paying off.</p>
+              <p><strong>The old pain.</strong> Zero visibility into what is actually happening on the floor.</p>
+              <p><strong>The new pain.</strong> They are being asked to activate AI agents they cannot see working. No trust signal before they flip the switch. They are accountable for results they cannot audit.</p>
+            </div>
+          </div>
+        </article>
         </div>
       </div>
+    </div>
 
     <div class="wrap">
       <div class="body">
@@ -696,96 +687,233 @@ details .ans{padding-bottom:32px;max-width:60ch}
     </div>
   </section>
 
-  <!-- ── DECISIONS ── -->
+  <!-- ── FOUR DECISIONS ── -->
   <section id="decisions">
     <div class="wrap">
       <div class="sec-head">
-        <p class="label">Solution</p>
-        <h2 class="hdr">Four decisions that shaped the product.</h2>
+        <p class="label">Key decisions</p>
+        <h2 class="hdr">Four bets we made before we had a roadmap.</h2>
       </div>
     </div>
 
-      <div class="hscroll">
-        <div class="hscroll-stage">
-          <div class="hscroll-track">
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">The two day offsite prototype, or a photo from the dealership session where we showed it to the GM.</p>
-                </div>
-              </div>
-              <div class="hcard-text">
-                <p class="block-n">Decision 01</p>
-                <h3>Ship before there is a roadmap.</h3>
-              <p>In October 2025, three of us, me, the CPO and the COO, took two days off-site to answer one question: could we actually build this?</p>
-              <p>We did not write a spec. We built a prototype. Then we walked into a dealership and showed it to a GM.</p>
-              <p>That session shaped the first six months of the product. The feedback was direct: what was missing, what felt wrong, what they actually needed on a Tuesday morning. You cannot get that from a requirements doc.</p>
-              <p>In a 0 to 1 product, the fastest way to reduce risk is to make something real. The prototype was not a shortcut. It was the most important thing we could have done first.</p>
+    <div class="hscroll">
+      <div class="hscroll-stage">
+        <div class="hscroll-track">
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Sales rep home: the AI draft cards and familiar pipeline structure coexisting.</p>
               </div>
             </div>
-          </article>
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">Sales rep home, with Omni and the agent indicators sitting inside the familiar pipeline and task structure.</p>
-                </div>
-              </div>
-              <div class="hcard-text">
-                <p class="block-n">Decision 02</p>
-                <h3>AI as a teammate, not a replacement.</h3>
-              <p>Leadership wanted pure AI. The internal position was clear: this is an agentic CRM, the agents handle everything, if the rep needs to do something the agent will tell them. No pipeline view needed.</p>
-              <p>I pushed back. Our users have used the same CRM for a decade. They are not technical. Strip out everything they know and replace it with “just ask the AI” and they will not adapt. They will lose trust before they ever see what the system can do.</p>
-              <p>This was also a culture shift inside Fullpath. Until the CRM, the company's products were data platforms and marketing automation, tools you configure once and let run. Now we were building something people open every morning, and the experience was make or break.</p>
-              <p>The approach I pushed for was progressive agentic. Keep the familiar structure, pipeline, tasks, customer page. Let AI work inside it, not instead of it. The agents draft the message, create the task, flag the priority. But the rep still has the controls they expect.</p>
+            <div class="hcard-text">
+              <p class="block-n">Decision 01</p>
+              <h3>Progressive agentic, not pure AI.</h3>
+              <p>Leadership wanted agents to handle everything. I pushed for familiar workflows with AI embedded inside them.</p>
+              <p>Users who have spent a decade in the same CRM will not adapt to "just ask the AI." Trust builds gradually. In the UI, the home screen surfaces a queue of AI-drafted messages for rep approval. A familiar inbox, not a chat interface.</p>
+            </div>
+          </div>
+        </article>
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Customer page: the primary record is a person card with relationship timeline, vehicle context, and full conversation history.</p>
               </div>
             </div>
-          </article>
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">Customer page: lead details, Omni summary, AI handling status, lifecycle data and the next recommended step.</p>
-                </div>
-              </div>
-              <div class="hcard-text">
-                <p class="block-n">Decision 03</p>
-                <h3>Built around people, not deals.</h3>
-              <p>Most automotive CRMs organize around deals or leads: pipeline stages, opportunity statuses, conversion funnels. The customer as a person is secondary, a row attached to a lead record or a deal ID.</p>
-              <p>We chose differently. The customer is the atomic unit.</p>
-              <p>This followed directly from Fullpath's data. The CDP knows who the customer is before any interaction: purchase history, vehicle, website behavior, equity position. All of that lives at the person level. Organizing around deals would mean ignoring the company's biggest competitive advantage.</p>
-              <p>In practice this shaped the entire information architecture. A lead is a person. Tasks, AI conversations, communications and appointment history all trace back to a customer record. From user testing, this was one of the things reps responded to immediately.</p>
+            <div class="hcard-text">
+              <p class="block-n">Decision 02</p>
+              <h3>Customer as atomic unit, not deal as atomic unit.</h3>
+              <p>Most automotive CRMs organize around deals. We organized around the person.</p>
+              <p>Fullpath's CDP knows who the customer is before any interaction: purchase history, vehicle, website behavior, equity position, all at the person level. Organizing around deals would mean ignoring the company's biggest competitive advantage.</p>
+              <p>In the UI, the primary record is a person card with a relationship timeline, vehicle context, and full conversation history. The deal is a secondary tab.</p>
+            </div>
+          </div>
+        </article>
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Mobile app: the primary tab is Chats, not a dashboard. Reply is the first action on every screen.</p>
               </div>
             </div>
-          </article>
-          <article class="hcard">
-            <div class="hcard-in">
-              <div class="hcard-media">
-                <div class="shot">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">Mobile app with Chats as the primary tab, and the Omni overlay reachable from any screen.</p>
-                </div>
-              </div>
-              <div class="hcard-text">
-                <p class="block-n">Decision 04</p>
-                <h3>On mobile, the rep wants one thing: to reply.</h3>
-              <p>The default approach for a CRM mobile app is to compress the desktop. Give the rep a smaller pipeline, a compact dashboard, filters they can tap. We did not do that.</p>
-              <p>After spending time with reps on the dealership floor, one pattern was impossible to miss. They do not use their phone to manage their day. They pull it out because a customer just sent a message and they want to respond right now. A lead that waits 10 minutes is cold.</p>
-              <p>So the primary tab in our mobile app is Chats. Not Tasks, not Pipeline, not Home. The entire mobile IA is built around communication speed: who reached out, what is the context, reply. Omni is layered on top, accessible from any screen.</p>
-              <p>Desktop is where you plan and manage. Mobile is where you stay in the conversation.</p>
+            <div class="hcard-text">
+              <p class="block-n">Decision 03</p>
+              <h3>Mobile is for reply, not for managing.</h3>
+              <p>After spending time with reps on the dealership floor, one pattern was impossible to miss. They do not use their phone to manage their day. They pull it out because a customer just sent a message.</p>
+              <p>A lead that waits 10 minutes is cold. So the primary tab in our mobile app is Chats. Not Tasks, not Pipeline, not Home. The entire mobile IA is built around speed of reply. Desktop is where you plan. Mobile is where you stay in the conversation.</p>
+            </div>
+          </div>
+        </article>
+        <article class="hcard">
+          <div class="hcard-in">
+            <div class="hcard-media">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Agents Cafe: four named agents with their roles, status indicators, and handoff controls visible to the rep.</p>
               </div>
             </div>
-          </article>
+            <div class="hcard-text">
+              <p class="block-n">Decision 04</p>
+              <h3>Agents as visible teammates, not hidden features.</h3>
+              <p>The four agents have names, roles, and clear limits. Not settings buried in a config panel. Visible colleagues with named presence inline.</p>
+              <p>Omni shows a draft card in the rep's home screen, not a notification badge. You see what the agent prepared before you see the outcome. This was not a cosmetic decision. Making agent activity visible was the primary mechanism for building trust.</p>
+            </div>
+          </div>
+        </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DESIGNING THE HUMAN-AI RELATIONSHIP ── -->
+  <section id="patterns">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Human-AI design</p>
+        <h2 class="hdr">The hardest problem was not the technology.</h2>
+      </div>
+
+      <div class="body">
+        <p>Building an agentic CRM meant solving a specific tension: sales reps feared the AI would damage customer relationships. Managers feared reps would not adopt it. Both fears are legitimate.</p>
+        <p>The product only works if reps trust it enough to let it act, and that trust has to be earned gradually. I established three UI patterns to hold that balance.</p>
+      </div>
+
+      <div class="block">
+        <p class="block-n">Pattern 01</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Inline drafts, not autonomous actions.</h3>
+          <p style="margin-top:16px;max-width:60ch">Omni's output lives in the rep's action queue, a draft card they see before anything goes anywhere. One tap to Approve, Edit, or Regenerate. The rep is always the last step. This kept humans in the loop while eliminating the blank-page problem that slows first contact.</p>
+          <figure>
+            <div class="shot">
+              <span class="shot-tag">Screenshot TK</span>
+              <p class="shot-what">Omni draft card with Approve, Edit, and Regenerate actions visible in the rep's queue.</p>
+            </div>
+            <figcaption>Approve or edit before anything reaches a customer.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="block-n">Pattern 02</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Context transparency. The AI shows its work.</h3>
+          <p style="margin-top:16px;max-width:60ch">Every agent recommendation surfaces the reasoning behind it: the triggering event ("Customer viewed 2023 Civic 3x today"), live inventory status ("Stock 4821, available"), and a confidence signal. The rep sees what the agent sees before deciding whether to act on it.</p>
+          <p style="margin-top:1em;max-width:60ch">This was the fix for the Fisher Honda problem. A rep who can verify in-context does not need to trust blindly. AI errors in a sales context are not just bad UX. They are trust-breaking moments that take weeks to repair. The response has to be preventive, not corrective.</p>
+          <figure>
+            <div class="shot">
+              <span class="shot-tag">Screenshot TK</span>
+              <p class="shot-what">Context transparency panel: customer signal, active inventory match, and confidence indicator shown before the agent acts.</p>
+            </div>
+            <figcaption>The agent shows its reasoning before the rep decides.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="block-n">Pattern 03</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Explicit handoff. Everyone knows who owns the conversation.</h3>
+          <p style="margin-top:16px;max-width:60ch">When a rep steps in to write manually or takes a call, the UI shifts from Agent Handling to Rep Owned, with a visible status badge. The rep knows, the manager knows, the next shift knows. No duplicate outreach, no silent collisions between agent and human.</p>
+          <figure>
+            <div class="shot">
+              <span class="shot-tag">Screenshot TK</span>
+              <p class="shot-what">Handoff status badge: conversation showing Agent Handling transitioning to Rep Owned.</p>
+            </div>
+            <figcaption>Who owns this conversation, right now.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FIELD RESEARCH ── -->
+  <section id="field">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Field research</p>
+        <h2 class="hdr">We went back every time we thought we were done.</h2>
+      </div>
+
+      <div class="body">
+        <p>Every major iteration started inside a dealership. Not with a survey, not with usability testing in a controlled environment. With real reps, real leads, real customers, and real calls.</p>
+      </div>
+
+      <div class="block">
+        <p class="block-n">Nov 2025</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">First rep. One week embedded.</h3>
+          <p style="margin-top:16px;max-width:60ch">Found: no stock numbers or VINs on vehicle cards. No sold badge. The dialer could not be minimized during calls. Notification bell too small to tap. Real-time messaging did not update without refresh.</p>
+          <p style="margin-top:1em;max-width:60ch">Small things. Together, they made the product feel like it was not built for someone who actually sells cars.</p>
+          <p style="margin-top:1em;max-width:60ch">Changed: unified customer timeline. Inventory transparency layer with VINs, sold badges, and availability status. Call window rebuilt to minimize without losing context. Notifications overhauled.</p>
+          <p class="verdict">Design principle: if a rep has to leave the screen to verify something basic, the AI's output is already suspect.</p>
+          <div class="figs" style="margin-top:32px">
+            <figure style="margin-top:0">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Vehicle card before: no VIN, no sold status, no availability indicator.</p>
+              </div>
+              <figcaption>Before: vehicle card without inventory context.</figcaption>
+            </figure>
+            <figure style="margin-top:0">
+              <div class="shot">
+                <span class="shot-tag">Screenshot TK</span>
+                <p class="shot-what">Vehicle card after: VIN visible, sold badge, live availability status.</p>
+              </div>
+              <figcaption>After: inventory transparency added.</figcaption>
+            </figure>
           </div>
         </div>
       </div>
+
+      <div class="block">
+        <p class="block-n">Jan 2026</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Second iteration. Back to validate the fixes.</h3>
+          <p style="margin-top:16px;max-width:60ch">The November fixes held, but a new layer of friction surfaced around handoffs and task context. We refined, returned the following week, and got closer to something a rep could rely on without thinking about it.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="block-n">Feb 2026</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">NADA: the industry recognized the gap before the product fully launched.</h3>
+          <p style="margin-top:16px;max-width:60ch">NADA is one of the largest automotive industry conferences in the US. We announced the first agentic CRM in the industry and ran demos for hundreds of potential customers. The product was not fully live, but the response was immediate. It created the kind of momentum you cannot manufacture.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="block-n">Mar 2026</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Fisher Honda. Two reps. Real accountability.</h3>
+          <p style="margin-top:16px;max-width:60ch">The product needed to work without us in the room. Back in a dealership with a harder bar.</p>
+          <p style="margin-top:1em;max-width:60ch">Found: 22 pending notifications piled up. Omni offered a customer pictures of a car that had already been sold. Suggested a purchase path to someone who came in only for a trade-in. The AI was doing things, but it was not reading the room.</p>
+
+          <blockquote>
+            <p>"If it can email and text a customer and I can sell cars, I don't care."</p>
+            <cite>Franklin, Sales Rep at Fisher Honda (3 days into pilot)</cite>
+          </blockquote>
+
+          <p style="margin-top:clamp(32px,4vw,48px);max-width:60ch">Franklin's sentiment: 9 out of 10. He asked to keep his login. In one week: 24 leads worked, 47 tasks clicked, 22 completed, 13 activities, 5 appointments set.</p>
+          <p style="margin-top:1em;max-width:60ch">Changed: Omni's context engine rewired. No suggesting sold cars. No purchase path for a trade-in customer. No acting without full history. Omni now surfaces relevant context inline before drafting: the customer's last intent signal, active inventory match, prior conversation summary. The rep sees what the AI sees before it acts.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="block-n">May 2026</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Pipeline agent launched. The most expensive manual task, automated.</h3>
+          <p style="margin-top:16px;max-width:60ch">In legacy CRMs, lead distribution is a manual morning task. Every manager sorts through the day's leads and assigns them to reps by hand, weighing performance and capacity, before anyone on the floor makes a single call.</p>
+          <p style="margin-top:1em;max-width:60ch">The pipeline agent takes that off their plate. Managers configure the rules once: rep performance thresholds, lead type priorities, capacity limits. The agent handles the daily distribution. It is one of the clearest cases in the product of what an agent should actually do: a repetitive, judgment-based workflow that belongs to the manager conceptually but costs them real time every day.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- ── AGENTS ── -->
+  <!-- ── THE AGENTS ── -->
   <section id="agents">
     <div class="wrap">
       <div class="sec-head">
@@ -794,43 +922,31 @@ details .ans{padding-bottom:32px;max-width:60ch}
       </div>
 
       <div class="body">
-        <p>The CRM ships with four AI agents. Each one has a defined role, a visible presence in the UI, and a clear boundary between what it handles and what the human handles.</p>
+        <p>The CRM ships with four AI agents. Each one has a defined role, a visible presence in the UI, and a clear boundary between what it handles and what the human handles. They are presented as teammates, not features and not settings.</p>
       </div>
 
       <div class="takes">
         <div class="take">
-          <p class="take-num">01</p>
-          <h3>Omni, the rep's co-writer.</h3>
-          <p>Drafts emails, SMS and call talking points. Answers questions about customers, inventory and performance. Always accessible, from the home screen, from within a task, from the mobile overlay.</p>
+          <p class="take-num">01 &mdash; Omni</p>
+          <h3>The rep's co-writer.</h3>
+          <p>Drafts emails, SMS, and call talking points. Answers questions about customers, inventory, and performance. Always accessible from the home screen, from within a task, from the mobile overlay. The rep approves every send.</p>
         </div>
         <div class="take">
-          <p class="take-num">02</p>
-          <h3>Task Builder, which turns events into briefings.</h3>
-          <p>Watches real-time events and creates tasks from them. Not static cadences or day-1-day-3 reminders. A task says: "Call Jordan, texted back 4 min ago about the CR-V. Confirm stock and offer a Saturday test drive." It is a briefing, not a to-do.</p>
+          <p class="take-num">02 &mdash; Task Builder</p>
+          <h3>Turns events into briefings.</h3>
+          <p>Watches real-time signals and creates tasks from them. Not static cadences or day-1-day-3 reminders. A task says: "Call Jordan, texted back 4 minutes ago about the CR-V. Confirm stock and offer a Saturday test drive." A briefing, not a to-do.</p>
         </div>
         <div class="take">
-          <p class="take-num">03</p>
-          <h3>Pipeline Agent, which routes and ranks leads for managers.</h3>
-          <p>Dealerships have complex rules for how leads get distributed: by rep performance, availability, territory, round-robin with exceptions. The Pipeline Agent lets managers define those rules in plain language.</p>
+          <p class="take-num">03 &mdash; Pipeline Agent</p>
+          <h3>Routes and ranks leads for managers.</h3>
+          <p>Dealerships have complex rules for lead distribution: rep performance, availability, territory, round-robin with exceptions. Managers configure the rules once in plain language. The agent runs the morning distribution so managers start the day selling, not sorting.</p>
         </div>
         <div class="take">
-          <p class="take-num">04</p>
-          <h3>Lead Handling, which owns first contact.</h3>
-          <p>Handles first contact with new leads autonomously. Responds within minutes, follows up, sets appointments. When it is time for a human, it hands off with full context.</p>
+          <p class="take-num">04 &mdash; Lead Handling</p>
+          <h3>Owns first contact.</h3>
+          <p>Handles first contact with new leads autonomously. Responds within minutes, follows up, sets appointments. When it is time for a human, it hands off with full context: what it said, what the customer said, what comes next.</p>
         </div>
       </div>
-
-      <div class="body">
-        <p>The agents are presented as teammates, not features and not settings. They have names, status indicators and visible activity. The rep knows who is handling what, right now.</p>
-      </div>
-
-      <figure>
-        <div class="shot">
-          <span class="shot-tag">Screenshot TK</span>
-          <p class="shot-what">Agents Cafe, or the agent status indicators as they appear in the dashboard.</p>
-        </div>
-        <figcaption>Named teammates with visible status, not hidden features.</figcaption>
-      </figure>
     </div>
   </section>
 
@@ -839,43 +955,58 @@ details .ans{padding-bottom:32px;max-width:60ch}
     <div class="wrap">
       <div class="sec-head">
         <p class="label">Outcomes</p>
-        <h2 class="hdr">One rep. One week. Real usage, not a demo.</h2>
-      </div>
-
-      <div class="stats three">
-        <div class="stat">
-          <p class="stat-n">24</p>
-          <p class="stat-l">leads worked during the one week alpha at Fisher Honda</p>
-        </div>
-        <div class="stat">
-          <p class="stat-n">22</p>
-          <p class="stat-l">tasks completed</p>
-        </div>
-        <div class="stat">
-          <p class="stat-n">5</p>
-          <p class="stat-l">appointments created</p>
-        </div>
-      </div>
-
-      <p class="stat-note">
-        At the end of the week the rep asked to keep his login. The dealership's GM asked to meet with the Fullpath CRM
-        team weekly to share feedback.
-      </p>
-    </div>
-  </section>
-
-  <!-- ── WHERE IT STANDS ── -->
-  <section id="scale">
-    <div class="wrap">
-      <div class="sec-head">
-        <p class="label">Where it stands</p>
-        <h2 class="hdr">The product is in beta. The early decisions are holding.</h2>
+        <h2 class="hdr">The October 2025 decisions are holding.</h2>
       </div>
 
       <div class="body">
-        <p>We moved through three stages to get here. First a pre-alpha, with part of the team embedded in a dealership for several days, testing technical feasibility and filling gaps in real time. Then an alpha with a single sales rep at Fisher Honda for one week.</p>
-        <p>After the alpha we pulled back, addressed what we found, and moved to a second dealership for a full transition: two months of migrating from their existing CRM to Fullpath's. That transition is complete. A second dealership is in onboarding now.</p>
-        <p>The product is still in motion. But the early decisions, progressive agentic, customer centered, messaging first on mobile, are holding.</p>
+        <p>Not because they were right on paper. Because they survived contact with the sales floor.</p>
+      </div>
+
+      <div class="stats five">
+        <div class="stat">
+          <p class="stat-n">24</p>
+          <p class="stat-l">leads worked in one week at Fisher Honda</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">47</p>
+          <p class="stat-l">tasks clicked, 22 completed</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">5</p>
+          <p class="stat-l">appointments set via AI-suggested outreach</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">7</p>
+          <p class="stat-l">features shipped in 8 weeks during a full dealership migration</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">2</p>
+          <p class="stat-l">dealerships live in beta after a complete CRM transition</p>
+        </div>
+      </div>
+
+      <p class="stat-note">Franklin, the first rep at Fisher Honda, asked to keep his login after three days. The product led to Fullpath's acquisition by COX Automotive in June 2026, one of the largest automotive technology companies in the US.</p>
+
+      <div class="body">
+        <p><strong>What we track.</strong> Message reply rate versus the pre-agent baseline. Task completion rate per rep. Appointment conversion from AI-suggested outreach. Time-to-first-contact on new leads.</p>
+        <p>The July and August 2026 full-dealership migration is the most direct signal: not a pilot, not a single rep, but an entire sales floor switched over and continuing to sell. The seven features shipped in those eight weeks: the conversations screen, task page and panel, notification system, add flows, customer page, managers overview, and the iOS app.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHAT'S NEXT ── -->
+  <section id="scale">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">What's next</p>
+        <h2 class="hdr">Migration at scale. COX runs on a legacy CRM with churn.</h2>
+      </div>
+
+      <div class="body">
+        <p>COX Automotive runs on VinSolutions, a legacy CRM that has not kept up technically. Dealerships know it, and they are looking for a way out.</p>
+        <p>The main target for 2027 is a full data migration: move COX's customer history, lead data, and conversation records into Fullpath's system, then shift users off VinSolutions onto ours. We have done this at one dealership. The next question is whether we can do it at scale, across COX's network, without breaking sales operations in the process.</p>
+        <p>Running parallel: continuing to build out the product so it is ready for that volume. The data has to move cleanly. The rep experience has to feel like a real step forward. A migration that works technically but leaves people missing their old tool is not a win.</p>
+        <p>We have two dealerships in beta. The next chapter is proving the model holds when the numbers are an order of magnitude larger.</p>
       </div>
     </div>
   </section>
@@ -891,36 +1022,43 @@ details .ans{padding-bottom:32px;max-width:60ch}
       <div class="body">
         <details>
           <summary>What was your role? <span class="mk" aria-hidden="true">+</span></summary>
-          <div class="ans"><p>Design end to end, from the offsite prototype onward: the web platform and the native mobile app, four AI agents, three user types, 0 to 1.</p></div>
+          <div class="ans"><p>Design end to end, from the offsite prototype onward: the web platform and the native mobile app, four AI agents, three user types, 0 to 1. I was in every dealership visit and in every major product decision.</p></div>
         </details>
         <details>
           <summary>How did the project start? <span class="mk" aria-hidden="true">+</span></summary>
-          <div class="ans"><p>Three of us, me, the CPO and the COO, took two days off-site in October 2025. We did not write a spec. We built a prototype and walked into a dealership to show it to a GM. That session shaped the next six months.</p></div>
+          <div class="ans"><p>Three of us, me, the CPO and the COO, took two days offsite in October 2025. We did not write a spec. We built a prototype and walked into a dealership to show it to a GM. That session shaped the next six months. The feedback was direct: what was missing, what felt wrong, what they actually needed on a Tuesday morning.</p></div>
         </details>
         <details>
-          <summary>Why not make it fully agentic? <span class="mk" aria-hidden="true">+</span></summary>
-          <div class="ans"><p>Leadership wanted pure AI. I argued for progressive agentic instead: keep the pipeline, tasks and customer page people have used for a decade, and let the agents work inside that structure. Strip out everything familiar and users lose trust before they ever see what the system can do.</p></div>
+          <summary>Why not make it fully agentic from day one? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>Leadership wanted pure AI. I argued for progressive agentic instead: keep the pipeline, tasks, and customer page people have used for a decade, and let the agents work inside that structure. Strip out everything familiar and users lose trust before they ever see what the system can do. Trust builds gradually. The evidence from the dealership pilots confirmed this. Franklin at Fisher Honda was skeptical of AI. He asked to keep his login after three days.</p></div>
         </details>
         <details>
           <summary>Why organize around the customer instead of the deal? <span class="mk" aria-hidden="true">+</span></summary>
-          <div class="ans"><p>Because that is where Fullpath's data lives. The CDP knows the person before any interaction: purchase history, vehicle, website behavior, equity position. Organizing around deals would have meant ignoring the company's biggest competitive advantage.</p></div>
+          <div class="ans"><p>Because that is where Fullpath's data lives. The CDP knows the person before any interaction: purchase history, vehicle, website behavior, equity position. Organizing around deals would have meant ignoring the company's biggest competitive advantage. From user testing, reps responded to the customer-centered view immediately. It matched how they actually think about their work.</p></div>
+        </details>
+        <details>
+          <summary>What was the hardest problem to solve? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>Getting the AI to earn trust rather than assume it. The Fisher Honda lesson: Omni offered a customer pictures of a car that had already been sold. That single mistake surfaced a systemic problem. The agent was acting on incomplete context. The fix was context transparency: every recommendation now surfaces the reasoning behind it before the rep decides to act. The rep sees what the AI sees. That shift, from "trust the agent's output" to "here is what the agent knows, you decide," changed how reps used the product.</p></div>
+        </details>
+        <details>
+          <summary>How did the COX acquisition happen? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>The product and the momentum it created, especially after NADA in February 2026, put Fullpath on COX Automotive's radar. COX is one of the largest automotive technology companies in the US. The acquisition closed in June 2026. The 2027 focus is migrating dealerships off VinSolutions, COX's existing legacy CRM, onto Fullpath's platform at scale.</p></div>
         </details>
         <details>
           <summary>Where is it now? <span class="mk" aria-hidden="true">+</span></summary>
-          <div class="ans"><p>In beta. One dealership has completed a full two month migration from its existing CRM, and a second is in onboarding.</p></div>
+          <div class="ans"><p>In beta. One dealership has completed a full two-month migration from its existing CRM, and a second is in onboarding. We shipped seven major features in July and August 2026 alongside that first migration. The product is still in motion, but the early decisions are holding.</p></div>
         </details>
       </div>
     </div>
   </section>
 
-  <!-- ── CTA ── -->
 </main>
 
 <div class="footer-above">
   <span class="footer-glow" aria-hidden="true"></span>
   <div class="wrap">
     <div class="footer-shortcuts">
-      <a href="portfolio-v6.html#work">&larr; All work</a>
+      <a href="index.html#work">&larr; All work</a>
       <a class="next" href="case-lead-handling-agent.html">Next: Lead Handling Agent &rarr;</a>
     </div>
   </div>
@@ -953,7 +1091,6 @@ details .ans{padding-bottom:32px;max-width:60ch}
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="11" cy="11" r="7"/>
     <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-  
   </svg>
 </div>
 
@@ -1058,7 +1195,6 @@ details .ans{padding-bottom:32px;max-width:60ch}
 
   function update(){
     raf=null;
-    // the menu only joins once the hero has scrolled by
     if(hero) nav.classList.toggle('is-ready', window.scrollY > hero.offsetTop+hero.offsetHeight-180);
     else nav.classList.add('is-ready');
     var y=window.scrollY+Math.min(200,window.innerHeight*0.3);
@@ -1087,7 +1223,7 @@ details .ans{padding-bottom:32px;max-width:60ch}
   update();
 })();
 
-/* ── IMAGE LIGHTBOX + ZOOM CURSOR ── */
+/* Image lightbox + zoom cursor */
 (function(){
   var lb=document.getElementById('img-lb');
   var lbImg=document.getElementById('img-lb-img');
