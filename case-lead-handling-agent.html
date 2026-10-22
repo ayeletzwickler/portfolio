@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<!--
+  Screenshots in ./lead-handling-assets/ that are not placed on this page yet:
+  unused: conversations-v1.png                 (source: "Conversations V1.png")
+  unused: configuration-basics.png             (source: "Configuration 👋 Basics.png")
+  unused: configuration-channels.png           (source: "Configuration 🎯 Channels.png")
+  unused: configuration-response-behavior.png  (source: "Configuration 📣 Response Behavior.png")
+  unused: configuration-agent-working-time.png (source: "Configuration 🧠 Agent Working Time.png")
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lead Handling Agent · Ayelet Zwickler Ackerman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#FFFFFF;
+  --fg:#000000;
+  --muted:#000000;
+  --line:#000000;
+  --line-strong:#000000;
+  --wash:rgba(0,0,0,0.04);
+  --accent:#ADFF2F;
+  --accent-fg:#000000;
+  color-scheme:light;
+}
+
+html{scroll-behavior:smooth}
+html,body{background:var(--bg);color:var(--fg)}
+body{
+  font-family:'Red Hat Display',system-ui,sans-serif;
+  font-weight:400;font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+*{font-style:normal}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+em{font-style:normal;font-weight:500}
+strong{font-weight:600}
+
+/* ── NAV ── */
+.site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 32px;pointer-events:none;
+  transition:background 300ms ease,backdrop-filter 300ms ease,-webkit-backdrop-filter 300ms ease;
+}
+.site-nav.is-scrolled{
+  background:color-mix(in srgb,var(--bg) 60%,transparent);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  backdrop-filter:blur(16px) saturate(1.3);
+}
+.site-nav *{pointer-events:auto}
+.nav-name{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:400}
+.nav-star{flex-shrink:0;transition:transform 700ms cubic-bezier(0.16,1,0.3,1)}
+.nav-name:hover .nav-star{transform:rotate(360deg)}
+.nav-name:hover{opacity:.5;transition:opacity 200ms}
+.nav-links{display:flex;gap:32px}
+.navlink{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:400;
+  position:relative;padding-bottom:4px;
+}
+.navlink::after{
+  content:"";position:absolute;left:0;bottom:-2px;
+  height:6px;width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0.5 8 3 T16 3' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:16px 6px;
+  transition:width 250ms ease;
+}
+.navlink:hover::after{width:100%}
+
+/* ── SCROLL PROGRESS ── */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0;
+  background:var(--accent);z-index:120;
+  transition:width 90ms linear;
+}
+
+/* ── LAYOUT ── */
+.wrap{max-width:none;margin:0;padding:0 400px}
+.label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+section{padding-block:clamp(72px,9vw,128px)}
+section+section{border-top:none}
+/* the label sits on top of the section, with everything flush left under it */
+.sec-head{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.sec-head.two-col{display:grid;grid-template-columns:1fr 2fr;align-items:start;gap:clamp(24px,4vw,56px)}
+@media(max-width:700px){.sec-head.two-col{grid-template-columns:1fr;gap:8px}}
+
+h2.hdr{
+  font-weight:700;
+  font-size:32px;
+  line-height:1.15;letter-spacing:-0.02em;
+  max-width:none;
+}
+h3.bene{
+  font-weight:700;
+  font-size:20px;
+  line-height:1.3;letter-spacing:-0.01em;
+  max-width:24ch;
+}
+p{font-size:14px;line-height:1.72}
+.body{margin-top:24px}
+.body p{max-width:60ch}
+.body p+p{margin-top:1.1em}
+
+/* ── HERO ── */
+.hero{
+  padding-top:clamp(128px,15vh,192px);
+  padding-bottom:clamp(40px,6vw,72px);
+  border-top:0;
+}
+
+/* title, hook and the spec list on the left; the shot on the right */
+.hero-top{
+  display:grid;
+  grid-template-columns:minmax(0,40fr) minmax(0,60fr);
+  gap:clamp(32px,3.5vw,56px);
+  align-items:start;
+  margin-top:clamp(16px,2vw,24px);
+}
+.hero-left{min-width:0}
+.hero-left .hook{margin-top:16px}
+h1{
+  font-weight:600;
+  font-size:40px;
+  line-height:1.1;letter-spacing:-0.022em;
+  max-width:14ch;
+}
+.hook{
+  font-size:18px;
+  font-weight:400;line-height:1.45;letter-spacing:-0.008em;
+  max-width:54ch;
+}
+.hook .hl{
+  background-image:linear-gradient(var(--accent),var(--accent));
+  background-repeat:no-repeat;
+  background-size:100% 0.58em;
+  background-position:0 62%;
+  padding:0 4px;
+}
+
+/* ── META — one line per fact, stacked ── */
+.meta{
+  display:flex;flex-direction:column;
+  margin-top:clamp(24px,3vw,40px);
+}
+.meta>div{
+  display:grid;grid-template-columns:110px minmax(0,1fr);
+  gap:16px;align-items:baseline;
+  padding:8px 0;border-top:0.5px solid var(--line);
+}
+.meta>div:first-child{border-top:none}
+@media(max-width:520px){.meta>div{grid-template-columns:1fr;gap:8px}}
+.meta-k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.meta-v{font-size:14px;margin-top:0;line-height:1.4;font-weight:500}
+
+/* ── HERO SHOT PANEL ── */
+.hero-shot{margin-top:0}
+@media(max-width:900px){.hero-shot{margin-top:clamp(32px,5vw,56px)}}
+.hero-shot img{
+  width:100%;display:block;
+  border-radius:16px;
+}
+
+/* ── STAT ROWS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  margin-top:clamp(40px,5vw,56px);
+}
+.stats.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:860px){.stats,.stats.three{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.stats,.stats.three{grid-template-columns:1fr}}
+.stat{padding:24px 24px 24px 0}
+.stat-n{
+  font-weight:700;
+  font-size:40px;
+  line-height:1;letter-spacing:-0.03em;
+  font-variant-numeric:tabular-nums;
+}
+.stat-l{font-size:14px;font-weight:400;margin-top:16px;line-height:1.5;max-width:22ch}
+.stat-note{font-size:14px;margin-top:24px;margin-bottom:24px;max-width:68ch;line-height:1.7}
+
+/* ── LIGHTBOX ── */
+#img-lb{
+  position:fixed;inset:0;z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+  opacity:0;visibility:hidden;
+  transition:opacity 240ms ease,visibility 240ms ease;
+}
+#img-lb.is-open{opacity:1;visibility:visible}
+#img-lb-img{
+  max-width:90vw;max-height:88vh;
+  object-fit:contain;display:block;
+  border-radius:0;
+  box-shadow:0 24px 80px rgba(0,0,0,0.18),0 8px 24px rgba(0,0,0,0.10);
+  transform:scale(0.93);
+  transition:transform 300ms cubic-bezier(0.16,1,0.3,1);
+}
+#img-lb.is-open #img-lb-img{transform:none}
+#img-lb-close{
+  position:absolute;top:16px;right:16px;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(0,0,0,0.15);
+  background:rgba(255,255,255,0.8);
+  color:#000;font-size:18px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background 150ms ease;
+}
+#img-lb-close:hover{background:rgba(255,255,255,1)}
+/* ── ZOOM CURSOR ── */
+#img-zoom-cursor{
+  position:fixed;top:0;left:0;z-index:200;pointer-events:none;
+  width:46px;height:46px;border-radius:50%;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(0.65);
+  transition:opacity 160ms ease,transform 220ms cubic-bezier(0.16,1,0.3,1);
+}
+#img-zoom-cursor.is-on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#img-zoom-cursor svg{width:20px;height:20px;color:#000}
+/* ── FINDING CARDS ── */
+.findings{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(32px,4vw,48px);border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
+@media(max-width:860px){.findings{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.findings{grid-template-columns:1fr}}
+.finding{border-bottom:1px solid var(--fg);border-right:1px solid var(--fg);border-radius:0;padding:24px;display:flex;flex-direction:column;gap:8px}
+.finding-num{font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg)}
+.finding-title{font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em}
+.finding-body{font-size:14px;line-height:1.6;color:var(--fg);flex:1}
+.finding-q{font-size:14px;line-height:1.5;color:var(--fg);font-weight:700;padding-top:16px;margin-top:4px}
+
+/* ── QUOTE ── */
+blockquote{
+  margin-top:clamp(40px,5vw,56px);
+  padding-left:clamp(16px,3vw,32px);
+  border-left:2px solid var(--accent);
+  max-width:42ch;
+}
+blockquote p{
+  font-size:20px;
+  font-weight:700;line-height:1.35;letter-spacing:-0.01em;
+}
+blockquote cite{
+  display:block;margin-top:16px;
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+}
+
+/* ── FIGURE PLACEHOLDER ── */
+figure{margin-top:clamp(32px,4.5vw,56px)}
+.shot{
+  width:100%;aspect-ratio:16/10;
+  background:var(--wash);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:16px;padding:32px;text-align:center;
+}
+.shot.tall{aspect-ratio:4/3}
+.shot-tag{
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-fg);background:var(--accent);
+  border-radius:30px;padding:8px 16px;
+}
+.shot-what{font-size:14px;max-width:44ch;line-height:1.6}
+figcaption{
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  margin-top:16px;max-width:52ch;line-height:1.7;
+}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,32px)}
+@media(max-width:800px){.figs{grid-template-columns:1fr}}
+.figs figure{margin-top:0}
+
+/* ── DECISION CARDS (vertical-scroll drives horizontal pan) ── */
+.dec-outer{margin-top:clamp(32px,4vw,48px)}
+.dec-stage{overflow:hidden}
+.dec-cards{
+  display:flex;gap:16px;
+  padding:clamp(16px,3svh,40px) 400px;
+  width:max-content;
+  will-change:transform;
+}
+@media(min-width:901px){
+  .dec-stage{
+    position:sticky;top:0;
+    height:100svh;
+    display:flex;align-items:center;
+    overflow:hidden;z-index:95;
+  }
+}
+@media(max-width:1340px){.dec-cards{padding-left:80px;padding-right:80px}}
+@media(max-width:700px){.dec-cards{padding-left:24px;padding-right:24px}}
+@media(max-width:900px){
+  .dec-stage{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .dec-stage::-webkit-scrollbar{display:none}
+  .dec-cards{width:auto}
+}
+.dec-card{
+  flex:0 0 auto;
+  width:min(calc(100vw - 516px),1080px);
+  min-width:560px;
+  border:1px solid var(--fg);border-radius:0;
+  overflow:hidden;
+  display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);
+  align-items:start;
+  background:var(--bg);
+}
+@media(max-width:1340px){.dec-card{width:min(calc(100vw - 196px),1080px)}}
+@media(max-width:700px){.dec-card{width:calc(100vw - 64px);grid-template-columns:1fr;min-width:0}}
+.dec-card--wide-img{grid-template-columns:minmax(0,32fr) minmax(0,68fr)}
+.dec-card--full{grid-template-columns:1fr}
+.dec-copy{padding:clamp(32px,3vw,40px);display:flex;flex-direction:column;justify-content:flex-start}
+.dec-img{padding:clamp(16px,2vw,32px) clamp(16px,2vw,32px) clamp(16px,2vw,32px) 0}
+.dec-img img{width:100%;height:auto;display:block;border-radius:0;object-fit:contain}
+.dec-num{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg);margin-bottom:16px}
+.dec-title{font-size:32px;font-weight:700;line-height:1.15;letter-spacing:-0.02em}
+.dec-body{font-size:14px;line-height:1.7;color:var(--fg);margin-top:16px}
+.dec-shot-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:32px}
+.dec-shot-row img{width:100%;height:auto;display:block;border-radius:0}
+
+/* ── DECISIONS / VERSIONS ── */
+.block{
+  padding-top:clamp(48px,5.5vw,72px);
+  display:grid;grid-template-columns:150px 1fr;gap:40px;align-items:start;
+}
+@media(max-width:800px){.block{grid-template-columns:1fr;gap:16px}}
+.block+.block{margin-top:clamp(16px,2.5vw,32px);border-top:1px solid var(--line)}
+.block-n{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding-top:.8em}
+/* ── OBSTACLE REDESIGN BLOCKS ── */
+.obs-block{
+  display:flex;flex-direction:column;
+  gap:clamp(24px,3vw,32px);
+  padding-block:clamp(32px,4vw,56px);
+}
+.obs-label{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fg)}
+.obs-title{font-size:32px;font-weight:700;line-height:1.15;letter-spacing:-0.02em}
+.obs-divider{display:none}
+.obs-img-wrap{border-radius:16px;overflow:hidden}
+.obs-img-wrap img{width:100%;height:auto;display:block}
+.obs-caption{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);margin-top:8px;line-height:1.7}
+.obs-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,32px)}
+@media(max-width:700px){.obs-cols{grid-template-columns:1fr}}
+.obs-col-title{font-size:14px;font-weight:700;line-height:1.4;margin-bottom:8px}
+.obs-col-body{font-size:14px;line-height:1.6}
+.verdict{
+  display:inline-flex;align-items:center;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--fg);border-radius:30px;
+  padding:8px 16px;margin-top:24px;
+}
+
+/* ── VERSION CARDS (same horizontal-pan as decisions) ── */
+.ver-outer{margin-top:clamp(32px,4vw,48px)}
+.ver-stage{overflow:hidden}
+.ver-cards{
+  display:flex;gap:16px;
+  padding:80px 400px;
+  width:max-content;height:100%;will-change:transform;
+}
+@media(min-width:901px){
+  .ver-stage{position:sticky;top:0;height:100svh;display:flex;align-items:center;overflow:hidden;z-index:95}
+}
+@media(max-width:1340px){.ver-cards{padding-left:80px;padding-right:80px}}
+@media(max-width:700px){.ver-cards{padding-left:24px;padding-right:24px}}
+@media(max-width:900px){
+  .ver-stage{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ver-stage::-webkit-scrollbar{display:none}
+  .ver-cards{width:auto}
+}
+.ver-card{
+  flex:0 0 auto;
+  width:min(calc(100vw - 516px),900px);min-width:400px;
+  height:100%;
+  border:1px solid var(--fg);border-radius:0;overflow:hidden;
+  display:flex;flex-direction:column;
+  background:var(--bg);
+}
+@media(max-width:1340px){.ver-card{width:min(calc(100vw - 196px),900px)}}
+@media(max-width:700px){.ver-card{width:calc(100vw - 64px);min-width:0}}
+.ver-copy{padding:clamp(16px,2.5vw,32px) clamp(16px,2.5vw,32px) clamp(16px,2vw,16px);display:flex;flex-direction:column;gap:8px}
+.ver-img{padding:0 16px;flex:1 1 auto;overflow:hidden}
+.ver-img img{width:100%;height:100%;display:block;border-radius:0;object-fit:contain;object-position:top}
+.ver-result-row{padding:clamp(16px,2vw,16px) clamp(16px,2.5vw,32px) clamp(16px,2.5vw,32px)}
+.ver-meta{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:12px}
+.ver-n{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg)}
+.ver-tag{
+  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fg);
+}
+.ver-tag--shipped{color:var(--fg)}
+.ver-title{font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em}
+.ver-result{font-size:14px;line-height:1.6;color:var(--fg);margin-top:8px}
+
+/* ── CONVERSATIONS ── */
+@media(min-width:1341px){#conversations>.wrap{padding-left:400px;padding-right:296px}}
+.conv-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:clamp(32px,4vw,48px)}
+@media(max-width:900px){.conv-layout{grid-template-columns:1fr;gap:40px}}
+.conv-list{display:flex;flex-direction:column;gap:8px}
+.conv-row{display:block;width:100%;text-align:left;background:none;border:1px solid var(--fg);border-radius:0;padding:16px;cursor:pointer;font-family:inherit;color:var(--fg);transition:background .18s ease}
+.conv-row:hover{background:var(--wash)}
+.conv-row.is-active{background:var(--accent)}
+.conv-row-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:8px}
+.conv-row-tag{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.conv-row-arrow{font-size:16px;line-height:1;flex-shrink:0;transition:transform .18s ease}
+.conv-row:hover .conv-row-arrow{transform:translateX(4px)}
+.conv-row.is-active .conv-row-arrow{transform:translateX(4px)}
+.conv-row-desc{font-size:14px;line-height:1.6}
+.conv-viewer{position:sticky;top:40px;width:100%}
+@media(max-width:900px){.conv-viewer{position:static;max-width:340px;margin:0 auto}}
+.conv-phone-wrap{width:100%;border:1px solid var(--fg);border-radius:26px;background:var(--bg);overflow:hidden}
+.conv-phone-screen{background:var(--bg);border-radius:25px;overflow:hidden;height:600px;display:flex;flex-direction:column;position:relative}
+.conv-ch{background:var(--bg);display:flex;align-items:center;gap:8px;padding:16px 16px 16px;border-bottom:1px solid var(--fg);flex-shrink:0}
+.conv-ch-ava{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--fg);flex-shrink:0}
+.conv-ch-name{font-size:13px;font-weight:700;color:var(--fg);line-height:1.2}
+.conv-ch-sub{font-size:10px;color:var(--fg);opacity:.45;margin-top:4px}
+.conv-msgs{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px 8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;min-height:0;scrollbar-width:none}
+.conv-msgs::-webkit-scrollbar{display:none}
+.conv-msg{display:flex;flex-direction:column;max-width:88%;gap:4px;animation:convMsgIn .22s ease both}
+@keyframes convMsgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.conv-msg.agent{align-self:flex-start}
+.conv-msg.customer{align-self:flex-end}
+.conv-msg-bbl{border-radius:14px;padding:8px 8px;font-size:12px;line-height:1.5}
+.conv-msg.agent .conv-msg-bbl{background:var(--accent);color:var(--fg);border-bottom-left-radius:3px}
+.conv-msg-bbl-hdr{font-size:8px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg);opacity:.5;margin-bottom:8px}
+.conv-msg.customer .conv-msg-bbl{background:var(--wash);color:var(--fg);border-bottom-right-radius:3px}
+.conv-msg-time{font-size:9px;color:var(--fg);opacity:.35;padding:0 4px}
+.conv-msg.agent .conv-msg-time{align-self:flex-start}
+.conv-msg.customer .conv-msg-time{align-self:flex-end}
+.conv-typing{align-self:flex-start;background:var(--accent);border-radius:14px;border-bottom-left-radius:3px;padding:8px 16px;display:flex;gap:4px;animation:convMsgIn .2s ease both}
+.conv-td{width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,.3);animation:convTdBounce 1.1s ease-in-out infinite}
+.conv-td:nth-child(2){animation-delay:.18s}
+.conv-td:nth-child(3){animation-delay:.36s}
+@keyframes convTdBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+.conv-outcome{margin:8px 8px 8px;border:1px solid var(--fg);border-radius:999px;padding:8px 16px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;animation:convOutcomePop .35s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0}
+@keyframes convOutcomePop{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+.conv-outcome.appointment{background:var(--accent);color:var(--fg)}
+.conv-outcome.handoff{background:var(--fg);color:var(--bg)}
+
+/* ── NEXT CARDS ── */
+.next-cards{display:grid;grid-template-columns:1fr 1fr;margin-top:clamp(32px,4vw,48px);border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
+@media(max-width:700px){.next-cards{grid-template-columns:1fr}}
+.next-card{padding:24px;border-bottom:1px solid var(--fg);border-right:1px solid var(--fg);display:flex;flex-direction:column;gap:16px}
+.next-card-emoji{font-size:32px;line-height:1}
+.next-card-title{font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em;max-width:none;width:100%}
+.next-card-body{font-size:14px;line-height:1.7;color:var(--fg)}
+
+/* ── TAKEAWAY GRID ── */
+.takes{margin-top:clamp(48px,6vw,80px);display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
+@media(max-width:700px){.takes{grid-template-columns:1fr}}
+.take{padding:24px;border-bottom:1px solid var(--fg);border-right:1px solid var(--fg)}
+.take-num{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-top:0;margin-bottom:16px}
+.take h3{
+  font-weight:700;
+  font-size:20px;
+  line-height:1.25;letter-spacing:-0.01em;max-width:none;width:100%;
+}
+.take p{margin-top:16px;max-width:60ch}
+
+/* ── FAQ ── */
+details{border-top:1px solid var(--line)}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{
+  cursor:pointer;list-style:none;padding-block:24px;
+  display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  font-size:20px;font-weight:700;letter-spacing:-0.01em;
+  transition:opacity 180ms ease;
+}
+summary::-webkit-details-marker{display:none}
+summary:hover{opacity:.5}
+summary .mk{font-size:20px;font-weight:300;flex-shrink:0;line-height:1}
+details .ans{padding-bottom:32px;max-width:60ch}
+
+/* ── TK FLAG ── */
+.tk{
+  display:inline-block;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--accent);color:var(--accent-fg);
+  border-radius:30px;padding:4px 8px;
+}
+.tk-line{
+  margin-top:24px;padding:24px 24px;
+  border:1px solid var(--fg);border-radius:16px;
+  font-size:14px;max-width:62ch;line-height:1.7;
+}
+
+/* ── CTA ── */
+
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero-top{grid-template-columns:1fr;gap:24px}
+  h1{max-width:14ch}
+}
+@media(max-width:700px){
+  .email-grid{grid-template-columns:1fr !important}
+  .wrap{padding:0 24px}
+  .site-nav{padding:16px 24px}
+  .nav-links{gap:16px}
+}
+
+/* ── SECTION MENU — sits in the left gutter, outside the content column ── */
+.secnav{
+  position:fixed;left:40px;top:128px;z-index:90;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity 320ms ease,transform 420ms cubic-bezier(0.16,1,0.3,1),visibility 320ms;
+  display:flex;flex-direction:column;align-items:flex-start;gap:16px;
+  width:190px;
+}
+.secnav a{
+  font-size:14px;line-height:1.25;text-align:left;
+  color:var(--fg);
+  transition:color 200ms ease;
+}
+.secnav.is-ready{opacity:1;visibility:visible;transform:none}
+.secnav a:hover{color:var(--fg)}
+.secnav a.is-on{color:var(--fg);font-weight:700}
+@media(max-width:1340px){.secnav{display:none}}
+@media(max-width:1340px) and (min-width:701px){.wrap{padding:0 80px}}
+@media(max-width:700px){.hero>.wrap,.footer-above .wrap,.site-footer .wrap{padding:0 24px}}
+
+/* ── FOOTER — same strip as the home page ── */
+.site-footer{position:relative;border-top:1px solid var(--fg);padding-block:40px 32px}
+/* the hero and the footer keep the site's regular gutter, not the case study's */
+.hero>.wrap,
+.footer-above .wrap,
+.site-footer .wrap{max-width:none;padding:0 32px}
+/* the shortcuts sit above the line, lit from behind by the glow */
+.footer-above{position:relative;padding-block:112px 32px}
+/* here the glow rests on the bottom edge, which is where the line runs */
+.footer-above .footer-glow{bottom:0}
+.footer-shortcuts{
+  position:relative;z-index:1;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;flex-wrap:wrap;
+}
+.footer-shortcuts a{font-size:14px;transition:opacity 180ms ease}
+.footer-shortcuts a:hover{opacity:.5}
+.footer-shortcuts .next{font-weight:500}
+.footer-row{
+  display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:16px;
+}
+.footer-links{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.footer-links a{font-size:14px;font-weight:400;position:relative}
+.footer-links a::after{
+  content:"";position:absolute;left:0;bottom:-6px;
+  height:6px;width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0.5 8 3 T16 3' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:16px 6px;
+  transition:width 250ms ease;
+}
+.footer-links a:hover::after{width:100%}
+.footer-right{display:flex;align-items:center;gap:16px}
+.footer-copy{font-size:14px;color:var(--muted)}
+.footer-cv{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:400;letter-spacing:.04em;
+  border:1px solid var(--fg);border-radius:30px;padding:8px 16px;
+  transition:background 220ms,border-color 220ms;
+}
+.footer-cv:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.footer-egg{width:100%;font-size:14px;color:var(--muted);margin-top:8px}
+
+/* ── FOOTER GLOW — a wide green fade resting on the footer line ── */
+.footer-glow{
+  position:absolute;left:0;right:0;bottom:100%;
+  width:100%;height:150px;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 54% 100% at 50% 100%,
+    color-mix(in srgb,var(--accent) 88%,transparent) 0%,
+    color-mix(in srgb,var(--accent) 62%,transparent) 26%,
+    color-mix(in srgb,var(--accent) 34%,transparent) 50%,
+    color-mix(in srgb,var(--accent) 12%,transparent) 70%,
+    color-mix(in srgb,var(--accent) 0%,transparent) 88%);
+}
+
+/* ── LEAD DECAY CHART ── */
+.lc{
+  margin-top:clamp(32px,4vw,48px);
+  --lc-dim:var(--fg);
+  --lc-grid:rgba(0,0,0,0.12);
+  --lc-border:rgba(0,0,0,0.3);
+  --lc-accent-fill:color-mix(in srgb,var(--accent) 28%,transparent);
+  --lc-muted-fill:var(--wash);
+  --lc-accent-ink:#3d5800;
+}
+/* the challenge headline and the chart's own title share one size */
+#problem h2.hdr{font-size:18px;line-height:1.4;letter-spacing:-0.005em;max-width:none;font-weight:400}
+.lc-title{font-size:18px;font-weight:400;line-height:1.35;letter-spacing:-0.005em;display:none}
+.lc-sub{
+  font-size:32px;font-weight:700;line-height:1.3;letter-spacing:-0.02em;
+  margin-top:16px;margin-bottom:clamp(32px,3.5vw,40px);max-width:34ch;
+}
+.lc-chart{
+  width:100%;height:auto;display:block;overflow:visible;cursor:crosshair;
+  font-family:'Red Hat Display',system-ui,sans-serif;
+}
+.lc-g{stroke:var(--lc-grid);stroke-width:1;fill:none}
+.lc-ax{stroke:var(--lc-border);stroke-width:1;fill:none}
+.lc-lbl{fill:var(--lc-dim)}
+.lc-crv{stroke:var(--fg);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.lc-fa{fill:var(--lc-accent-fill)}
+.lc-fm{fill:var(--lc-muted-fill)}
+.lc-vl{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 4;fill:none}
+.lc-dot{fill:var(--accent);stroke:var(--bg);stroke-width:2}
+.lc-tag{fill:var(--accent)}
+.lc-tm{font-size:13px;font-weight:700;fill:var(--accent-fg)}
+.lc-ts{font-size:11px;fill:color-mix(in srgb,var(--accent-fg) 65%,transparent)}
+.lc-zg{fill:var(--lc-accent-ink);font-size:13px;font-weight:700}
+.lc-zgs{fill:var(--lc-accent-ink);font-size:11px}
+.lc-zm{fill:var(--lc-dim);font-size:13px;font-weight:600}
+.lc-zms{fill:var(--lc-dim);font-size:11px}
+.lc-ann{fill:var(--fg);font-size:11px;font-weight:700}
+#lc-tip{
+  position:fixed;z-index:120;pointer-events:none;white-space:nowrap;
+  background:var(--fg);color:var(--bg);
+  font-family:'Red Hat Display',system-ui,sans-serif;
+  font-size:12px;font-weight:600;padding:8px 8px;border-radius:4px;
+  opacity:0;transition:opacity .15s;
+}
+.lc-fi{opacity:0}
+.lc.is-live .lc-fi{animation:lc-pop .4s ease forwards}
+@keyframes lc-pop{to{opacity:1}}
+
+.lc-stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:40px;text-align:center}
+.lc-stat{padding:16px 16px}
+.lc-sn{
+  font-size:40px;font-weight:700;
+  letter-spacing:-.03em;line-height:1;margin-bottom:8px;
+  font-variant-numeric:tabular-nums;
+}
+.lc-sl{font-size:14px;font-weight:400;color:var(--fg);line-height:1.45}
+@media(max-width:540px){.lc-stats{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){
+  .lc-fi{opacity:1;animation:none!important}
+  .lc-crv{stroke-dashoffset:0!important;animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+
+<nav class="secnav" aria-label="Sections">
+  <a href="#overview">Overview</a>
+  <a href="#problem">Challenge</a>
+  <a href="#research">Starting point</a>
+  <a href="#decisions">Solution</a>
+  <a href="#conversations">Craft</a>
+  <a href="#versions">Iteration</a>
+  <a href="#results">Outcomes</a>
+  <a href="#scale">Launch</a>
+  <a href="#data">Obstacle</a>
+  <a href="#next">What's next</a>
+  <a href="#learned">What I'd do differently</a>
+</nav>
+
+<header class="site-nav">
+  <a class="nav-name" href="portfolio-v6.html"><svg class="nav-star" width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.7063 0L6.37748 3.93431L9.23301 1.1459L7.46348 4.72333L11.4126 4.1459L7.8783 6L11.4126 7.8541L7.46348 7.27667L9.23301 10.8541L6.37748 8.06569L5.7063 12L5.03511 8.06569L2.17959 10.8541L3.94911 7.27667L-4.00543e-05 7.8541L3.5343 6L-4.00543e-05 4.1459L3.94911 4.72333L2.17959 1.1459L5.03511 3.93431L5.7063 0Z" fill="currentColor"/></svg>Ayelet Zwickler Ackerman</a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="navlink" href="portfolio-v6.html#work">Work</a>
+    <a class="navlink" href="portfolio-v6.html#about">About</a>
+    <a class="navlink" href="./Ayelet-Zwickler-CV.pdf" download>CV</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="overview">
+    <div class="wrap">
+      <div class="hero-top">
+        <div class="hero-left">
+          <h1>Lead Handling Agent</h1>
+
+          <p class="hook">I designed and shipped the first AI agent that sells cars on a dealership's behalf. In its first 30 days it
+            handled <span class="hl">5,435 leads with no human involved</span> and set 243 appointments.</p>
+
+          <div class="meta">
+            <div>
+              <p class="meta-k">Years</p>
+              <p class="meta-v">2025-2026</p>
+            </div>
+            <div>
+              <p class="meta-k">Role</p>
+              <p class="meta-v">Product Designer</p>
+            </div>
+            <div>
+              <p class="meta-k">Scope</p>
+              <p class="meta-v">0&rarr;1, Research, Agent Design, Code shipped to production</p>
+            </div>
+            <div>
+              <p class="meta-k">Platform</p>
+              <p class="meta-v">Web SaaS. complex.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-shot">
+          <img src="lead-handling-assets/design-your-agent-v3.png"
+               alt="Design Your Agent V3, the Agent Hub with Omni chat and the instructions panel">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROBLEM ── -->
+  <section id="problem">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Challenge</p>
+        <h2 class="hdr">Dealerships were spending millions to acquire leads and losing half of them before anyone picked up the phone. Leads go cold in minutes, not hours.</h2>
+      </div>
+
+      <div class="lc" id="lc">
+        <p class="lc-title" style="display:none"></p>
+        <h2 class="lc-sub">The moment a shopper submits a form, the probability of reaching them starts to collapse. Most BDC teams can't respond within the OEM's 10-minute window.</h2>
+
+        <svg class="lc-chart" id="lc-chart" viewBox="0 0 820 400" role="img"
+             aria-label="Decay curve: probability of reaching a lead drops sharply in the first 10 minutes after form submission"></svg>
+
+        <div class="lc-stats">
+          <div class="lc-stat">
+            <div class="lc-sn">50%</div>
+            <div class="lc-sl">of inbound leads lost before first contact</div>
+          </div>
+          <div class="lc-stat">
+            <div class="lc-sn">24%</div>
+            <div class="lc-sl">of leads ever reply to dealership outreach</div>
+          </div>
+          <div class="lc-stat">
+            <div class="lc-sn">$45K</div>
+            <div class="lc-sl">to train one new BDC employee</div>
+          </div>
+          <div class="lc-stat">
+            <div class="lc-sn">10 min</div>
+            <div class="lc-sl">to stay OEM compliant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="body">
+        <p>Fullpath's CDP already held rich profiles on every shopper: vehicle interest, past interactions, engagement signals. The opportunity was to connect that data to an agent that could act on it the moment a lead came in, 24/7, and hand off to a salesperson only when it actually mattered.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NO PLAYBOOK ── -->
+  <section id="research">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Starting point</p>
+        <h2 class="hdr">I started this in June 2025. Agent design was not a thing yet. There was nothing to reference.</h2>
+      </div>
+
+      <div class="body">
+        <p>So before designing anything, I visited beta dealerships in person — I wanted to see how people actually used the product. Three things changed everything.</p>
+      </div>
+
+      <div class="findings">
+        <div class="finding">
+          <p class="finding-num">Finding 01</p>
+          <p class="finding-title">The inbox was the interface</p>
+          <p class="finding-body">Managers weren't checking the dashboard. They lived in email. The product was solving for a workflow that wasn't theirs.</p>
+          <p class="finding-q">How do you make the handoff seamless for two completely different people?</p>
+        </div>
+        <div class="finding">
+          <p class="finding-num">Finding 02</p>
+          <p class="finding-title">Transparency, not replacement</p>
+          <p class="finding-body">Reps weren't afraid of the agent taking their job. They were afraid of not knowing what it had already said to the customer.</p>
+          <p class="finding-q">How do you build trust in an agent talking to strangers who do not know it is AI?</p>
+        </div>
+        <div class="finding">
+          <p class="finding-num">Finding 03</p>
+          <p class="finding-title">Control without language</p>
+          <p class="finding-body">Dealers wanted to customize agent behavior but couldn't describe how. They needed guided defaults — not a blank prompt box.</p>
+          <p class="finding-q">How do you let dealers shape the agent's behavior without letting them break it?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── THREE DECISIONS ── -->
+  <section id="decisions">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Solution</p>
+        <h2 class="hdr">Three decisions that shaped the product.</h2>
+      </div>
+    </div>
+
+    <div class="dec-outer">
+      <div class="dec-stage">
+      <div class="dec-cards">
+
+        <div class="dec-card">
+          <div class="dec-copy">
+            <p class="dec-num">Decision 01</p>
+            <h3 class="dec-title">The agent needed a name, a face, and a job title.</h3>
+            <p class="dec-body">We did not introduce it as AI. It joined the dealership as a named team member. Dealers chose the name, the avatar, the tone. Every message came from that identity — shoppers responded to a person, not a system.</p>
+          </div>
+          <div class="dec-img">
+            <img src="lead-handling-assets/agent-overview-settings.png" alt="Agent identity and sender configuration">
+          </div>
+        </div>
+
+        <div class="dec-card dec-card--full">
+          <div class="dec-copy">
+            <p class="dec-num">Decision 02</p>
+            <h3 class="dec-title">Visibility was the product, not a feature.</h3>
+            <p class="dec-body">The biggest anxiety managers had wasn't about the agent's performance — it was not knowing what it was saying on their behalf. I designed three layers so sales teams always knew exactly where every lead stood.</p>
+            <div class="dec-shot-row">
+              <img src="lead-handling-assets/email-needs-a-human.png" alt="Needs a human follow up alert">
+              <img src="lead-handling-assets/email-unresponsive-leads.png" alt="Unresponsive leads alert">
+              <img src="lead-handling-assets/email-appointment-set.png" alt="Appointment set email">
+              <img src="lead-handling-assets/email-daily-digest.png" alt="Daily email digest">
+            </div>
+          </div>
+        </div>
+
+        <div class="dec-card dec-card--wide-img">
+          <div class="dec-copy">
+            <p class="dec-num">Decision 03</p>
+            <h3 class="dec-title">Dealers needed to talk to the agent, not configure it.</h3>
+            <p class="dec-body">We tried giving dealers a text field to edit agent instructions directly — they'd overwrite compliance guardrails without realizing it. So Omni replaced configuration entirely: describe what you want in plain language, and the agent translates it.</p>
+          </div>
+          <div class="dec-img">
+            <img src="lead-handling-assets/design-your-agent-v3.png" alt="Omni translating a plain-language brief into agent instructions">
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONVERSATIONS ── -->
+  <section id="conversations">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Craft</p>
+        <h2 class="hdr">Real conversations handled autonomously 24/7, in the dealer's voice.</h2>
+      </div>
+
+      <div class="conv-layout">
+        <div class="conv-list" id="conv-list"></div>
+        <div class="conv-viewer">
+          <div class="conv-phone-wrap">
+            <div class="conv-phone-screen">
+              <div class="conv-ch">
+                <div class="conv-ch-ava">✦</div>
+                <div>
+                  <div class="conv-ch-name" id="conv-name"></div>
+                  <div class="conv-ch-sub">via Riley Jordan · SMS</div>
+                </div>
+              </div>
+              <div class="conv-msgs" id="conv-msgs"></div>
+              <div class="conv-outcome" id="conv-out" hidden></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── V1 V2 V3 ── -->
+  <section id="versions">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Iteration</p>
+        <h2 class="hdr">How Design Your Agent got to where it is.</h2>
+      </div>
+    </div>
+
+    <div class="ver-outer">
+      <div class="ver-stage">
+        <div class="ver-cards">
+
+          <div class="ver-card">
+            <div class="ver-copy">
+              <div class="ver-meta">
+                <span class="ver-tag">V1 &nbsp; No visibility</span>
+              </div>
+              <h3 class="ver-title">Controls with no window into agent behavior.</h3>
+            </div>
+            <div class="ver-img">
+              <img src="lead-handling-assets/design-your-agent-v1.png" alt="Design Your Agent V1">
+            </div>
+            <div class="ver-result-row">
+              <p class="ver-result"><strong>Result:</strong> Dealers felt accountable for outcomes they couldn't actually shape.</p>
+            </div>
+          </div>
+
+          <div class="ver-card">
+            <div class="ver-copy">
+              <div class="ver-meta">
+                <span class="ver-tag">V2 &nbsp; Layer leak</span>
+              </div>
+              <h3 class="ver-title">Visible behavior — but the system layer wasn't protected.</h3>
+            </div>
+            <div class="ver-img">
+              <img src="lead-handling-assets/design-your-agent-v2.png" alt="Design Your Agent V2">
+            </div>
+            <div class="ver-result-row">
+              <p class="ver-result"><strong>Result:</strong> Dealers edited default prompts directly. Agent contradicted itself.</p>
+            </div>
+          </div>
+
+          <div class="ver-card">
+            <div class="ver-copy">
+              <div class="ver-meta">
+                <span class="ver-tag ver-tag--shipped">V3 &nbsp; Shipped ✓</span>
+              </div>
+              <h3 class="ver-title">Plain language in. Guardrails stay invisible.</h3>
+            </div>
+            <div class="ver-img">
+              <img src="lead-handling-assets/design-your-agent-v3.png" alt="Design Your Agent V3">
+            </div>
+            <div class="ver-result-row">
+              <p class="ver-result"><strong>Result:</strong> Dealers describe how they sell. Omni translates. System layer is untouchable.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BETA RESULTS ── -->
+  <section id="results">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Outcomes</p>
+        <h2 class="hdr">5 dealerships. 30 days. Every single one set appointments and influenced sales.</h2>
+      </div>
+
+      <div class="stats three">
+        <div class="stat">
+          <p class="stat-n">5,435</p>
+          <p class="stat-l">leads handled without human involvement</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">243</p>
+          <p class="stat-l">appointments set</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">178</p>
+          <p class="stat-l">sales influenced</p>
+        </div>
+      </div>
+
+      <p class="stat-note">
+        Plus an 80%+ reduction in BDC workload on initial follow-up, and an average response time under 10 minutes on every
+        lead. Arapahoe Kia saw appointment rates go from 15.4% to 17.1% in the first 30 days after launch.
+      </p>
+
+      <div style="overflow:hidden; border-radius:12px;">
+        <img src="lead-handling-assets/performance-v1.png" alt="Performance dashboard during beta" style="width:100%; display:block; border-radius:12px; box-shadow: 0 2px 24px rgba(0,0,0,0.08);">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LAUNCH AND SCALE ── -->
+  <section id="scale">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Launch</p>
+        <h2 class="hdr">We went live in October 2025. The product kept evolving.</h2>
+      </div>
+
+      <div class="body">
+        <p>After beta we opened to paying customers and scaled. Alongside growth we shipped V3 of Design Your Agent, continued improving the LLM, and made dozens of smaller UX fixes based on what sales managers and reps were actually running into.</p>
+      </div>
+
+      <div class="tk-line">
+        <span class="tk">Numbers TK</span>
+        <br><br>
+        Paying customers, total leads handled, and total appointments set are still blank in the content doc.
+        Drop them in and this becomes the strongest stat row on the page.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DATA CHANGED DIRECTION ── -->
+  <section id="data">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Obstacle</p>
+        <h2 class="hdr">94% of page views happened in Conversations. Not Performance. Not Design Your Agent.</h2>
+      </div>
+
+      <div class="body">
+        <p>Users were living in Conversations. The trust problem wasn't a dashboard problem — it was a conversations problem. I mapped five user flows and found three that were critically broken, all with the same root cause: the gap between <em>something is happening</em> and <em>I understand it</em>.</p>
+      </div>
+
+      <div class="obs-block">
+        <p class="obs-label">Redesign 01</p>
+        <h3 class="obs-title">The conversation list became a command center.</h3>
+        <div>
+          <div class="obs-img-wrap">
+            <img src="lead-handling-assets/conversations-v2.png" alt="Redesigned conversation list">
+          </div>
+          <p class="obs-caption">1,500+ conversations, reorganized around what needs a human.</p>
+        </div>
+        <div class="obs-cols">
+          <div class="obs-col">
+            <p class="obs-col-title">Three tabs restructured the queue.</p>
+            <p class="obs-col-body">All, Needs You, AI Active. Urgent vs. routine, visible at a glance — without searching.</p>
+          </div>
+          <div class="obs-col">
+            <p class="obs-col-title">Every conversation has an Omni summary.</p>
+            <p class="obs-col-body">One AI-generated line answers why this needs your attention, so reps don't have to read the whole thread.</p>
+          </div>
+          <div class="obs-col">
+            <p class="obs-col-title">Every control surfaced.</p>
+            <p class="obs-col-body">Numbers, channels, per-lead AI mode — Full, Reactive, Off. Explicit, not buried. Trust in AI requires transparency.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="obs-block">
+        <p class="obs-label">Redesign 02</p>
+        <h3 class="obs-title">Performance became a conversation too.</h3>
+        <div>
+          <div class="obs-img-wrap">
+            <img src="lead-handling-assets/agent-performance-dashboard-v2.png" alt="Redesigned performance dashboard">
+          </div>
+          <p class="obs-caption">Four numbers. Everything else is a question.</p>
+        </div>
+        <div class="obs-cols">
+          <div class="obs-col">
+            <p class="obs-col-title">Stripped to four numbers.</p>
+            <p class="obs-col-body">Stopping the Clock, Avg Response Time, Appt Set Rate, After-Hours Leads — each compared to the previous period.</p>
+          </div>
+          <div class="obs-col">
+            <p class="obs-col-title">Everything else moved into Omni.</p>
+            <p class="obs-col-body">GMs ask in plain language; Omni pulls the data. Suggested questions replaced the sections we removed — and solved onboarding almost by accident.</p>
+          </div>
+          <div class="obs-col">
+            <p class="obs-col-title">One interface, two mental models.</p>
+            <p class="obs-col-body">Reps track individual conversations. GMs ask questions about the whole team. Omni handles both without switching screens.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHAT'S NEXT ── -->
+  <section id="next">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">What's next</p>
+        <h2 class="hdr">The agent is learning to pick up the phone.</h2>
+      </div>
+
+      <div class="next-cards">
+        <div class="next-card">
+          <span class="next-card-emoji">📞</span>
+          <p class="next-card-title">The agent picks up the phone.</p>
+          <p class="next-card-body">Voice is where the highest-intent conversations happen. We are building a voice agent that answers inbound calls, handles full AI phone conversations, and escalates when it needs to. Already in beta with one client.</p>
+        </div>
+        <div class="next-card">
+          <span class="next-card-emoji">🔁</span>
+          <p class="next-card-title">The window extends past day 13.</p>
+          <p class="next-card-body">Re-engaging shoppers who missed appointments, following up after a sale. The agent handled the first contact window. Next is everything that comes after.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHAT I'D DO DIFFERENTLY ── -->
+  <section id="learned">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">What I'd do differently</p>
+      </div>
+
+      <div class="takes">
+        <div class="take">
+          <p class="take-num">01</p>
+          <h3>Giving dealers partial control was sometimes worse than giving them none.</h3>
+          <p>V2 felt like the right call. Dealers could see the system behavior and add their own layer on top. But some started editing the defaults, which broke things in ways they could not predict. They felt responsible for the agent's behavior without actually having the right tools to shape it. I should have tested the line between visibility and editability much earlier.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">02</p>
+          <h3>The email was the real product for most managers, and I did not treat it that way.</h3>
+          <p>I built the dashboard as the primary experience and the email as a notification. Visiting dealerships made it obvious that managers were living in their inbox. If I started over, I would design the email digest first and build the platform as the deeper layer.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">03</p>
+          <h3>I would measure trust, not just conversion.</h3>
+          <p>We tracked appointments and revenue. We did not track how often reps let the agent continue versus stepping in themselves. That number would have told us much more about whether the handoff design was actually working.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">04</p>
+          <h3>We never heard from the shoppers.</h3>
+          <p>We measured everything from the dealer's side. The moment that stuck with me most from beta was when an agent booked an appointment with no human involvement and the customer felt personally taken care of. We validated the outcome but never went deeper. Understanding how shoppers experienced the agent would have made every trust decision sharper.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+</main>
+
+<div id="lc-tip" aria-hidden="true"></div>
+
+<div class="footer-above">
+  <span class="footer-glow" aria-hidden="true"></span>
+  <div class="wrap">
+    <div class="footer-shortcuts">
+      <a href="portfolio-v6.html#work">&larr; All work</a>
+      <a class="next" href="case-agentic-crm.html">Next: Agentic CRM &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-row">
+      <div class="footer-links">
+        <a href="mailto:ayelet441@gmail.com">ayelet441@gmail.com</a>
+        <a href="tel:+972523501243">052-350-1243</a>
+        <a href="https://linkedin.com/in/ayelet-zwickler" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="footer-right">
+        <span class="footer-copy">&copy; 2026</span>
+        <a href="./Ayelet-Zwickler-CV.pdf" download class="footer-cv">Download CV &darr;</a>
+      </div>
+      <p class="footer-egg">Thanks for being here. Seriously. I made this whole thing and sometimes I wonder if anyone actually reads it. You do. You're the best. &#10084;&#65039;</p>
+    </div>
+  </div>
+</footer>
+
+<!-- lightbox -->
+<div id="img-lb" role="dialog" aria-modal="true" aria-label="Image preview" tabindex="-1">
+  <button id="img-lb-close" aria-label="Close">&#x2715;</button>
+  <img id="img-lb-img" src="" alt="">
+</div>
+<!-- zoom cursor -->
+<div id="img-zoom-cursor" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="7"/>
+    <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+  </svg>
+</div>
+
+<script>
+// Scroll progress + nav background
+(function(){
+  var bar = document.getElementById('progress');
+  var nav = document.querySelector('.site-nav');
+  var raf = null;
+  function update(){
+    raf = null;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+    if(bar) bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    if(nav) nav.classList.toggle('is-scrolled', window.scrollY > 24);
+  }
+  window.addEventListener('scroll', function(){
+    if(raf === null) raf = requestAnimationFrame(update);
+  }, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+
+
+// ── LEAD DECAY CHART ──
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var box = document.getElementById('lc');
+  var svg = document.getElementById('lc-chart');
+  var tip = document.getElementById('lc-tip');
+  if (!box || !svg) return;
+
+  /* ── Layout ── */
+  var ML=68, MR=52, MT=44, MB=56, W=820, H=400;
+  var CW = W-ML-MR;   // 700
+  var CH = H-MT-MB;   // 300
+  var BT = MT+CH;     // 344
+
+  /* ── Data: [minutes, % contact probability] ── */
+  /* Chart shows first 30 min — where the story happens.
+     After 30 min the curve continues down to <2% at 2 hours. */
+  var DATA = [
+    [0,100],[1,90],[2,80],[3,71],[5,56],
+    [7,45],[10,32],[15,22],[20,16],[30,10]
+  ];
+  var MAX_T = 30;
+
+  function tx(t){ return ML + (t/MAX_T)*CW; }
+  function ty(p){ return MT + CH - (p/100)*CH; }
+  function f(n){ return n.toFixed(2); }
+
+  /* Key coords */
+  var T10x = tx(10);
+  var T10y = ty(32);
+  var pts  = DATA.map(function(d){ return [tx(d[0]), ty(d[1])]; });
+
+  /* ── SVG helpers ── */
+  function mk(tag, cls, attrs){ return inG(svg, tag, cls, attrs); }
+  function inG(g, tag, cls, attrs){
+    var e = document.createElementNS(NS, tag);
+    if (cls) e.setAttribute('class', cls);
+    for (var k in (attrs||{})) e.setAttribute(k, attrs[k]);
+    g.appendChild(e);
+    return e;
+  }
+  function txt(el, str){ el.textContent = str; return el; }
+
+  /* ── Catmull-Rom → cubic bezier ── */
+  function smooth(pts, tension){
+    tension = tension || 0.38;
+    var d = 'M ' + f(pts[0][0]) + ' ' + f(pts[0][1]);
+    for (var i=0; i<pts.length-1; i++){
+      var p0=pts[Math.max(0,i-1)], p1=pts[i], p2=pts[i+1], p3=pts[Math.min(pts.length-1,i+2)];
+      d += ' C ' + f(p1[0]+(p2[0]-p0[0])*tension) + ' ' + f(p1[1]+(p2[1]-p0[1])*tension) +
+           ' '   + f(p2[0]-(p3[0]-p1[0])*tension) + ' ' + f(p2[1]-(p3[1]-p1[1])*tension) +
+           ' '   + f(p2[0]) + ' ' + f(p2[1]);
+    }
+    return d;
+  }
+
+  /* ── 1. Y grid + labels ── */
+  [0,25,50,75,100].forEach(function(p){
+    var y = ty(p);
+    mk('line','lc-g',{x1:ML,y1:y,x2:W-MR,y2:y});
+    txt(mk('text','lc-lbl',{x:ML-8,y:y+4,'text-anchor':'end','font-size':11}), p+'%');
+  });
+
+  /* ── 2. X axis + ticks ── */
+  mk('line','lc-ax',{x1:ML,y1:BT,x2:W-MR,y2:BT});
+  [0,5,10,15,20,30].forEach(function(t){
+    var x=tx(t);
+    mk('line','lc-ax',{x1:x,y1:BT,x2:x,y2:BT+5});
+    txt(mk('text','lc-lbl',{x:x,y:BT+17,'text-anchor':'middle','font-size':11}), t+'m');
+  });
+
+  /* ── 3. Axis labels ── */
+  txt(mk('text','lc-lbl',{x:ML,y:MT-22,'font-size':11}), 'Chance of reaching the lead (%)');
+  txt(mk('text','lc-lbl',{x:(ML+W-MR)/2,y:H-4,'text-anchor':'middle','font-size':11}),
+      'Time since shopper submitted a form');
+
+  /* ── 4. Tail note — right edge ── */
+  var tailG = mk('g',null,{});
+  var tailX = W-MR, tailY = ty(10);
+  inG(tailG,'line',null,{x1:tailX,y1:tailY,x2:tailX+8,y2:tailY,
+    stroke:'var(--lc-dim)','stroke-width':1,'stroke-dasharray':'3 2'});
+  txt(inG(tailG,'text','lc-lbl',{x:tailX+12,y:tailY+4,'font-size':11}), '→ drops to');
+  txt(inG(tailG,'text','lc-lbl',{x:tailX+12,y:tailY+17,'font-size':11}), '<2% by 2h');
+
+  /* ── 5. Area fills ── */
+  var gPts = DATA.filter(function(d){return d[0]<=10;}).map(function(d){return [tx(d[0]),ty(d[1])];});
+  var gLast = gPts[gPts.length-1];
+  mk('path','lc-fa',{d: smooth(gPts)+' L '+f(gLast[0])+' '+f(BT)+' L '+f(ML)+' '+f(BT)+' Z'});
+
+  var mPts = DATA.filter(function(d){return d[0]>=10;}).map(function(d){return [tx(d[0]),ty(d[1])];});
+  mk('path','lc-fm',{d: smooth(mPts)+' L '+f(tx(30))+' '+f(BT)+' L '+f(T10x)+' '+f(BT)+' Z'});
+
+  /* ── 6. Zone labels (fade in after curve draws) ── */
+  var zg = mk('g','lc-fi',{});
+  zg.style.animationDelay = '2.1s';
+
+  var gMidX = (ML + T10x) / 2;
+  txt(inG(zg,'text','lc-zg',{x:gMidX,y:MT+28,'text-anchor':'middle'}), 'OEM window');
+  txt(inG(zg,'text','lc-zgs',{x:gMidX,y:MT+43,'text-anchor':'middle'}), 'Act within 10 min');
+
+  var mMidX = (T10x + W-MR) / 2;
+  txt(inG(zg,'text','lc-zm',{x:mMidX,y:MT+28,'text-anchor':'middle'}), 'Lead going cold');
+  txt(inG(zg,'text','lc-zms',{x:mMidX,y:MT+43,'text-anchor':'middle'}), 'Chance of contact drops fast');
+
+  /* ── 7. Curve (animated draw) ── */
+  var curve = mk('path','lc-crv',{d: smooth(pts)});
+
+  /* ── 8. Start annotation — "Form submitted" ── */
+  var sg = mk('g','lc-fi',{});
+  sg.style.animationDelay = '1.6s';
+  inG(sg,'circle',null,{cx:ML,cy:ty(100),r:5,fill:'var(--fg)',stroke:'var(--bg)','stroke-width':2});
+  txt(inG(sg,'text','lc-ann',{x:ML+10,y:ty(100)-8}), 'Form submitted → 100%');
+
+  /* ── 9. 10-min marker group ── */
+  var mg = mk('g','lc-fi',{});
+  mg.style.animationDelay = '1.8s';
+  inG(mg,'line','lc-vl',{x1:T10x,y1:MT,x2:T10x,y2:BT});
+
+  var TX = T10x + 12, TY = T10y + 14, TW = 186, TH = 44;
+  inG(mg,'rect','lc-tag',{x:TX,y:TY,width:TW,height:TH,rx:4});
+  txt(inG(mg,'text','lc-tm',{x:TX+10,y:TY+17}), 'OEM deadline: 10 minutes');
+  txt(inG(mg,'text','lc-ts',{x:TX+10,y:TY+33}), 'Only 32% chance of contact left');
+  inG(mg,'circle','lc-dot',{cx:T10x,cy:T10y,r:5.5});
+
+  /* ── draw when the section reaches the viewport ── */
+  function run(){
+    box.classList.add('is-live');
+    var len = curve.getTotalLength();
+    curve.style.strokeDasharray = len;
+    curve.style.strokeDashoffset = len;
+    curve.getBoundingClientRect();
+    curve.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1) .3s';
+    curve.style.strokeDashoffset = 0;
+  }
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(en){
+      if (en[0].isIntersecting){ run(); io.disconnect(); }
+    }, {threshold:0.25});
+    io.observe(box);
+  } else { run(); }
+
+  /* ── 10. Hover tooltip ── */
+  if (!tip || !window.matchMedia('(hover:hover)').matches) return;
+
+  function probAt(t){
+    if (t<=DATA[0][0]) return DATA[0][1];
+    if (t>=DATA[DATA.length-1][0]) return DATA[DATA.length-1][1];
+    for (var i=0;i<DATA.length-1;i++){
+      if (t>=DATA[i][0] && t<=DATA[i+1][0]){
+        var r=(t-DATA[i][0])/(DATA[i+1][0]-DATA[i][0]);
+        return DATA[i][1]+(DATA[i+1][1]-DATA[i][1])*r;
+      }
+    }
+    return 0;
+  }
+
+  var xhV   = mk('line','lc-vl',{x1:0,y1:MT,x2:0,y2:BT,'stroke-dasharray':'none',opacity:0});
+  var xhDot = mk('circle','lc-dot',{cx:0,cy:0,r:4.5,opacity:0});
+
+  svg.addEventListener('pointermove', function(e){
+    var bbox = svg.getBoundingClientRect();
+    var mouseX = (e.clientX - bbox.left) * (W / bbox.width);
+
+    if (mouseX < ML || mouseX > W-MR){
+      xhV.setAttribute('opacity',0);
+      xhDot.setAttribute('opacity',0);
+      tip.style.opacity=0;
+      return;
+    }
+
+    var t = ((mouseX-ML)/CW)*MAX_T;
+    if (t<0||t>MAX_T) return;
+    var p = probAt(t);
+
+    xhV.setAttribute('x1',mouseX); xhV.setAttribute('x2',mouseX);
+    xhV.setAttribute('opacity',0.4);
+    xhDot.setAttribute('cx',mouseX); xhDot.setAttribute('cy',ty(p));
+    xhDot.setAttribute('opacity',1);
+
+    tip.textContent = Math.round(t)+'m after submission · '+p.toFixed(0)+'% chance of contact';
+    tip.style.opacity=1;
+    tip.style.left = (e.clientX+12)+'px';
+    tip.style.top  = (e.clientY-28)+'px';
+  });
+
+  svg.addEventListener('pointerleave', function(){
+    xhV.setAttribute('opacity',0);
+    xhDot.setAttribute('opacity',0);
+    tip.style.opacity=0;
+  });
+})();
+
+// FAQ marker swap
+(function(){
+  var items = document.querySelectorAll('details');
+  for(var i = 0; i < items.length; i++){
+    (function(d){
+      d.addEventListener('toggle', function(){
+        var mk = d.querySelector('.mk');
+        if(mk) mk.textContent = d.open ? '−' : '+';
+      });
+    })(items[i]);
+  }
+})();
+
+// Section menu: mark where the reader is, jump on click
+(function(){
+  var nav=document.querySelector('.secnav');
+  if(!nav) return;
+  var links=Array.prototype.slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  var raf=null,cur=-1;
+
+  var hero=document.getElementById('overview');
+
+  function update(){
+    raf=null;
+    // the menu only joins once the hero has scrolled by
+    if(hero) nav.classList.toggle('is-ready', window.scrollY > hero.offsetTop+hero.offsetHeight-180);
+    else nav.classList.add('is-ready');
+    var y=window.scrollY+Math.min(200,window.innerHeight*0.3);
+    var i=0;
+    secs.forEach(function(s,k){ if(s&&s.offsetTop<=y) i=k; });
+    if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4) i=secs.length-1;
+    if(i===cur) return;
+    cur=i;
+    links.forEach(function(a,k){
+      a.classList.toggle('is-on',k===i);
+      if(k===i){ a.setAttribute('aria-current','true'); } else { a.removeAttribute('aria-current'); }
+    });
+  }
+  window.addEventListener('scroll',function(){ if(raf===null) raf=requestAnimationFrame(update); },{passive:true});
+  window.addEventListener('resize',update);
+
+  links.forEach(function(a,k){
+    a.addEventListener('click',function(e){
+      var sec=secs[k];
+      if(!sec) return;
+      e.preventDefault();
+      window.scrollTo({top:sec.offsetTop+1,behavior:'smooth'});
+      history.replaceState(null,'',a.getAttribute('href'));
+    });
+  });
+  update();
+})();
+
+/* ── IMAGE LIGHTBOX + ZOOM CURSOR ── */
+(function(){
+  var lb=document.getElementById('img-lb');
+  var lbImg=document.getElementById('img-lb-img');
+  var lbClose=document.getElementById('img-lb-close');
+  var cur=document.getElementById('img-zoom-cursor');
+  if(!lb||!lbImg||!lbClose||!cur) return;
+
+  function isZoomable(el){
+    return el&&el.tagName==='IMG'&&!el.closest('.hero-shot')&&el.id!=='img-lb-img'&&!el.closest('#img-lb');
+  }
+
+  /* use elementFromPoint so it works regardless of inert/z-index */
+  document.addEventListener('pointermove',function(e){
+    cur.style.left=e.clientX+'px';
+    cur.style.top=e.clientY+'px';
+    var el=document.elementFromPoint(e.clientX,e.clientY);
+    cur.classList.toggle('is-on',isZoomable(el));
+  },{passive:true});
+
+  function openLb(img){
+    lbImg.src=img.src;
+    lbImg.alt=img.alt||'';
+    lb.classList.add('is-open');
+    cur.classList.remove('is-on');
+    document.body.style.overflow='hidden';
+  }
+  function closeLb(){
+    lb.classList.remove('is-open');
+    document.body.style.overflow='';
+  }
+  lbClose.addEventListener('click',closeLb);
+  lb.addEventListener('pointerdown',function(e){ if(e.target===lb) closeLb(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&lb.classList.contains('is-open')) closeLb(); });
+
+  /* document-level click so it fires even if slide just became active */
+  document.addEventListener('click',function(e){
+    if(lb.classList.contains('is-open')) return;
+    if(isZoomable(e.target)) openLb(e.target);
+  });
+
+  /* cursor:none on all zoomable images */
+  var allImgs=Array.prototype.slice.call(document.querySelectorAll('img'));
+  allImgs.forEach(function(img){
+    if(isZoomable(img)) img.style.cursor='none';
+  });
+})();
+
+/* ── DECISION CARDS — vertical scroll → horizontal pan ── */
+(function(){
+  var sec=document.getElementById('decisions');
+  var outer=sec&&sec.querySelector('.dec-outer');
+  var stage=outer&&outer.querySelector('.dec-stage');
+  var track=stage&&stage.querySelector('.dec-cards');
+  if(!outer||!stage||!track) return;
+
+  var pinned=window.matchMedia('(min-width:901px)');
+  var raf=null;
+
+  function setup(){
+    if(!pinned.matches){
+      outer.style.height='';
+      track.style.transform='';
+      return;
+    }
+    var dist=Math.max(0,track.scrollWidth-stage.offsetWidth);
+    outer.style.height=(dist+window.innerHeight)+'px';
+  }
+
+  function update(){
+    raf=null;
+    if(!pinned.matches) return;
+    var dist=Math.max(0,track.scrollWidth-stage.offsetWidth);
+    var travel=outer.offsetHeight-window.innerHeight;
+    var p=travel>0?Math.max(0,Math.min(1,-outer.getBoundingClientRect().top/travel)):0;
+    track.style.transform='translateX('+(-p*dist)+'px)';
+  }
+
+  function onScroll(){
+    if(raf) return;
+    raf=requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){ setup(); update(); });
+  pinned.addEventListener('change',function(){ setup(); update(); });
+
+  if(document.readyState==='complete'){ setup(); update(); }
+  else{ window.addEventListener('load',function(){ setup(); update(); }); setup(); update(); }
+})();
+
+/* ── VERSION CARDS — vertical scroll → horizontal pan ── */
+(function(){
+  var sec=document.getElementById('versions');
+  var outer=sec&&sec.querySelector('.ver-outer');
+  var stage=outer&&outer.querySelector('.ver-stage');
+  var track=stage&&stage.querySelector('.ver-cards');
+  if(!outer||!stage||!track) return;
+
+  var pinned=window.matchMedia('(min-width:901px)');
+  var raf=null;
+
+  function setup(){
+    if(!pinned.matches){
+      outer.style.height='';
+      track.style.transform='';
+      return;
+    }
+    var dist=Math.max(0,track.scrollWidth-stage.offsetWidth);
+    outer.style.height=(dist+window.innerHeight)+'px';
+  }
+
+  function update(){
+    raf=null;
+    if(!pinned.matches) return;
+    var dist=Math.max(0,track.scrollWidth-stage.offsetWidth);
+    var travel=outer.offsetHeight-window.innerHeight;
+    var p=travel>0?Math.max(0,Math.min(1,-outer.getBoundingClientRect().top/travel)):0;
+    track.style.transform='translateX('+(-p*dist)+'px)';
+  }
+
+  function onScroll(){
+    if(raf) return;
+    raf=requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){ setup(); update(); });
+  pinned.addEventListener('change',function(){ setup(); update(); });
+
+  if(document.readyState==='complete'){ setup(); update(); }
+  else{ window.addEventListener('load',function(){ setup(); update(); }); setup(); update(); }
+})();
+
+/* ── CONVERSATIONS ── */
+(function(){
+const convos=[
+  {id:'sarah',tag:'Complex Buyer',desc:'Four hard requirements at once. The agent is honest about what it can\'t confirm without a VIN.',outcome:'Appointment set · Sep 26 at 2:00 PM',outcomeType:'appointment',customer:'Sarah Mitchell',msgs:[
+    {from:'agent',text:'Hi Sarah, Riley Jordan from Arapahoe Kia here. I saw you reached out about the 2026 Kia EV9 Wind AWD. It\'s not currently available, but I\'d be happy to help find another great option. What can I assist with?',time:'4:41 PM'},
+    {from:'customer',text:'Good morning, we are looking for an electric to combine the Sam\'s Club auto deals, had to be able to get roof rails, hitch, dual memory seats, ventilated seats',time:'4:43 PM'},
+    {from:'agent',text:'Good morning, Sarah. I found EVs at Arapahoe Kia, but roof rails, hitch, dual-memory seats, and Sam\'s Club eligibility need exact-VIN verification. Which should we verify first?',time:'4:43 PM'},
+    {from:'customer',text:'The wind please. Love that color. Would really like the tan interior if possible',time:'4:45 PM'},
+    {from:'agent',text:'The Ocean Blue color is available on two 2026 EV9 Wind AWD options. Both list gray interiors, not tan. I want to verify the exact VIN equipment and Sam\'s Club eligibility with our team before stating those details as fact.',time:'4:45 PM'},
+    {from:'customer',text:'Great. We are scheduling test drives for today',time:'4:46 PM'},
+    {from:'agent',text:'Perfect, Sarah. I have 2:00 PM today available for both the EV9 Wind and EV6 AWD test drives at Arapahoe Kia. Does that time work?',time:'5:26 PM'},
+    {from:'customer',text:'I will say yes and if anything changes I will message you',time:'5:26 PM'},
+    {from:'agent',text:'Thanks, Sarah! You\'re confirmed for today, September 26, at 2:00 PM. Just message me if anything changes.',time:'5:27 PM'},
+  ]},
+  {id:'james',tag:'Trade-in',desc:'First reply to confirmed appointment in two exchanges — under six minutes.',outcome:'Appointment set · Oct 3 at 3:00 PM',outcomeType:'appointment',customer:'James Cooper',msgs:[
+    {from:'agent',text:'Hi James, Riley Jordan from Arapahoe Kia here. I saw you reached out about the 2024 Toyota Corolla LE. It\'s available. How can I make your car search easier today?',time:'9:25 PM'},
+    {from:'customer',text:'Yes I was looking into trading in my car today',time:'9:30 PM'},
+    {from:'agent',text:'Absolutely, James. You can get a trade-in estimate online. We can also review your car in person today. Would 3 PM work for you?',time:'9:30 PM'},
+    {from:'customer',text:'Yes that works',time:'9:31 PM'},
+    {from:'agent',text:'Great, James — I\'ll see you today, October 3, at 3:00 PM at Arapahoe Kia. We\'ll take a look at your trade and the Corolla.',time:'9:31 PM'},
+  ]},
+  {id:'alex',tag:'Seller',desc:'Not a buyer. The agent negotiates scheduling without pressure.',outcome:'Appointment set · Oct 1 at 3:00 PM',outcomeType:'appointment',customer:'Alex Rivera',msgs:[
+    {from:'agent',text:'Hi Alex, Riley Jordan from Arapahoe Kia here. I saw you reached out today. How can I help make things easier for you?',time:'10:14 PM'},
+    {from:'customer',text:'I would like to schedule an inspection to sell',time:'10:15 PM'},
+    {from:'agent',text:'Hi Alex, I can help with that. I have today, Sept. 29, at 3:30 PM available for your inspection. Would that work?',time:'10:16 PM'},
+    {from:'customer',text:'Do you have anything available tomorrow after 5 or Thursday at all?',time:'10:17 PM'},
+    {from:'agent',text:'I have Wednesday, Sept. 30 at 5:00 PM available. Would that work, or would you prefer Thursday?',time:'10:17 PM'},
+    {from:'customer',text:'Thursday would be better',time:'10:18 PM'},
+    {from:'agent',text:'Thursday, Oct. 1 at 3:00 PM works for an inspection. Our address is 9701 E. Arapahoe Rd., Centennial.',time:'10:19 PM'},
+    {from:'customer',text:'Yes it does. thank you!',time:'10:20 PM'},
+    {from:'agent',text:'You\'re all set, Alex — Thursday, Oct. 1 at 3:00 PM at Arapahoe Kia. You\'re welcome!',time:'10:20 PM'},
+  ]},
+  {id:'marcus',tag:'Needs a Human',desc:'A Tesla at a Kia dealer. The agent hits its limit and hands off without losing the lead.',outcome:'Escalated to sales manager',outcomeType:'handoff',customer:'Marcus Webb',msgs:[
+    {from:'agent',text:'Hi Marcus, Riley Jordan from Arapahoe Kia here. I saw you reached out on Cars.com today. How can I help make your car search easier?',time:'4:49 AM'},
+    {from:'customer',text:'Hey Riley! I\'m looking to ideally trade into a Tesla, probably model 3. Do you guys have any in inventory?',time:'5:00 AM'},
+    {from:'agent',text:'Looks like we don\'t have a Tesla Model 3 in our current inventory, but I can have a sales rep look into options to accommodate your trade request. Would you like them to reach out by text?',time:'5:01 AM'},
+    {from:'customer',text:'That would be great!',time:'5:14 AM'},
+    {from:'agent',text:'Absolutely, Marcus. I\'ll have a sales manager reach out by text as soon as possible. Is there a specific time you prefer, or does any time work?',time:'5:14 AM'},
+    {from:'customer',text:'Whenever is easiest is fine with me!',time:'5:15 AM'},
+    {from:'agent',text:'Thanks, Marcus! I\'ll let the sales manager know any time works and ask them to follow up as soon as they\'re able.',time:'5:15 AM'},
+    {from:'customer',text:'Great, thanks Riley!',time:'5:26 AM'},
+    {from:'agent',text:'You\'re welcome, Marcus! I\'ll pass that along so the sales manager can follow up by text.',time:'5:26 AM'},
+  ]},
+];
+
+const listEl=document.getElementById('conv-list');
+const msgsEl=document.getElementById('conv-msgs');
+const outEl=document.getElementById('conv-out');
+const nameEl=document.getElementById('conv-name');
+if(!listEl||!msgsEl) return;
+
+let runId=0, activeId=null;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const typingMs=t=>Math.min(1300,Math.max(550,t.length*16));
+function escH(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+convos.forEach(function(c){
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='conv-row';
+  btn.dataset.id=c.id;
+  btn.innerHTML='<div class="conv-row-head"><span class="conv-row-tag">'+c.tag+'</span><span class="conv-row-arrow" aria-hidden="true">\u2192</span></div><p class="conv-row-desc">'+c.desc+'</p>';
+  btn.addEventListener('click',function(){select(c.id)});
+  listEl.appendChild(btn);
+});
+
+function addMsg(m){
+  const d=document.createElement('div');d.className='conv-msg '+m.from;
+  const bbl=document.createElement('div');bbl.className='conv-msg-bbl';
+  if(m.from==='agent'){bbl.innerHTML='<div class="conv-msg-bbl-hdr">\u2726 Riley Jordan \u00b7 Lead Handling Agent</div>'+escH(m.text)}
+  else{bbl.textContent=m.text}
+  const t=document.createElement('div');t.className='conv-msg-time';t.textContent=m.time;
+  d.appendChild(bbl);d.appendChild(t);msgsEl.appendChild(d);
+  msgsEl.scrollTop=msgsEl.scrollHeight;
+}
+function showTyping(){
+  const d=document.createElement('div');d.className='conv-typing';
+  d.innerHTML='<div class="conv-td"></div><div class="conv-td"></div><div class="conv-td"></div>';
+  msgsEl.appendChild(d);msgsEl.scrollTop=msgsEl.scrollHeight;return d;
+}
+
+async function select(id){
+  const c=convos.find(x=>x.id===id);
+  if(!c) return;
+  activeId=id;
+  const mine=++runId;
+  listEl.querySelectorAll('.conv-row').forEach(function(r){
+    r.classList.toggle('is-active',r.dataset.id===id);
+  });
+  nameEl.textContent=c.customer;
+  msgsEl.innerHTML='';
+  outEl.hidden=true;
+  outEl.className='conv-outcome '+c.outcomeType;
+  outEl.textContent=c.outcome;
+  for(let i=0;i<c.msgs.length;i++){
+    const m=c.msgs[i];
+    if(m.from==='agent'){
+      const dot=showTyping();
+      await sleep(typingMs(m.text));
+      if(mine!==runId) return;
+      dot.remove();
+    }
+    if(mine!==runId) return;
+    addMsg(m);
+    if(i<c.msgs.length-1){
+      await sleep(460);
+      if(mine!==runId) return;
+    }
+  }
+  await sleep(450);
+  if(mine!==runId) return;
+  outEl.hidden=false;
+  msgsEl.scrollTop=msgsEl.scrollHeight;
+}
+
+let started=false;
+const sec=document.getElementById('conversations');
+const io_=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting&&!started){started=true;select(convos[0].id);io_.disconnect()}
+  });
+},{threshold:0.2});
+if(sec) io_.observe(sec);
+else select(convos[0].id);
+})();
+
+</script>
+</body>
+</html>

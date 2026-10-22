@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ayelet Zwickler Ackerman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.className+=' js';</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#FFFFFF;
+  --fg:#000000;
+  --muted:#000000;
+  --line:rgba(0,0,0,0.1);
+  --accent:#ADFF2F;
+  --accent-fg:#000000;
+  color-scheme:light;
+}
+
+html,body{height:100%;background:var(--bg);color:var(--fg)}
+body{
+  font-family:'Red Hat Display',system-ui,sans-serif;
+  font-weight:400;font-size:14px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+*{font-style:normal}
+a{color:inherit;text-decoration:none}
+input,button{font:inherit;color:inherit;background:none;border:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+
+/* ── NAV ── */
+.site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 28px;pointer-events:none;
+  transition:background 300ms ease,backdrop-filter 300ms ease,-webkit-backdrop-filter 300ms ease;
+}
+.site-nav.is-scrolled{
+  background:color-mix(in srgb,var(--bg) 60%,transparent);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  backdrop-filter:blur(16px) saturate(1.3);
+}
+.site-nav *{pointer-events:auto}
+.nav-name{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:400}
+.nav-star{flex-shrink:0;transition:transform 700ms cubic-bezier(0.16,1,0.3,1),color 240ms ease}
+.nav-name:hover .nav-star,
+.nav-name:focus-visible .nav-star{transform:rotate(360deg);color:var(--accent)}
+.nav-name-text{
+  background-image:linear-gradient(100deg,var(--fg) 0 40%,var(--accent) 50%,var(--fg) 60% 100%);
+  background-size:280% 100%;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+}
+.nav-name:hover .nav-name-text,
+.nav-name:focus-visible .nav-name-text{animation:nav-shine 900ms cubic-bezier(0.33,1,0.68,1) forwards}
+@keyframes nav-shine{from{background-position:100% 0}to{background-position:0 0}}
+@media(prefers-reduced-motion:reduce){
+  .case-row{transition-duration:1ms}
+  .nav-name:hover .nav-name-text,
+  .nav-name:focus-visible .nav-name-text{animation:none}
+  .nav-name:hover .nav-star,
+  .nav-name:focus-visible .nav-star{transform:none}
+}
+.nav-links{display:flex;gap:28px}
+.aud-label{
+  font-size:14px;letter-spacing:.2em;text-transform:uppercase;font-weight:400;
+  color:var(--fg);margin-top:56px;
+}
+.aud-pills{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.aud-pill{
+  position:relative;
+  font:inherit;font-size:14px;line-height:25px;color:var(--fg);background:var(--bg);
+  border:1px solid var(--fg);border-radius:999px;
+  margin:0;padding:4px 16px;cursor:pointer;
+  transition:background 200ms ease,border-color 200ms ease,color 200ms ease,
+             opacity 560ms ease,transform 680ms cubic-bezier(0.16,1,0.3,1);
+}
+.aud-squiggle{
+  position:absolute;inset:-4px;
+  pointer-events:none;overflow:visible;
+  opacity:0;transition:opacity 160ms ease;
+}
+.aud-pill:hover{border-color:transparent}
+.aud-pill:hover .aud-squiggle{opacity:1}
+.aud-pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.aud-answer{
+  font-size:17px;line-height:1.55;max-width:52ch;margin-top:32px;
+  opacity:0;transition:opacity 260ms ease;
+}
+.aud-answer.is-visible{opacity:1}
+.navlink{
+  font-size:14px;letter-spacing:.2em;text-transform:uppercase;font-weight:400;
+  position:relative;padding-bottom:2px;
+}
+.navlink::after{
+  content:"";position:absolute;left:0;bottom:-2px;
+  height:6px;width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0.5 8 3 T16 3' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:16px 6px;
+  transition:width 250ms ease;
+}
+.navlink:hover::after{width:100%}
+
+/* ── GRID ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:minmax(100svh,auto) auto;
+  gap:0;
+}
+.cell{
+  border:1px solid var(--line);
+  margin:-1px 0 0 -1px;
+  padding:40px 36px;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* ── HERO ── */
+.cell-hero{
+  grid-column:1/-1;grid-row:1;padding:140px 400px 40px;
+  justify-content:flex-start;align-items:center;text-align:left;
+}
+.hero-sub{
+  font-size:40px;line-height:1.2;font-weight:600;letter-spacing:-0.015em;
+  max-width:44ch;
+}
+.hero-body{width:max-content;max-width:100%;display:flex;flex-direction:column}
+
+/* ── INTRO: the hero types itself in ── */
+.js #hero-sub,
+.js .aud-label{visibility:hidden}
+.hero-caret::after{
+  content:"";display:inline-block;width:2px;height:0.9em;
+  margin-left:5px;vertical-align:-0.1em;background:var(--accent);
+  animation:caret-blink 1000ms steps(1,end) infinite;
+}
+@keyframes caret-blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+.js .aud-pill{opacity:0;transform:translateY(10px)}
+.js .aud-pill.is-in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .hero-caret::after{animation:none}
+}
+
+
+/* ── HERO CURSOR TRAIL ── */
+.hero-trail{
+  position:absolute;inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.cell-hero .hero-body{position:relative;z-index:1}
+.cell-hero .scroll-cue{z-index:1}
+
+/* ── SCROLL CUE ── */
+.scroll-cue{
+  position:absolute;left:50%;bottom:40px;transform:translateX(-50%);
+  width:64px;height:64px;display:flex;align-items:center;justify-content:center;
+  color:var(--fg);border-radius:50%;
+}
+.scroll-cue svg{width:36px;height:36px;transition:transform 350ms cubic-bezier(0.16,1,0.3,1)}
+.scroll-cue:hover svg{transform:rotate(45deg)}
+
+/* ── CASES — vertical scroll, horizontal slides ── */
+.cases{
+  grid-column:1/-1;position:relative;
+  border-top:1px solid var(--line);
+  margin-top:-1px;
+}
+.cases-stage{padding:72px 400px}
+.cases-track{display:flex;flex-direction:column;gap:96px}
+.case-row{display:flex;flex-direction:column;gap:32px}
+
+.case-title{
+  font-size:40px;font-weight:700;
+  line-height:1.1;letter-spacing:-0.02em;
+}
+.case-desc{
+  font-size:17px;line-height:1.6;color:var(--muted);
+  max-width:none;margin-top:20px;
+}
+.case-tags{
+  display:flex;flex-wrap:wrap;align-items:center;gap:0 4px;margin-top:24px;
+  font-size:14px;letter-spacing:.08em;text-transform:uppercase;
+  line-height:1.8;color:var(--fg);
+}
+.case-tag{white-space:nowrap}
+.case-tag:not(:last-child)::after{
+  content:"·";margin-left:8px;
+  color:color-mix(in srgb,var(--fg) 45%,transparent);
+}
+
+.case-shot{
+  position:relative;display:block;width:100%;aspect-ratio:16/10;order:0;
+  transition:transform 420ms cubic-bezier(0.16,1,0.3,1);
+}
+a.case-row:hover .case-shot,
+a.case-row:focus-visible .case-shot{transform:scale(1.035)}
+
+/* the pointer itself carries the label, so the card stays clean */
+.case-cursor{
+  position:fixed;top:0;left:0;z-index:70;pointer-events:none;
+  display:inline-flex;align-items:center;white-space:nowrap;
+  font-size:14px;line-height:25px;padding:4px 16px;
+  border:1px solid var(--fg);border-radius:999px;
+  background:var(--accent);color:var(--accent-fg);
+  opacity:0;transform:translate(-50%,-50%) scale(0.86);
+  transition:opacity 180ms ease,transform 260ms cubic-bezier(0.16,1,0.3,1);
+}
+.case-cursor.is-on{opacity:1}
+.case-cursor.is-soon{background:var(--bg);color:var(--fg)}
+.cases.has-cursor .case-row{cursor:none}
+@media(hover:none){.case-cursor{display:none}.cases.has-cursor .case-row{cursor:auto}}
+.shot-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.shot-frame img{
+  width:100%;height:100%;display:block;object-fit:contain;object-position:center;
+}
+
+/* ── on a real screen the section pins and the slides run sideways ── */
+@media(min-width:901px){
+  .cases{height:calc(var(--case-count,3) * 100svh)}
+  .cases-stage{
+    position:sticky;top:0;height:100svh;overflow:hidden;
+    display:flex;align-items:center;padding:0;
+  }
+  .cases-track{
+    display:grid;gap:0;
+    width:100%;height:100%;
+  }
+  /* each card is its own slide, parked off to the right until its turn */
+  .case-row{
+    grid-area:1/1;
+    display:flex;flex-direction:column;align-items:stretch;
+    gap:0;padding:64px 400px;height:100%;
+    transform:translateX(100%);will-change:transform;
+    transition:transform 760ms cubic-bezier(0.22,1,0.28,1);
+  }
+  .case-row.is-active{transform:none}
+  .case-row.is-past{transform:translateX(-100%)}
+  /* the shot takes whatever height is left, and is never cropped */
+  .case-shot{
+    aspect-ratio:auto;height:auto;
+    flex:1 1 auto;min-height:0;margin-top:32px;
+  }
+}
+
+/* ── ABOUT — sits in the pill cell, above the pile ── */
+.about-label{
+  display:inline-block;position:relative;z-index:3;
+  font-size:14px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--fg);margin-bottom:24px;font-weight:400;
+}
+.about-body{
+  position:relative;z-index:3;
+  font-size:32px;font-weight:400;line-height:1.35;letter-spacing:-0.01em;max-width:56ch;
+  /* a little clear air at the bottom so the text never meets the pile */
+  padding-bottom:80px;
+  cursor:url('portfolio-assets/face-cursor.png') 50 50, auto;
+}
+.about-body p+p{margin-top:1em}
+
+/* ── ASK ── */
+.cell-ask{
+  grid-column:1/-1;justify-content:flex-start;
+  padding:80px 400px;border-top:0;
+}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Falling pills — they drop from the top of the card and pile at its floor */
+.pill-area{
+  position:absolute;inset:0;z-index:2;
+  overflow:hidden;pointer-events:none;
+}
+.phys-pill{
+  position:absolute;top:0;left:0;
+  border-radius:999px;padding:0 10px;
+  font-size:14px;font-weight:400;white-space:nowrap;
+  height:26px;line-height:26px;
+  transform-origin:center center;user-select:none;pointer-events:none;
+  background:var(--bg);color:var(--fg);border:1px solid #000;
+  opacity:0;
+  transition:opacity 300ms ease;
+}
+.phys-pill.live{opacity:1}
+
+/* ── FOOTER ── */
+.cell-footer{
+  grid-column:1/-1;
+  flex-direction:row;flex-wrap:wrap;
+  align-items:center;justify-content:space-between;
+  gap:16px;padding-block:40px 32px;
+  border-top:1px solid var(--fg);
+  overflow:visible;
+}
+/* ── FOOTER GLOW — a wide green fade resting on the footer line ── */
+.footer-glow{
+  position:absolute;left:0;right:0;bottom:100%;
+  width:100%;height:150px;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 54% 100% at 50% 100%,
+    color-mix(in srgb,var(--accent) 88%,transparent) 0%,
+    color-mix(in srgb,var(--accent) 62%,transparent) 26%,
+    color-mix(in srgb,var(--accent) 34%,transparent) 50%,
+    color-mix(in srgb,var(--accent) 12%,transparent) 70%,
+    color-mix(in srgb,var(--accent) 0%,transparent) 88%);
+}
+.footer-links{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.footer-links a{font-size:14px;font-weight:400;position:relative}
+.footer-links a::after{
+  content:"";position:absolute;left:0;bottom:-6px;
+  height:6px;width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0.5 8 3 T16 3' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:16px 6px;
+  transition:width 250ms ease;
+}
+.footer-links a:hover::after{width:100%}
+
+.footer-right{display:flex;align-items:center;gap:16px}
+.footer-copy{font-size:14px;color:var(--muted)}
+.footer-cv{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:14px;font-weight:400;letter-spacing:.04em;
+  border:0.5px solid var(--fg);border-radius:100px;
+  padding:6px 16px;
+  transition:background 220ms,border-color 220ms;
+}
+.footer-cv:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+
+.footer-egg{
+  width:100%;font-size:14px;
+  color:var(--muted);margin-top:8px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1340px){
+  .cell-hero{padding:140px 80px 40px}
+  .cases-stage{padding:72px 80px}
+  .case-row{padding:0 80px}
+  .cell-ask{padding:80px 80px}
+}
+@media(max-width:1000px){
+  .grid{grid-template-columns:repeat(2,1fr);grid-template-rows:auto}
+  .cell-hero{grid-row:auto}
+}
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr}
+  .cell-hero,.cell-ask,.cell-footer{grid-column:auto}
+  .cell-hero{min-height:100svh}
+  .cell{padding:32px 24px}
+  .cell-ask{padding:48px 24px}
+  .cases-stage{padding:56px 24px}
+  .cases-track{gap:72px}
+  .case-desc{max-width:100%}
+  .case-row{gap:24px;padding:0}
+  .cell-hero{padding:120px 24px 40px}
+  .hero-sub{font-size:28px;max-width:100%}
+  .case-title{font-size:30px}
+  .about-body{font-size:26px}
+  .hero-body{width:100%}
+  .aud-label{margin-top:40px}
+  .aud-answer{font-size:17px;max-width:100%;margin-top:24px}
+  .about-body{max-width:100%;padding-bottom:56px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <a class="nav-name" href="#top"><svg class="nav-star" width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.7063 0L6.37748 3.93431L9.23301 1.1459L7.46348 4.72333L11.4126 4.1459L7.8783 6L11.4126 7.8541L7.46348 7.27667L9.23301 10.8541L6.37748 8.06569L5.7063 12L5.03511 8.06569L2.17959 10.8541L3.94911 7.27667L-4.00543e-05 7.8541L3.5343 6L-4.00543e-05 4.1459L3.94911 4.72333L2.17959 1.1459L5.03511 3.93431L5.7063 0Z" fill="currentColor"/></svg><span class="nav-name-text">Ayelet Zwickler Ackerman</span></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="navlink" href="#work">Work</a>
+    <a class="navlink" href="#about">About</a>
+    <a class="navlink" href="./Ayelet-Zwickler-CV.pdf" download>CV</a>
+  </nav>
+</header>
+
+<main class="grid" id="top">
+
+  <!-- HERO -->
+  <div class="cell cell-hero">
+    <canvas class="hero-trail" id="hero-trail" aria-hidden="true"></canvas>
+    <div class="hero-body">
+    <h1 class="hero-sub" id="hero-sub">I'm a product designer who gravitates toward problems nobody has solved yet. If it's new, complex, and slightly terrifying - that's where I do my best work.</h1>
+    <p class="aud-label">Who's asking?</p>
+    <div class="aud-pills" role="group" aria-label="Who's asking?">
+      <button class="aud-pill" type="button" data-aud="recruiters" aria-pressed="false">Recruiter</button>
+      <button class="aud-pill" type="button" data-aud="hiring" aria-pressed="false">Hiring Manager</button>
+      <button class="aud-pill" type="button" data-aud="designers" aria-pressed="false">Designer</button>
+      <button class="aud-pill" type="button" data-aud="engineers" aria-pressed="false">Engineer</button>
+    </div>
+    <p class="aud-answer" id="aud-answer" aria-live="polite"></p>
+    </div>
+    <a class="scroll-cue" href="#work" aria-label="Scroll to work">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5L19 19"/><path d="M19 9V19H9"/></svg>
+    </a>
+  </div>
+
+  <!-- CASES -->
+  <section class="cases" id="work" aria-label="Selected work">
+    <div class="cases-stage">
+      <div class="cases-track">
+      <a class="case-row" data-i="0" href="case-lead-handling-agent.html" data-cursor="Read more" aria-label="Read the Lead Handling Agent case study">
+        <h2 class="case-title">Lead Handling Agent</h2>
+        <p class="case-desc">Dealerships were drowning in repetitive follow-up. I designed the AI agent that handles it — 5,435 leads processed, 243 appointments booked, 80% reduction in BDC workload.</p>
+        <span class="case-shot">
+          <span class="shot-frame"><img src="lead-handling-assets/design-your-agent-v3.png" alt="Design Your Agent V3, the Agent Hub with Omni chat and the instructions panel" loading="lazy"></span>
+        </span>
+        <div class="case-tags"><span class="case-tag">0→1</span><span class="case-tag">Agent Design</span><span class="case-tag">AI Conversations</span><span class="case-tag">Web</span><span class="case-tag">Shipped</span></div>
+      </a>
+      <a class="case-row" data-i="1" href="case-agentic-crm.html" data-cursor="Read more" aria-label="Read the Agentic CRM case study">
+        <h2 class="case-title">Agentic CRM</h2>
+        <p class="case-desc">No playbook existed for an AI-native CRM. I designed it from scratch for 300+ dealerships — a complete rethink of how sales teams work alongside agents. Web and native iOS, shipped.</p>
+        <span class="case-shot">
+          <span class="shot-frame"><img src="crm-assets/crm-hero.png" alt="The CRM rep home — daily counts, schedule, new leads and AI agent conversations" loading="lazy"></span>
+        </span>
+        <div class="case-tags"><span class="case-tag">0→1</span><span class="case-tag">Product Lead</span><span class="case-tag">iOS</span><span class="case-tag">Web</span><span class="case-tag">Design System</span></div>
+      </a>
+      <div class="case-row" data-i="2" data-cursor="Coming soon">
+        <h2 class="case-title">Group CDP</h2>
+        <p class="case-desc">I designed Fullpath's Group CDP for executive users — a data-heavy enterprise product built for dealership groups to compare performance, surface trends, and act on group-level insight.</p>
+        <span class="case-shot">
+          <span class="shot-frame"><img src="cdp-assets/cdp-hero.png" alt="The Group CDP store performance scatter plot, with configurable axes and quadrant labels" loading="lazy"></span>
+        </span>
+        <div class="case-tags"><span class="case-tag">Enterprise</span><span class="case-tag">Data Viz</span><span class="case-tag">Dashboards</span><span class="case-tag">Exec Users</span><span class="case-tag">Shipped</span></div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <div class="cell cell-ask" id="ask-cell">
+    <div id="about">
+      <p class="about-label">About</p>
+      <div class="about-body">
+        <p>I studied fine arts at Bezalel before pivoting into product design — not because I stopped caring about craft, but because I wanted to use it to solve harder problems. Five years ago I joined Fullpath, an automotive AI startup of 60 people, and I've been designing there ever since — agents, CRMs, data products, the whole surface. <strong>Somewhere along the way I started shipping the CSS too.</strong></p>
+        <p>In my free time I illustrate 🖊️, grow herbs, houseplants, and a garden I'm mildly obsessed with 🌿, and spend a suspicious amount of time thinking about coffee ☕ and wine 🍷. I love camping, and a quiet morning alone at a museum is my idea of a perfect day. I'm also a mom to a very busy toddler. Best design constraint I've ever worked with.</p>
+      </div>
+    </div>
+    <div class="pill-area" id="pill-area" aria-hidden="true"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="cell cell-footer">
+    <span class="footer-glow" aria-hidden="true"></span>
+    <div class="footer-links">
+      <a href="mailto:ayelet441@gmail.com">ayelet441@gmail.com</a>
+      <a href="tel:+972523501243">052-350-1243</a>
+      <a href="https://linkedin.com/in/ayelet-zwickler" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="footer-right">
+      <span class="footer-copy">© 2026</span>
+      <a href="./Ayelet-Zwickler-CV.pdf" download class="footer-cv">Download CV ↓</a>
+    </div>
+    <p class="footer-egg">Thanks for being here. Seriously. I made this whole thing and sometimes I wonder if anyone actually reads it. You do. You're the best. ❤️</p>
+  </div>
+
+</main>
+
+
+<script>
+// ── HERO CURSOR TRAIL ──
+(function(){
+  var cell   = document.querySelector('.cell-hero');
+  var canvas = document.getElementById('hero-trail');
+  if(!cell || !canvas) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  var LIFE = 2000;          // ms a point stays visible
+  var MAX  = 180;           // cap stored points
+  var LAYERS = [            // outer to inner: soft edges, defined centre
+    {scale: 3.4, alpha: 0.10, blur: 26},
+    {scale: 2.0, alpha: 0.20, blur: 10},
+    {scale: 1.0, alpha: 0.95, blur: 0}
+  ];
+  var pts  = [];
+  var raf  = null;
+  var w = 0, h = 0, dpr = 1;
+
+  function size(){
+    var r = cell.getBoundingClientRect();
+    w = r.width; h = r.height;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function frame(){
+    raf = null;
+    var now = performance.now();
+    while(pts.length && now - pts[0].t > LIFE) pts.shift();
+    ctx.clearRect(0, 0, w, h);
+
+    if(pts.length > 1){
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#ADFF2F';
+      ctx.shadowColor = '#ADFF2F';
+      // three passes per segment: a wide soft halo, a mid feather, then a tighter
+      // core. The falloff is what makes the edges read as blurred.
+      for(var L = 0; L < LAYERS.length; L++){
+        var ly = LAYERS[L];
+        ctx.shadowBlur = ly.blur;
+        for(var i = 1; i < pts.length; i++){
+          var a = 1 - (now - pts[i].t) / LIFE;
+          if(a <= 0) continue;
+          ctx.globalAlpha = a * a * ly.alpha;
+          ctx.lineWidth   = (1 + 13 * a) * ly.scale;
+          ctx.beginPath();
+          ctx.moveTo(pts[i-1].x, pts[i-1].y);
+          ctx.lineTo(pts[i].x,   pts[i].y);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+    }
+    if(pts.length) raf = requestAnimationFrame(frame);
+  }
+
+  function kick(){ if(raf === null) raf = requestAnimationFrame(frame); }
+
+  cell.addEventListener('mousemove', function(e){
+    var r = cell.getBoundingClientRect();
+    pts.push({x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now()});
+    if(pts.length > MAX) pts.shift();
+    kick();
+  });
+  cell.addEventListener('mouseleave', kick);
+  window.addEventListener('resize', function(){ size(); kick(); });
+  size();
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>
+
+// ── INTRO: tagline types, then the label, then the pills ──
+(function(){
+  var sub=document.getElementById('hero-sub');
+  var label=document.querySelector('.aud-label');
+  var pills=Array.prototype.slice.call(document.querySelectorAll('.aud-pill'));
+
+  function reveal(el){ if(el) el.style.visibility='visible'; }
+  function showAll(){
+    reveal(sub); reveal(label);
+    pills.forEach(function(p){ p.classList.add('is-in'); });
+  }
+  if(!sub){ showAll(); return; }
+
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ showAll(); return; }
+
+  // split into a node screen readers get in full, and one the typing fills
+  function prepare(el){
+    var text=el.textContent;
+    var box=el.getBoundingClientRect().height;   // measured before it is emptied
+    el.style.minHeight=box+'px';
+    el.textContent='';
+    var sr=document.createElement('span');
+    sr.className='sr-only';
+    sr.textContent=text;
+    var vis=document.createElement('span');
+    vis.setAttribute('aria-hidden','true');
+    el.appendChild(sr); el.appendChild(vis);
+    el.style.visibility='visible';
+    return {node:vis,text:text,host:el};
+  }
+
+  function type(target,speed,done){
+    target.host.classList.add('hero-caret');
+    var i=0;
+    (function tick(){
+      target.node.textContent=target.text.slice(0,++i);
+      if(i<target.text.length){ setTimeout(tick,speed); }
+      else{
+        target.host.classList.remove('hero-caret');
+        target.host.style.minHeight='';
+        done&&done();
+      }
+    })();
+  }
+
+  function run(){
+    // the hero block is centred and sized to its widest child, so emptying the
+    // headline would collapse it and the first letters would land off to the side
+    var body=sub.parentNode;
+    var w=body?body.getBoundingClientRect().width:0;
+    if(body&&w) body.style.minWidth=w+'px';
+    function release(){ if(body) body.style.minWidth=''; }
+
+    var one=prepare(sub);
+    var two=label?prepare(label):null;
+    type(one,31,function(){
+      if(!two){ release(); pillsIn(); return; }
+      setTimeout(function(){
+        type(two,70,function(){ release(); setTimeout(pillsIn,200); });
+      },260);
+    });
+  }
+  function pillsIn(){
+    pills.forEach(function(p,i){
+      setTimeout(function(){ p.classList.add('is-in'); },i*190);
+    });
+  }
+
+  // measure against the real face, not the fallback, or the reserved height is wrong
+  var started=false;
+  function start(){ if(started) return; started=true; run(); }
+  if(document.fonts&&document.fonts.ready){
+    document.fonts.ready.then(start);
+    setTimeout(start,700);
+  } else { start(); }
+})();
+
+// ── AUDIENCE PILLS (hero) ──
+(function(){
+  var answer=document.getElementById('aud-answer');
+  var pills=Array.prototype.slice.call(document.querySelectorAll('.aud-pill'));
+  if(!answer||!pills.length) return;
+  var copy={
+    recruiters:"5+ years at one company, designing complex systems for B2B SaaS: agents, CRMs, mobile apps, and data products, with an M.A. in HCI to back it up. I went deep and now I'm ready to go wide.",
+    hiring:"I define the problem, get in front of users to pressure-test it, and ship the code to production. I collaborate closely with engineers and PMs from discovery through delivery. I'm doing this end-to-end at a startup that scaled from 60 to 300+ people.",
+    designers:"I've been designing agent experiences since before the field had a name for it. No templates, no playbooks. Just first principles and a lot of iteration. I call it AX (Agentic Experience), and I'm still figuring it out. If you are too, let's talk.",
+    engineers:"I actually push frontend code to production. Real HTML and CSS, small features and full products, with AI as my co-pilot. I know enough to have a real conversation about feasibility, and the best design decisions happen when we figure it out together."
+  };
+  var swap=null;
+  pills.forEach(function(pill){
+    pill.addEventListener('click',function(){
+      var turningOn=pill.getAttribute('aria-pressed')!=='true';
+      pills.forEach(function(p){ p.setAttribute('aria-pressed', (turningOn&&p===pill)?'true':'false'); });
+      answer.classList.remove('is-visible');
+      clearTimeout(swap);
+      swap=setTimeout(function(){
+        if(!turningOn){ answer.textContent=''; return; }
+        answer.textContent=copy[pill.getAttribute('data-aud')];
+        answer.classList.add('is-visible');
+      },answer.textContent?200:0);
+    });
+  });
+})();
+
+// ── CASES: vertical scroll, one card slides in at a time ──
+(function(){
+  var sec=document.querySelector('.cases');
+  var track=sec&&sec.querySelector('.cases-track');
+  if(!sec||!track) return;
+  var rows=Array.prototype.slice.call(track.querySelectorAll('.case-row'));
+  if(!rows.length) return;
+
+  var n=rows.length;
+  sec.style.setProperty('--case-count',n);
+
+  var pinned=window.matchMedia('(min-width:901px)');
+  var frame=null,cur=-1;
+
+  function show(i){
+    if(i===cur) return;
+    cur=i;
+    var stacked=!pinned.matches;
+    rows.forEach(function(row,k){
+      var on=stacked||k===i;
+      row.classList.toggle('is-active',on);
+      row.classList.toggle('is-past',!stacked&&k<i);
+      row.style.zIndex=stacked?'':(k===i?2:1);
+      row.inert=!on;
+    });
+  }
+
+  function measure(){
+    if(!pinned.matches){ show(-1); return; }
+    var travel=sec.offsetHeight-window.innerHeight;
+    var p=travel>0?(-sec.getBoundingClientRect().top)/travel:0;
+    p=Math.max(0,Math.min(0.9999,p));
+    show(Math.floor(p*n));
+  }
+
+  function onScroll(){
+    if(frame) return;
+    frame=requestAnimationFrame(function(){ frame=null; measure(); });
+  }
+
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){ cur=-2; measure(); });
+  if(pinned.addEventListener) pinned.addEventListener('change',function(){ cur=-2; measure(); });
+  measure();
+})();
+
+// ── CASES: the pointer becomes the call to action ──
+(function(){
+  var sec=document.querySelector('.cases');
+  var stage=sec&&sec.querySelector('.cases-stage');
+  if(!sec||!stage||!window.matchMedia('(hover:hover)').matches) return;
+  if(!sec.querySelector('.case-row[data-cursor]')) return;
+
+  var pinned=window.matchMedia('(min-width:901px)');
+  var chip=document.createElement('span');
+  chip.className='case-cursor';
+  chip.setAttribute('aria-hidden','true');
+  document.body.appendChild(chip);
+
+  var x=0,y=0,hasPos=false,on=false,frame=null;
+
+  function place(){
+    frame=null;
+    chip.style.transform='translate3d('+Math.round(x)+'px,'+Math.round(y)+'px,0)'+
+                         ' translate(-50%,-50%) scale('+(on?1:0.86)+')';
+  }
+  function queue(){ if(!frame) frame=requestAnimationFrame(place); }
+
+  function setOn(state,row){
+    if(state&&row){
+      var label=row.getAttribute('data-cursor')||'';
+      if(chip.textContent!==label) chip.textContent=label;
+      chip.classList.toggle('is-soon',!row.hasAttribute('href'));
+    }
+    if(state===on) return;
+    on=state;
+    chip.classList.toggle('is-on',on);
+    // the native cursor only hides while the chip is actually up
+    sec.classList.toggle('has-cursor',on);
+  }
+
+  // Decide from the pointer's position, not from enter/leave: a card can slide
+  // in under a pointer that never moved, and scrolling must not blank the chip.
+  function evaluate(){
+    if(!hasPos||!pinned.matches){ setOn(false); queue(); return; }
+    var r=stage.getBoundingClientRect();
+    var over=x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+    var row=over?(sec.querySelector('.case-row.is-active')||sec.querySelector('.case-row')):null;
+    setOn(!!row,row);
+    queue();
+  }
+
+  document.addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch'){ hasPos=false; setOn(false); return; }
+    x=e.clientX; y=e.clientY; hasPos=true;
+    evaluate();
+  },{passive:true});
+
+  document.addEventListener('pointerleave',function(){ hasPos=false; setOn(false); });
+  window.addEventListener('blur',function(){ setOn(false); });
+  window.addEventListener('scroll',evaluate,{passive:true});
+  window.addEventListener('resize',evaluate);
+  if(pinned.addEventListener) pinned.addEventListener('change',evaluate);
+})();
+
+// ── FROSTED NAV ON SCROLL ──
+(function(){
+  var nav=document.querySelector('.site-nav');
+  if(!nav) return;
+  function update(){ nav.classList.toggle('is-scrolled', window.scrollY>10); }
+  window.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+// ── Falling skill pills (decoration) ──
+(function(){
+  var cell=document.getElementById('ask-cell');
+  var area=document.getElementById('pill-area');
+  if(!cell||!area||typeof Matter==='undefined') return;
+
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var skills=[
+    '0→1 products','iOS','Automotive tech','Design systems',
+    'Complex systems','User interviews','Prototyping','Agentic experience',
+    'HTML / CSS','Product spec','Qualitative research','Figma',
+    'Datadog','GitHub','CRM','Claude','Claude Code',
+    'Mixpanel','Figma Make','AI design'
+  ];
+
+  // Physics — same setup as the search pills (Matter.js): capsule bodies, floor, walls, sleeping
+  var Engine=Matter.Engine,Runner=Matter.Runner,Bodies=Matter.Bodies,Body=Matter.Body,Composite=Matter.Composite;
+  var PH=26,R=13,MAX_A=0.22;
+  var engine=null,runner=null,animFrame=null,pills=[];
+  var started=false;
+
+  function measureWidths(){
+    var tmp=document.createElement('span');
+    tmp.style.cssText='position:absolute;visibility:hidden;font-family:"Red Hat Display",sans-serif;font-size:14px;padding:0 10px;white-space:nowrap;';
+    document.body.appendChild(tmp);
+    var ws=skills.map(function(s){ tmp.textContent=s; return tmp.offsetWidth; });
+    document.body.removeChild(tmp);
+    return ws;
+  }
+
+  function stopPhysics(){
+    if(runner) Runner.stop(runner);
+    if(animFrame) cancelAnimationFrame(animFrame);
+    runner=null; animFrame=null;
+  }
+
+  function draw(){
+    // the box can resize under the pile (a case image loading, text reflowing),
+    // so clamp to the box we can actually see rather than to the physics floor
+    var W=area.clientWidth,H=area.clientHeight;
+    pills.forEach(function(p){
+      var x=p.body.position.x,y=p.body.position.y;
+      var lean=Math.abs(Math.sin(p.body.angle))*p.pw/2;
+      p.el.style.left=Math.max(0,Math.min(x-p.pw/2,W-p.pw))+'px';
+      p.el.style.top=Math.max(-PH,Math.min(y-PH/2,H-PH-lean))+'px';
+      p.el.style.transform='rotate('+p.body.angle+'rad)';
+      p.el.classList.add('live');
+    });
+  }
+
+  function sync(){
+    var allSleeping=true;
+    pills.forEach(function(p){
+      if(!p.body.isSleeping) allSleeping=false;
+      if(Math.abs(p.body.angle)>MAX_A){
+        Body.setAngle(p.body,Math.sign(p.body.angle)*MAX_A);
+        Body.setAngularVelocity(p.body,0);
+      }
+    });
+    draw();
+    if(allSleeping){ Runner.stop(runner); runner=null; animFrame=null; return; }
+    animFrame=requestAnimationFrame(sync);
+  }
+
+  function initPhysics(){
+    stopPhysics();
+    area.innerHTML='';
+    pills=[];
+    var W=area.offsetWidth,H=area.offsetHeight;
+    engine=Engine.create({enableSleeping:true,positionIterations:12,velocityIterations:10,gravity:{x:0,y:1}});
+    var floor=Bodies.rectangle(W/2,H+5,W+40,10,{isStatic:true,friction:1,restitution:0.05});
+    var wallL=Bodies.rectangle(-8,H/2,16,H*3,{isStatic:true});
+    var wallR=Bodies.rectangle(W+8,H/2,16,H*3,{isStatic:true});
+    Composite.add(engine.world,[floor,wallL,wallR]);
+    var widths=measureWidths();
+
+    skills.forEach(function(skill,i){
+      var pw=widths[i];
+      var startX=R+4+Math.random()*Math.max(0,W-pw-R-8);
+      var startY=-PH-(i*28)-Math.random()*14;
+      var rect=Bodies.rectangle(startX+pw/2,startY,Math.max(pw-R*2,2),PH);
+      var circL=Bodies.circle(startX+R,startY,R);
+      var circR=Bodies.circle(startX+pw-R,startY,R);
+      var body=Body.create({parts:[rect,circL,circR],restitution:0.04,friction:0.9,frictionAir:0.06,frictionStatic:1.2,sleepThreshold:30});
+      Body.setAngle(body,(Math.random()-0.5)*0.35);
+      Body.setAngularVelocity(body,(Math.random()-0.5)*0.04);
+      Composite.add(engine.world,body);
+
+      var el=document.createElement('span');
+      el.className='phys-pill';
+      el.textContent=skill;
+      el.style.width=pw+'px';
+      area.appendChild(el);
+      pills.push({body:body,el:el,pw:pw});
+    });
+
+    if(reduce){
+      for(var s=0;s<600;s++) Engine.update(engine,1000/60);
+      draw();
+      return;
+    }
+    runner=Runner.create();
+    Runner.run(runner,engine);
+    animFrame=requestAnimationFrame(sync);
+  }
+
+  // Only start the pills when the Ask box reaches the viewport
+  function start(){
+    if(started) return;
+    started=true;
+    initPhysics();
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){ start(); io.disconnect(); }
+    },{threshold:0.4});
+    io.observe(cell);
+  } else {
+    start();
+  }
+
+  var resizeTimer;
+  function rebuild(){
+    if(!started) return;
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(initPhysics,200);
+  }
+  window.addEventListener('resize',rebuild);
+
+  // the cell grows and shrinks on its own as case images load above it
+  if('ResizeObserver' in window){
+    var lastW=0,lastH=0;
+    new ResizeObserver(function(){
+      var w=area.clientWidth,h=area.clientHeight;
+      if(Math.abs(w-lastW)<2&&Math.abs(h-lastH)<2) return;
+      lastW=w; lastH=h;
+      rebuild();
+    }).observe(area);
+  }
+
+})();
+
+// ── Squiggly pill outline: traces a sine wave around the pill perimeter ──
+(function(){
+  var pills = Array.prototype.slice.call(document.querySelectorAll('.aud-pill'));
+  if(!pills.length) return;
+  var NS='http://www.w3.org/2000/svg', PAD=4, AMP=1.25, PERIOD=16, STEP=1.2;
+
+  function wavyPill(W,H){
+    var r=H/2, straight=Math.max(0,W-2*r);
+    var arc=Math.PI*r, per=2*straight+2*arc;
+    if(per<=0) return '';
+    // whole number of waves so the loop closes without a seam
+    var waves=Math.max(4,Math.round(per/PERIOD)), k=2*Math.PI*waves/per;
+    var pts=[], n=Math.ceil(per/STEP);
+    for(var i=0;i<n;i++){
+      var s=per*i/n, bx,by,nx,ny,t,th;
+      if(s<straight){                      // top edge, left to right
+        bx=r+s; by=0; nx=0; ny=-1;
+      } else if(s<straight+arc){           // right cap
+        th=-Math.PI/2+(s-straight)/r;
+        nx=Math.cos(th); ny=Math.sin(th);
+        bx=(W-r)+r*nx; by=r+r*ny;
+      } else if(s<2*straight+arc){         // bottom edge, right to left
+        t=s-straight-arc; bx=(W-r)-t; by=H; nx=0; ny=1;
+      } else {                             // left cap
+        th=Math.PI/2+(s-2*straight-arc)/r;
+        nx=Math.cos(th); ny=Math.sin(th);
+        bx=r+r*nx; by=r+r*ny;
+      }
+      var o=AMP*Math.sin(k*s);
+      pts.push((bx+o*nx+PAD).toFixed(2)+' '+(by+o*ny+PAD).toFixed(2));
+    }
+    return 'M'+pts.join('L')+'Z';
+  }
+
+  function draw(pill){
+    var w=pill.offsetWidth, h=pill.offsetHeight;
+    if(!w||!h) return;
+    var svg=pill.querySelector('.aud-squiggle');
+    if(!svg){
+      svg=document.createElementNS(NS,'svg');
+      svg.setAttribute('class','aud-squiggle');
+      svg.setAttribute('aria-hidden','true');
+      svg.appendChild(document.createElementNS(NS,'path'));
+      pill.appendChild(svg);
+    }
+    var W=w+2*PAD, H=h+2*PAD;
+    svg.setAttribute('width',W); svg.setAttribute('height',H);
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    var path=svg.firstChild;
+    path.setAttribute('d',wavyPill(w,h));
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','currentColor');
+    path.setAttribute('stroke-width','1.2');
+    path.setAttribute('stroke-linejoin','round');
+  }
+
+  function drawAll(){ pills.forEach(draw); }
+  drawAll();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(function(e){ e.forEach(function(x){ draw(x.target); }); });
+    pills.forEach(function(p){ ro.observe(p); });
+  } else {
+    window.addEventListener('resize', drawAll);
+  }
+})();
+</script>
+</body>
+</html>

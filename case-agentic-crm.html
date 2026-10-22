@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic CRM · Ayelet Zwickler Ackerman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#FFFFFF;
+  --fg:#000000;
+  --muted:#000000;
+  --line:#000000;
+  --line-strong:#000000;
+  --wash:rgba(0,0,0,0.04);
+  --accent:#ADFF2F;
+  --accent-fg:#000000;
+  color-scheme:light;
+}
+
+html{scroll-behavior:smooth}
+html,body{background:var(--bg);color:var(--fg)}
+body{
+  font-family:'Red Hat Display',system-ui,sans-serif;
+  font-weight:400;font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  /* `hidden` here would make <body> a scroll container and break position:sticky,
+     which the pinned horizontal rails depend on. `clip` prevents that. */
+  overflow-x:hidden;
+  overflow-x:clip;
+}
+*{font-style:normal}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+em{font-style:normal;font-weight:500}
+strong{font-weight:600}
+
+/* ── NAV ── */
+.site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 32px;pointer-events:none;
+  transition:background 300ms ease,backdrop-filter 300ms ease,-webkit-backdrop-filter 300ms ease;
+}
+.site-nav.is-scrolled{
+  background:color-mix(in srgb,var(--bg) 60%,transparent);
+  -webkit-backdrop-filter:blur(16px) saturate(1.3);
+  backdrop-filter:blur(16px) saturate(1.3);
+}
+.site-nav *{pointer-events:auto}
+.nav-name{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:400}
+.nav-star{flex-shrink:0;transition:transform 700ms cubic-bezier(0.16,1,0.3,1)}
+.nav-name:hover .nav-star{transform:rotate(360deg)}
+.nav-name:hover{opacity:.5;transition:opacity 200ms}
+.nav-links{display:flex;gap:32px}
+.navlink{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:400;
+  position:relative;padding-bottom:4px;
+}
+.navlink::after{
+  content:"";position:absolute;left:0;bottom:-2px;
+  height:6px;width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0.5 8 3 T16 3' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:16px 6px;
+  transition:width 250ms ease;
+}
+.navlink:hover::after{width:100%}
+
+/* ── SCROLL PROGRESS ── */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0;
+  background:var(--accent);z-index:120;
+  transition:width 90ms linear;
+}
+
+/* ── LAYOUT ── */
+.wrap{max-width:none;margin:0;padding:0 400px}
+.label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+section{padding-block:clamp(72px,9vw,128px)}
+section+section{border-top:none}
+/* the label sits on top of the section, with everything flush left under it */
+.sec-head{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.sec-head.two-col{display:grid;grid-template-columns:1fr 2fr;align-items:start;gap:clamp(24px,4vw,56px)}
+@media(max-width:700px){.sec-head.two-col{grid-template-columns:1fr;gap:8px}}
+
+h2.hdr{
+  font-weight:700;
+  font-size:32px;
+  line-height:1.15;letter-spacing:-0.02em;
+  max-width:none;
+}
+h3.bene{
+  font-weight:700;
+  font-size:20px;
+  line-height:1.3;letter-spacing:-0.01em;
+  max-width:24ch;
+}
+p{font-size:14px;line-height:1.72}
+.body{margin-top:24px}
+.body p{max-width:60ch}
+.body p+p{margin-top:1.1em}
+
+/* ── HERO ── */
+.hero{
+  padding-top:clamp(128px,15vh,192px);
+  padding-bottom:clamp(40px,6vw,72px);
+  border-top:0;
+}
+
+/* title, hook and the spec list on the left; the shot on the right */
+.hero-top{
+  display:grid;
+  grid-template-columns:minmax(0,40fr) minmax(0,60fr);
+  gap:clamp(32px,3.5vw,56px);
+  align-items:start;
+  margin-top:clamp(16px,2vw,24px);
+}
+.hero-left{min-width:0}
+.hero-left .hook{margin-top:16px}
+h1{
+  font-weight:600;
+  font-size:40px;
+  line-height:1.1;letter-spacing:-0.022em;
+  max-width:14ch;
+}
+.hook{
+  font-size:18px;
+  font-weight:400;line-height:1.45;letter-spacing:-0.008em;
+  max-width:54ch;
+}
+.hook .hl{
+  background-image:linear-gradient(var(--accent),var(--accent));
+  background-repeat:no-repeat;
+  background-size:100% 0.58em;
+  background-position:0 62%;
+  padding:0 4px;
+}
+
+/* ── META — one line per fact, stacked ── */
+.meta{
+  display:flex;flex-direction:column;
+  margin-top:clamp(24px,3vw,40px);
+}
+.meta>div{
+  display:grid;grid-template-columns:110px minmax(0,1fr);
+  gap:16px;align-items:baseline;
+  padding:8px 0;border-top:0.5px solid var(--line);
+}
+.meta>div:first-child{border-top:none}
+@media(max-width:520px){.meta>div{grid-template-columns:1fr;gap:8px}}
+.meta-k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.meta-v{font-size:14px;margin-top:0;line-height:1.4;font-weight:500}
+
+/* ── HERO SHOT PANEL ── */
+.hero-shot{margin-top:0}
+@media(max-width:900px){.hero-shot{margin-top:clamp(32px,5vw,56px)}}
+.hero-shot .shot{aspect-ratio:16/9}
+.hero-shot img{
+  width:100%;display:block;
+  border-radius:16px;
+}
+
+
+/* ── HORIZONTAL PINNED SCROLL (vertical scroll drives horizontal pan) ── */
+.hscroll{position:relative}
+.hscroll-stage{overflow:hidden}
+.hscroll-track{
+  display:flex;gap:16px;
+  padding:clamp(16px,3svh,40px) 400px;
+  width:max-content;
+  will-change:transform;
+}
+@media(min-width:901px){
+  .hscroll-stage{
+    position:sticky;top:0;
+    height:100svh;
+    display:flex;align-items:center;
+    overflow:hidden;z-index:95;
+  }
+}
+@media(max-width:1340px){.hscroll-track{padding-left:80px;padding-right:80px}}
+@media(max-width:700px){.hscroll-track{padding-left:24px;padding-right:24px}}
+@media(max-width:900px){
+  .hscroll-stage{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .hscroll-stage::-webkit-scrollbar{display:none}
+  .hscroll-track{width:auto}
+}
+.hcard{
+  flex:0 0 auto;
+  width:min(calc(100vw - 516px),1080px);
+  min-width:560px;
+  border:1px solid var(--fg);border-radius:0;
+  overflow:hidden;
+  background:var(--bg);
+  padding:0;
+}
+@media(max-width:1340px){.hcard{width:min(calc(100vw - 196px),1080px)}}
+@media(max-width:700px){.hcard{width:calc(100vw - 64px);min-width:0}}
+.hcard-in{
+  display:grid;
+  grid-template-columns:minmax(0,44fr) minmax(0,56fr);
+  align-items:start;
+  width:100%;
+}
+@media(max-width:700px){.hcard-in{grid-template-columns:1fr}}
+.hcard-text{padding:clamp(32px,3vw,40px);display:flex;flex-direction:column;justify-content:flex-start;max-width:none}
+.hcard-media{padding:clamp(16px,2vw,32px) clamp(16px,2vw,32px) clamp(16px,2vw,32px) 0}
+@media(max-width:700px){.hcard-media{padding:0 clamp(16px,2vw,32px) clamp(16px,2vw,32px)}}
+.hcard-media .shot{aspect-ratio:4/3;min-height:0}
+.hcard-media img{width:100%;height:auto;display:block;border-radius:0;object-fit:contain}
+.hcard-text .block-n{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg);padding-top:0;display:block;margin-bottom:16px}
+.hcard-text h3{
+  font-weight:700;font-size:32px;
+  line-height:1.15;letter-spacing:-0.02em;max-width:none;
+}
+.hcard-text p{font-size:14px;line-height:1.7;color:var(--fg);margin-top:16px}
+.hcard-text p:first-of-type{margin-top:16px}
+
+/* fallback: stack vertically on narrow screens and for reduced motion */
+@media(prefers-reduced-motion:reduce){
+  .hscroll-stage{position:static;height:auto;overflow:visible}
+  .hscroll-track{display:block;height:auto;width:auto;transform:none !important;padding:0}
+  .hcard{width:auto;min-width:0;margin-bottom:16px}
+}
+
+/* ── STAT ROWS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  margin-top:clamp(40px,5vw,56px);
+}
+.stats.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:860px){.stats,.stats.three{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.stats,.stats.three{grid-template-columns:1fr}}
+.stat{padding:24px 24px 24px 0}
+.stat-n{
+  font-weight:700;
+  font-size:40px;
+  line-height:1;letter-spacing:-0.03em;
+  font-variant-numeric:tabular-nums;
+}
+.stat-l{font-size:14px;font-weight:400;margin-top:16px;line-height:1.5;max-width:22ch}
+.stat-note{font-size:14px;margin-top:24px;margin-bottom:24px;max-width:68ch;line-height:1.7}
+
+/* ── LIGHTBOX ── */
+#img-lb{
+  position:fixed;inset:0;z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+  opacity:0;visibility:hidden;
+  transition:opacity 240ms ease,visibility 240ms ease;
+}
+#img-lb.is-open{opacity:1;visibility:visible}
+#img-lb-img{
+  max-width:90vw;max-height:88vh;
+  object-fit:contain;display:block;
+  border-radius:0;
+  box-shadow:0 24px 80px rgba(0,0,0,0.18),0 8px 24px rgba(0,0,0,0.10);
+  transform:scale(0.93);
+  transition:transform 300ms cubic-bezier(0.16,1,0.3,1);
+}
+#img-lb.is-open #img-lb-img{transform:none}
+#img-lb-close{
+  position:absolute;top:16px;right:16px;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(0,0,0,0.15);
+  background:rgba(255,255,255,0.8);
+  color:#000;font-size:18px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background 150ms ease;
+}
+#img-lb-close:hover{background:rgba(255,255,255,1)}
+/* ── ZOOM CURSOR ── */
+#img-zoom-cursor{
+  position:fixed;top:0;left:0;z-index:200;pointer-events:none;
+  width:46px;height:46px;border-radius:50%;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(0.65);
+  transition:opacity 160ms ease,transform 220ms cubic-bezier(0.16,1,0.3,1);
+}
+#img-zoom-cursor.is-on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#img-zoom-cursor svg{width:20px;height:20px;color:#000}
+
+/* ── QUOTE ── */
+blockquote{
+  margin-top:clamp(40px,5vw,56px);
+  padding-left:clamp(16px,3vw,32px);
+  border-left:2px solid var(--accent);
+  max-width:42ch;
+}
+blockquote p{
+  font-size:20px;
+  font-weight:700;line-height:1.35;letter-spacing:-0.01em;
+}
+blockquote cite{
+  display:block;margin-top:16px;
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+}
+
+/* ── FIGURE PLACEHOLDER ── */
+figure{margin-top:clamp(32px,4.5vw,56px)}
+.shot{
+  width:100%;aspect-ratio:16/10;
+  background:var(--wash);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:16px;padding:32px;text-align:center;
+}
+.shot.tall{aspect-ratio:4/3}
+.shot-tag{
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-fg);background:var(--accent);
+  border-radius:30px;padding:8px 16px;
+}
+.shot-what{font-size:14px;max-width:44ch;line-height:1.6}
+figcaption{
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  margin-top:16px;max-width:52ch;line-height:1.7;
+}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,32px)}
+@media(max-width:800px){.figs{grid-template-columns:1fr}}
+.figs figure{margin-top:0}
+
+/* ── DECISIONS / VERSIONS ── */
+.block{
+  padding-top:clamp(48px,5.5vw,72px);
+  display:grid;grid-template-columns:150px 1fr;gap:40px;align-items:start;
+}
+@media(max-width:800px){.block{grid-template-columns:1fr;gap:16px}}
+.block+.block{margin-top:clamp(16px,2.5vw,32px);border-top:1px solid var(--line)}
+.block-n{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding-top:.8em}
+.verdict{
+  display:inline-flex;align-items:center;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--fg);border-radius:30px;
+  padding:8px 16px;margin-top:24px;
+}
+
+/* ── TAKEAWAY LIST ── */
+.takes{margin-top:clamp(48px,6vw,80px);display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--fg);border-left:1px solid var(--fg)}
+@media(max-width:700px){.takes{grid-template-columns:1fr}}
+.take{padding:24px;border-bottom:1px solid var(--fg);border-right:1px solid var(--fg)}
+.take-num{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-top:0;margin-bottom:16px}
+.take h3{
+  font-weight:700;
+  font-size:20px;
+  line-height:1.25;letter-spacing:-0.01em;max-width:none;width:100%;
+}
+.take p{margin-top:16px;max-width:60ch}
+
+/* ── FAQ ── */
+details{border-top:1px solid var(--line)}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{
+  cursor:pointer;list-style:none;padding-block:24px;
+  display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  font-size:20px;font-weight:700;letter-spacing:-0.01em;
+  transition:opacity 180ms ease;
+}
+summary::-webkit-details-marker{display:none}
+summary:hover{opacity:.5}
+summary .mk{font-size:20px;font-weight:300;flex-shrink:0;line-height:1}
+details .ans{padding-bottom:32px;max-width:60ch}
+
+/* ── TK FLAG ── */
+.tk{
+  display:inline-block;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--accent);color:var(--accent-fg);
+  border-radius:30px;padding:4px 8px;
+}
+.tk-line{
+  margin-top:24px;padding:24px 24px;
+  border:1px solid var(--fg);border-radius:16px;
+  font-size:14px;max-width:62ch;line-height:1.7;
+}
+
+/* ── CTA ── */
+
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero-top{grid-template-columns:1fr;gap:24px}
+  h1{max-width:14ch}
+}
+@media(max-width:700px){
+  .hcard{padding:0 24px clamp(40px,7vw,64px)}
+  .wrap{padding:0 24px}
+  .site-nav{padding:16px 24px}
+  .nav-links{gap:16px}
+}
+
+/* ── SECTION MENU — sits in the left gutter, outside the content column ── */
+.secnav{
+  position:fixed;left:40px;top:128px;z-index:90;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity 320ms ease,transform 420ms cubic-bezier(0.16,1,0.3,1),visibility 320ms;
+  display:flex;flex-direction:column;align-items:flex-start;gap:16px;
+  width:190px;
+}
+.secnav a{
+  font-size:14px;line-height:1.25;text-align:left;
+  color:var(--fg);
+  transition:color 200ms ease;
+}
+.secnav.is-ready{opacity:1;visibility:visible;transform:none}
+.secnav a:hover{color:var(--fg)}
+.secnav a.is-on{color:var(--fg);font-weight:700}
+@media(max-width:1340px){.secnav{display:none}}
+@media(max-width:1340px) and (min-width:701px){.wrap{padding:0 80px}}
+@media(max-width:700px){.hero>.wrap,.footer-above .wrap,.site-footer .wrap{padding:0 24px}}
+
+/* ── FOOTER — same strip as the home page ── */
+.site-footer{position:relative;border-top:1px solid var(--fg);padding-block:40px 32px}
+/* the hero and the footer keep the site's regular gutter, not the case study's */
+.hero>.wrap,
+.footer-above .wrap,
+.site-footer .wrap{max-width:none;padding:0 32px}
+/* the shortcuts sit above the line, lit from behind by the glow */
+.footer-above{position:relative;padding-block:112px 32px}
+/* here the glow rests on the bottom edge, which is where the line runs */
+.footer-above .footer-glow{bottom:0}
+.footer-shortcuts{
+  position:relative;z-index:1;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;flex-wrap:wrap;
+}
+.footer-shortcuts a{font-size:14px;transition:opacity 180ms ease}
+.footer-shortcuts a:hover{opacity:.5}
+.footer-shortcuts .next{font-weight:500}
+.footer-row{
+  display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:16px;
+}
+.footer-links{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.footer-links a{font-size:14px;font-weight:400;position:relative}
+.footer-links a::after{
+  content:"";position:absolute;left:0;bottom:-6px;
+  height:6px;width:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0.5 8 3 T16 3' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat:repeat-x;background-size:16px 6px;
+  transition:width 250ms ease;
+}
+.footer-links a:hover::after{width:100%}
+.footer-right{display:flex;align-items:center;gap:16px}
+.footer-copy{font-size:14px;color:var(--muted)}
+.footer-cv{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:400;letter-spacing:.04em;
+  border:0.5px solid var(--fg);border-radius:100px;padding:8px 16px;
+  transition:background 220ms,border-color 220ms;
+}
+.footer-cv:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.footer-egg{width:100%;font-size:14px;color:var(--muted);margin-top:8px}
+
+/* ── FOOTER GLOW — a wide green fade resting on the footer line ── */
+.footer-glow{
+  position:absolute;left:0;right:0;bottom:100%;
+  width:100%;height:150px;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 54% 100% at 50% 100%,
+    color-mix(in srgb,var(--accent) 88%,transparent) 0%,
+    color-mix(in srgb,var(--accent) 62%,transparent) 26%,
+    color-mix(in srgb,var(--accent) 34%,transparent) 50%,
+    color-mix(in srgb,var(--accent) 12%,transparent) 70%,
+    color-mix(in srgb,var(--accent) 0%,transparent) 88%);
+}
+</style>
+</head>
+<body>
+
+
+<nav class="secnav" aria-label="Sections">
+  <a href="#overview">Overview</a>
+  <a href="#challenge">Challenge</a>
+  <a href="#users">The users</a>
+  <a href="#decisions">Solution</a>
+  <a href="#agents">The agents</a>
+  <a href="#results">Outcomes</a>
+  <a href="#scale">Where it stands</a>
+  <a href="#faq">Questions</a>
+</nav>
+
+<header class="site-nav">
+  <a class="nav-name" href="portfolio-v6.html"><svg class="nav-star" width="16" height="16" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.7063 0L6.37748 3.93431L9.23301 1.1459L7.46348 4.72333L11.4126 4.1459L7.8783 6L11.4126 7.8541L7.46348 7.27667L9.23301 10.8541L6.37748 8.06569L5.7063 12L5.03511 8.06569L2.17959 10.8541L3.94911 7.27667L-4.00543e-05 7.8541L3.5343 6L-4.00543e-05 4.1459L3.94911 4.72333L2.17959 1.1459L5.03511 3.93431L5.7063 0Z" fill="currentColor"/></svg>Ayelet Zwickler Ackerman</a>
+  <nav class="nav-links" aria-label="Primary">
+    <a class="navlink" href="portfolio-v6.html#work">Work</a>
+    <a class="navlink" href="portfolio-v6.html#about">About</a>
+    <a class="navlink" href="./Ayelet-Zwickler-CV.pdf" download>CV</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="overview">
+    <div class="wrap">
+      <div class="hero-top">
+        <div class="hero-left">
+          <h1>Agentic CRM</h1>
+
+          <p class="hook">Fullpath built its AI agents before it had a CRM. I led the design of that CRM end to end, web platform and
+            native mobile, <span class="hl">four AI agents, three user types, 0 to 1</span>. It started as a two day
+            offsite prototype and is now running live in dealerships.</p>
+
+          <div class="meta">
+            <div>
+              <p class="meta-k">Years</p>
+              <p class="meta-v">2025-2026</p>
+            </div>
+            <div>
+              <p class="meta-k">Role</p>
+              <p class="meta-v">Product Designer</p>
+            </div>
+            <div>
+              <p class="meta-k">Scope</p>
+              <p class="meta-v">0&rarr;1, Research, Agent Design, Web and native mobile</p>
+            </div>
+            <div>
+              <p class="meta-k">Stage</p>
+              <p class="meta-v">In beta. Two dealerships live.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-shot">
+          <img src="crm-assets/crm-hero.png"
+               alt="The CRM rep home on web, with the day's counts, schedule, new leads and agent conversations">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CHALLENGE ── -->
+  <section id="challenge">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Challenge</p>
+        <h2 class="hdr">Fullpath built its AI agents before it had a CRM.</h2>
+      </div>
+
+      <div class="body">
+        <p>The agents handled leads, set appointments, and followed up with shoppers. But all of that work surfaced inside legacy systems Fullpath did not own and could not shape.</p>
+        <p>We built the CRM to close that gap. Not to replicate what existed, but to build the first place where AI agents and dealership staff work as one team.</p>
+        <p><strong>Three things converged at once:</strong></p>
+      </div>
+
+      <div class="stats three">
+        <div class="stat">
+          <p class="stat-n">01</p>
+          <p class="stat-l">Organic demand. Dealerships already had every shopper interaction unified in our CDP, and kept asking why they still needed a separate CRM.</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">02</p>
+          <p class="stat-l">A stagnant market. Existing options were complex, slow, and built on technology from a different era.</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">03</p>
+          <p class="stat-l">A rare technology window. The data layer and AI maturity were both ready at the same moment.</p>
+        </div>
+      </div>
+
+      <div class="body">
+        <p>So we did not bolt AI onto an old system. We built a CRM that is agentic from day one, positioning Fullpath as the operating system of the dealership.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── USERS ── -->
+  <section id="users">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">The users</p>
+        <h2 class="hdr">Three users, two layers of pain.</h2>
+      </div>
+
+      <div class="body">
+        <p>The old pain was broken workflows with legacy tools. The new pain was harder: how do you make people trust AI they have never used?</p>
+        <p>A dealership runs on three roles. Each one has a different relationship with the CRM, and each one will have a different relationship with AI.</p>
+      </div>
+    </div>
+
+      <div class="hscroll">
+        <div class="hscroll-stage">
+          <div class="hscroll-track">
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">The sales rep view: today's leads, calls and tasks, with the agent's activity visible alongside.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">User 01</p>
+                <h3>The sales rep lives in the short term. They want to sell a car today.</h3>
+              <p>Their day is leads, calls, follow-ups, appointments.</p>
+              <p><strong>The old pain.</strong> They are drowning in manual work: copying AI conversation summaries into the CRM, checking vehicle availability in a separate system, figuring out which lead to call next.</p>
+              <p><strong>The new pain.</strong> An AI agent is now talking to their customers. When do they step in? How do they know what the agent said? Can they trust it not to mess up a deal?</p>
+              </div>
+            </div>
+          </article>
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">The manager view: lead routing, rep workload and agent oversight in one place.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">User 02</p>
+                <h3>The sales manager sits between the reps and the business.</h3>
+              <p><strong>The old pain.</strong> They are the manual bridge between everything. When the AI sets an appointment, the manager schedules it for the rep. When a customer reschedules with the agent, the rep has no way to know. Everything flows through the manager's inbox.</p>
+              <p><strong>The new pain.</strong> How do they maintain oversight over agents they did not configure and conversations they did not read?</p>
+              </div>
+            </div>
+          </article>
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">The GM view: dealership performance and the trust signal shown before activating an agent.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">User 03</p>
+                <h3>The GM cares about the dealership as a whole.</h3>
+              <p>Revenue, performance, whether the investment in technology is paying off.</p>
+              <p><strong>The old pain.</strong> Zero visibility into what is actually happening on the floor.</p>
+              <p><strong>The new pain.</strong> They are being asked to activate AI agents they cannot see working. No trust signal before they flip the switch. They are accountable for results but cannot see the work.</p>
+              </div>
+            </div>
+          </article>
+          </div>
+        </div>
+      </div>
+
+    <div class="wrap">
+      <div class="body">
+        <p>This is the design problem at two levels. First, replace broken workflows with something better. Second and harder, make people who have never used AI trust it enough to let it into their daily work. A CRM that solves only the first problem is a better tool. A CRM that solves both is a new way of working.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DECISIONS ── -->
+  <section id="decisions">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Solution</p>
+        <h2 class="hdr">Four decisions that shaped the product.</h2>
+      </div>
+    </div>
+
+      <div class="hscroll">
+        <div class="hscroll-stage">
+          <div class="hscroll-track">
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">The two day offsite prototype, or a photo from the dealership session where we showed it to the GM.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">Decision 01</p>
+                <h3>Ship before there is a roadmap.</h3>
+              <p>In October 2025, three of us, me, the CPO and the COO, took two days off-site to answer one question: could we actually build this?</p>
+              <p>We did not write a spec. We built a prototype. Then we walked into a dealership and showed it to a GM.</p>
+              <p>That session shaped the first six months of the product. The feedback was direct: what was missing, what felt wrong, what they actually needed on a Tuesday morning. You cannot get that from a requirements doc.</p>
+              <p>In a 0 to 1 product, the fastest way to reduce risk is to make something real. The prototype was not a shortcut. It was the most important thing we could have done first.</p>
+              </div>
+            </div>
+          </article>
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">Sales rep home, with Omni and the agent indicators sitting inside the familiar pipeline and task structure.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">Decision 02</p>
+                <h3>AI as a teammate, not a replacement.</h3>
+              <p>Leadership wanted pure AI. The internal position was clear: this is an agentic CRM, the agents handle everything, if the rep needs to do something the agent will tell them. No pipeline view needed.</p>
+              <p>I pushed back. Our users have used the same CRM for a decade. They are not technical. Strip out everything they know and replace it with “just ask the AI” and they will not adapt. They will lose trust before they ever see what the system can do.</p>
+              <p>This was also a culture shift inside Fullpath. Until the CRM, the company's products were data platforms and marketing automation, tools you configure once and let run. Now we were building something people open every morning, and the experience was make or break.</p>
+              <p>The approach I pushed for was progressive agentic. Keep the familiar structure, pipeline, tasks, customer page. Let AI work inside it, not instead of it. The agents draft the message, create the task, flag the priority. But the rep still has the controls they expect.</p>
+              </div>
+            </div>
+          </article>
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">Customer page: lead details, Omni summary, AI handling status, lifecycle data and the next recommended step.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">Decision 03</p>
+                <h3>Built around people, not deals.</h3>
+              <p>Most automotive CRMs organize around deals or leads: pipeline stages, opportunity statuses, conversion funnels. The customer as a person is secondary, a row attached to a lead record or a deal ID.</p>
+              <p>We chose differently. The customer is the atomic unit.</p>
+              <p>This followed directly from Fullpath's data. The CDP knows who the customer is before any interaction: purchase history, vehicle, website behavior, equity position. All of that lives at the person level. Organizing around deals would mean ignoring the company's biggest competitive advantage.</p>
+              <p>In practice this shaped the entire information architecture. A lead is a person. Tasks, AI conversations, communications and appointment history all trace back to a customer record. From user testing, this was one of the things reps responded to immediately.</p>
+              </div>
+            </div>
+          </article>
+          <article class="hcard">
+            <div class="hcard-in">
+              <div class="hcard-media">
+                <div class="shot">
+                  <span class="shot-tag">Screenshot TK</span>
+                  <p class="shot-what">Mobile app with Chats as the primary tab, and the Omni overlay reachable from any screen.</p>
+                </div>
+              </div>
+              <div class="hcard-text">
+                <p class="block-n">Decision 04</p>
+                <h3>On mobile, the rep wants one thing: to reply.</h3>
+              <p>The default approach for a CRM mobile app is to compress the desktop. Give the rep a smaller pipeline, a compact dashboard, filters they can tap. We did not do that.</p>
+              <p>After spending time with reps on the dealership floor, one pattern was impossible to miss. They do not use their phone to manage their day. They pull it out because a customer just sent a message and they want to respond right now. A lead that waits 10 minutes is cold.</p>
+              <p>So the primary tab in our mobile app is Chats. Not Tasks, not Pipeline, not Home. The entire mobile IA is built around communication speed: who reached out, what is the context, reply. Omni is layered on top, accessible from any screen.</p>
+              <p>Desktop is where you plan and manage. Mobile is where you stay in the conversation.</p>
+              </div>
+            </div>
+          </article>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- ── AGENTS ── -->
+  <section id="agents">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">The agents</p>
+        <h2 class="hdr">Four agents, each with a clear job.</h2>
+      </div>
+
+      <div class="body">
+        <p>The CRM ships with four AI agents. Each one has a defined role, a visible presence in the UI, and a clear boundary between what it handles and what the human handles.</p>
+      </div>
+
+      <div class="takes">
+        <div class="take">
+          <p class="take-num">01</p>
+          <h3>Omni, the rep's co-writer.</h3>
+          <p>Drafts emails, SMS and call talking points. Answers questions about customers, inventory and performance. Always accessible, from the home screen, from within a task, from the mobile overlay.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">02</p>
+          <h3>Task Builder, which turns events into briefings.</h3>
+          <p>Watches real-time events and creates tasks from them. Not static cadences or day-1-day-3 reminders. A task says: "Call Jordan, texted back 4 min ago about the CR-V. Confirm stock and offer a Saturday test drive." It is a briefing, not a to-do.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">03</p>
+          <h3>Pipeline Agent, which routes and ranks leads for managers.</h3>
+          <p>Dealerships have complex rules for how leads get distributed: by rep performance, availability, territory, round-robin with exceptions. The Pipeline Agent lets managers define those rules in plain language.</p>
+        </div>
+        <div class="take">
+          <p class="take-num">04</p>
+          <h3>Lead Handling, which owns first contact.</h3>
+          <p>Handles first contact with new leads autonomously. Responds within minutes, follows up, sets appointments. When it is time for a human, it hands off with full context.</p>
+        </div>
+      </div>
+
+      <div class="body">
+        <p>The agents are presented as teammates, not features and not settings. They have names, status indicators and visible activity. The rep knows who is handling what, right now.</p>
+      </div>
+
+      <figure>
+        <div class="shot">
+          <span class="shot-tag">Screenshot TK</span>
+          <p class="shot-what">Agents Cafe, or the agent status indicators as they appear in the dashboard.</p>
+        </div>
+        <figcaption>Named teammates with visible status, not hidden features.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── OUTCOMES ── -->
+  <section id="results">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Outcomes</p>
+        <h2 class="hdr">One rep. One week. Real usage, not a demo.</h2>
+      </div>
+
+      <div class="stats three">
+        <div class="stat">
+          <p class="stat-n">24</p>
+          <p class="stat-l">leads worked during the one week alpha at Fisher Honda</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">22</p>
+          <p class="stat-l">tasks completed</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">5</p>
+          <p class="stat-l">appointments created</p>
+        </div>
+      </div>
+
+      <p class="stat-note">
+        At the end of the week the rep asked to keep his login. The dealership's GM asked to meet with the Fullpath CRM
+        team weekly to share feedback.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── WHERE IT STANDS ── -->
+  <section id="scale">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Where it stands</p>
+        <h2 class="hdr">The product is in beta. The early decisions are holding.</h2>
+      </div>
+
+      <div class="body">
+        <p>We moved through three stages to get here. First a pre-alpha, with part of the team embedded in a dealership for several days, testing technical feasibility and filling gaps in real time. Then an alpha with a single sales rep at Fisher Honda for one week.</p>
+        <p>After the alpha we pulled back, addressed what we found, and moved to a second dealership for a full transition: two months of migrating from their existing CRM to Fullpath's. That transition is complete. A second dealership is in onboarding now.</p>
+        <p>The product is still in motion. But the early decisions, progressive agentic, customer centered, messaging first on mobile, are holding.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">Questions</p>
+        <h2 class="hdr">Things people ask me about this project.</h2>
+      </div>
+
+      <div class="body">
+        <details>
+          <summary>What was your role? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>Design end to end, from the offsite prototype onward: the web platform and the native mobile app, four AI agents, three user types, 0 to 1.</p></div>
+        </details>
+        <details>
+          <summary>How did the project start? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>Three of us, me, the CPO and the COO, took two days off-site in October 2025. We did not write a spec. We built a prototype and walked into a dealership to show it to a GM. That session shaped the next six months.</p></div>
+        </details>
+        <details>
+          <summary>Why not make it fully agentic? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>Leadership wanted pure AI. I argued for progressive agentic instead: keep the pipeline, tasks and customer page people have used for a decade, and let the agents work inside that structure. Strip out everything familiar and users lose trust before they ever see what the system can do.</p></div>
+        </details>
+        <details>
+          <summary>Why organize around the customer instead of the deal? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>Because that is where Fullpath's data lives. The CDP knows the person before any interaction: purchase history, vehicle, website behavior, equity position. Organizing around deals would have meant ignoring the company's biggest competitive advantage.</p></div>
+        </details>
+        <details>
+          <summary>Where is it now? <span class="mk" aria-hidden="true">+</span></summary>
+          <div class="ans"><p>In beta. One dealership has completed a full two month migration from its existing CRM, and a second is in onboarding.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+</main>
+
+<div class="footer-above">
+  <span class="footer-glow" aria-hidden="true"></span>
+  <div class="wrap">
+    <div class="footer-shortcuts">
+      <a href="portfolio-v6.html#work">&larr; All work</a>
+      <a class="next" href="case-lead-handling-agent.html">Next: Lead Handling Agent &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-row">
+      <div class="footer-links">
+        <a href="mailto:ayelet441@gmail.com">ayelet441@gmail.com</a>
+        <a href="tel:+972523501243">052-350-1243</a>
+        <a href="https://linkedin.com/in/ayelet-zwickler" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="footer-right">
+        <span class="footer-copy">&copy; 2026</span>
+        <a href="./Ayelet-Zwickler-CV.pdf" download class="footer-cv">Download CV &darr;</a>
+      </div>
+      <p class="footer-egg">Thanks for being here. Seriously. I made this whole thing and sometimes I wonder if anyone actually reads it. You do. You're the best. &#10084;&#65039;</p>
+    </div>
+  </div>
+</footer>
+
+<!-- lightbox -->
+<div id="img-lb" role="dialog" aria-modal="true" aria-label="Image preview" tabindex="-1">
+  <button id="img-lb-close" aria-label="Close">&#x2715;</button>
+  <img id="img-lb-img" src="" alt="">
+</div>
+<!-- zoom cursor -->
+<div id="img-zoom-cursor" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="7"/>
+    <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+  
+  </svg>
+</div>
+
+<script>
+// Scroll progress + nav background
+(function(){
+  var bar = document.getElementById('progress');
+  var nav = document.querySelector('.site-nav');
+  var raf = null;
+  function update(){
+    raf = null;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+    if(bar) bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    if(nav) nav.classList.toggle('is-scrolled', window.scrollY > 24);
+  }
+  window.addEventListener('scroll', function(){
+    if(raf === null) raf = requestAnimationFrame(update);
+  }, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+
+// Pinned horizontal rails
+(function(){
+  var rails = Array.prototype.slice.call(document.querySelectorAll('.hscroll'));
+  if(!rails.length) return;
+  var wide   = window.matchMedia('(min-width:901px)');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var raf = null;
+
+  function enabled(){ return wide.matches && !reduce.matches; }
+
+  function layout(){
+    rails.forEach(function(rail){
+      var track = rail.querySelector('.hscroll-track');
+      var stage = rail.querySelector('.hscroll-stage');
+      if(!track || !stage){ rail.style.height=''; return; }
+      if(!enabled()){ rail.style.height=''; return; }
+      var dist = Math.max(0, track.scrollWidth - stage.offsetWidth);
+      rail.style.height = (dist + window.innerHeight) + 'px';
+    });
+    draw();
+  }
+
+  function draw(){
+    raf = null;
+    var vh = window.innerHeight;
+    rails.forEach(function(rail){
+      var track = rail.querySelector('.hscroll-track');
+      if(!track) return;
+      if(!enabled()){
+        track.style.transform = '';
+        return;
+      }
+      var stage = rail.querySelector('.hscroll-stage');
+      var span = track.scrollWidth - (stage ? stage.offsetWidth : window.innerWidth);
+      var dist = rail.offsetHeight - vh;
+      if(span <= 0 || dist <= 0){
+        track.style.transform = 'translate3d(0,0,0)';
+        return;
+      }
+      var top = rail.getBoundingClientRect().top + window.scrollY;
+      var p = (window.scrollY - top) / dist;
+      p = p < 0 ? 0 : (p > 1 ? 1 : p);
+      track.style.transform = 'translate3d(' + (-p * span).toFixed(2) + 'px,0,0)';
+    });
+  }
+
+  function onScroll(){ if(raf === null) raf = requestAnimationFrame(draw); }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', layout);
+  if(wide.addEventListener) wide.addEventListener('change', layout);
+  if(reduce.addEventListener) reduce.addEventListener('change', layout);
+  window.addEventListener('load', layout);
+  layout();
+})();
+
+// FAQ marker swap
+(function(){
+  var items = document.querySelectorAll('details');
+  for(var i = 0; i < items.length; i++){
+    (function(d){
+      d.addEventListener('toggle', function(){
+        var mk = d.querySelector('.mk');
+        if(mk) mk.textContent = d.open ? '−' : '+';
+      });
+    })(items[i]);
+  }
+})();
+
+// Section menu: mark where the reader is, jump on click
+(function(){
+  var nav=document.querySelector('.secnav');
+  if(!nav) return;
+  var links=Array.prototype.slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  var raf=null,cur=-1;
+
+  var hero=document.getElementById('overview');
+
+  function update(){
+    raf=null;
+    // the menu only joins once the hero has scrolled by
+    if(hero) nav.classList.toggle('is-ready', window.scrollY > hero.offsetTop+hero.offsetHeight-180);
+    else nav.classList.add('is-ready');
+    var y=window.scrollY+Math.min(200,window.innerHeight*0.3);
+    var i=0;
+    secs.forEach(function(s,k){ if(s&&s.offsetTop<=y) i=k; });
+    if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4) i=secs.length-1;
+    if(i===cur) return;
+    cur=i;
+    links.forEach(function(a,k){
+      a.classList.toggle('is-on',k===i);
+      if(k===i){ a.setAttribute('aria-current','true'); } else { a.removeAttribute('aria-current'); }
+    });
+  }
+  window.addEventListener('scroll',function(){ if(raf===null) raf=requestAnimationFrame(update); },{passive:true});
+  window.addEventListener('resize',update);
+
+  links.forEach(function(a,k){
+    a.addEventListener('click',function(e){
+      var sec=secs[k];
+      if(!sec) return;
+      e.preventDefault();
+      window.scrollTo({top:sec.offsetTop+1,behavior:'smooth'});
+      history.replaceState(null,'',a.getAttribute('href'));
+    });
+  });
+  update();
+})();
+
+/* ── IMAGE LIGHTBOX + ZOOM CURSOR ── */
+(function(){
+  var lb=document.getElementById('img-lb');
+  var lbImg=document.getElementById('img-lb-img');
+  var lbClose=document.getElementById('img-lb-close');
+  var cur=document.getElementById('img-zoom-cursor');
+  if(!lb||!lbImg||!lbClose||!cur) return;
+
+  function isZoomable(el){
+    return el&&el.tagName==='IMG'&&!el.closest('.hero-shot')&&el.id!=='img-lb-img'&&!el.closest('#img-lb');
+  }
+
+  document.addEventListener('pointermove',function(e){
+    cur.style.left=e.clientX+'px';
+    cur.style.top=e.clientY+'px';
+    var el=document.elementFromPoint(e.clientX,e.clientY);
+    cur.classList.toggle('is-on',isZoomable(el));
+  },{passive:true});
+
+  function openLb(img){
+    lbImg.src=img.src;
+    lbImg.alt=img.alt||'';
+    lb.classList.add('is-open');
+    cur.classList.remove('is-on');
+    document.body.style.overflow='hidden';
+  }
+  function closeLb(){
+    lb.classList.remove('is-open');
+    document.body.style.overflow='';
+  }
+  lbClose.addEventListener('click',closeLb);
+  lb.addEventListener('pointerdown',function(e){ if(e.target===lb) closeLb(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&lb.classList.contains('is-open')) closeLb(); });
+
+  document.addEventListener('click',function(e){
+    if(lb.classList.contains('is-open')) return;
+    if(isZoomable(e.target)) openLb(e.target);
+  });
+
+  var allImgs=Array.prototype.slice.call(document.querySelectorAll('img'));
+  allImgs.forEach(function(img){
+    if(isZoomable(img)) img.style.cursor='none';
+  });
+})();
+</script>
+</body>
+</html>
