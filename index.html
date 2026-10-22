@@ -132,20 +132,11 @@ input,button{font:inherit;color:inherit;background:none;border:none}
 }
 .hero-body{width:max-content;max-width:100%;display:flex;flex-direction:column}
 
-/* ── INTRO: the headline rises in, the label types ── */
+/* ── INTRO: the headline and label rise in letter by letter ── */
 .js #hero-sub,
 .js .aud-label{visibility:hidden}
-.hero-caret::after{
-  content:"";display:inline-block;width:2px;height:0.9em;
-  margin-left:5px;vertical-align:-0.1em;background:var(--accent);
-  animation:caret-blink 1000ms steps(1,end) infinite;
-}
-@keyframes caret-blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
 .js .aud-pill{opacity:0;transform:translateY(10px)}
 .js .aud-pill.is-in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){
-  .hero-caret::after{animation:none}
-}
 
 /* ── INTRO: the headline rises in, one letter after the next ── */
 /* each letter sits in its own mask, so it climbs out from under its own
@@ -683,7 +674,7 @@ window.initHeroTrail = function(){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 <script>
 
-// ── INTRO: tagline rises in letter by letter, then the label types, then the pills ──
+// ── INTRO: tagline and label rise in letter by letter, then the pills ──
 (function(){
   var sub=document.getElementById('hero-sub');
   var label=document.querySelector('.aud-label');
@@ -698,36 +689,6 @@ window.initHeroTrail = function(){
 
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ showAll(); return; }
 
-  // split into a node screen readers get in full, and one the typing fills (label only)
-  function prepare(el){
-    var text=el.textContent;
-    var box=el.getBoundingClientRect().height;   // measured before it is emptied
-    el.style.minHeight=box+'px';
-    el.textContent='';
-    var sr=document.createElement('span');
-    sr.className='sr-only';
-    sr.textContent=text;
-    var vis=document.createElement('span');
-    vis.setAttribute('aria-hidden','true');
-    el.appendChild(sr); el.appendChild(vis);
-    el.style.visibility='visible';
-    return {node:vis,text:text,host:el};
-  }
-
-  function type(target,speed,done){
-    target.host.classList.add('hero-caret');
-    var i=0;
-    (function tick(){
-      target.node.textContent=target.text.slice(0,++i);
-      if(i<target.text.length){ setTimeout(tick,speed); }
-      else{
-        target.host.classList.remove('hero-caret');
-        target.host.style.minHeight='';
-        done&&done();
-      }
-    })();
-  }
-
   // the headline comes in one letter at a time, each climbing out from the
   // bottom of its own row. The next letter starts only once the previous one
   // is a few px from landing, so each reads as rising on its own rather than
@@ -735,7 +696,8 @@ window.initHeroTrail = function(){
   var RISE=160;   // ms for a single letter to climb all the way
   var STEP=55;    // ms between letters; on this curve a letter is ~7px from landing here
 
-  function rise(el){
+  function rise(el,offset){
+    offset=offset||0;
     var text=el.textContent;
     el.textContent='';
 
@@ -760,7 +722,7 @@ window.initHeroTrail = function(){
         inner.className='rise-i';
         inner.textContent=word.charAt(i);
         inner.style.animationDuration=RISE+'ms';
-        inner.style.animationDelay=(n*STEP)+'ms';
+        inner.style.animationDelay=(offset+n*STEP)+'ms';
         mask.appendChild(inner);
         w.appendChild(mask);
         n++;
@@ -775,27 +737,14 @@ window.initHeroTrail = function(){
     el.appendChild(vis);
     el.style.visibility='visible';
 
-    return (n-1)*STEP+RISE;       // when the last letter lands
+    return offset+(n-1)*STEP+RISE;   // when the last letter lands
   }
 
   function run(){
-    var total=rise(sub);
-
-    if(!label){ setTimeout(pillsIn,total); return; }
-
-    // the label still types, and emptying it would collapse the centred block
-    var body=sub.parentNode;
-    var w=body?body.getBoundingClientRect().width:0;
-    if(body&&w) body.style.minWidth=w+'px';
-
-    var two=prepare(label);
-    // start just before the wave lands so the page does not sit idle
-    setTimeout(function(){
-      type(two,70,function(){
-        if(body) body.style.minWidth='';
-        setTimeout(pillsIn,200);
-      });
-    },Math.max(0,total-280));
+    var end=rise(sub);
+    // the label picks up as the headline's last letter lands
+    if(label) end=rise(label,end);
+    setTimeout(pillsIn,end+200);
   }
   function pillsIn(){
     pills.forEach(function(p,i){
