@@ -154,11 +154,20 @@ input,button{font:inherit;color:inherit;background:none;border:none}
 }
 
 
-/* ── HERO CURSOR TRAIL ── */
-.hero-trail{
-  position:absolute;inset:0;
-  pointer-events:none;
-  z-index:0;
+/* ── GLOW TRAIL: soft orbs that follow the cursor and fade (gate + header) ── */
+:root{
+  --trail-color:#ADFF2F;   /* orb colour (the site's lime accent) */
+  --trail-blend:multiply;  /* white page: multiply. screen/lighten vanish on white; use them on dark */
+  --trail-blur:14px;       /* edge softness: higher = dreamier, lower = crisper */
+}
+.glow-trail{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.glow-orb{
+  position:absolute;left:0;top:0;border-radius:50%;
+  /* solid core feathering out to nothing, then blurred again for a true glow */
+  background:radial-gradient(circle,var(--trail-color) 0%,color-mix(in srgb,var(--trail-color) 55%,transparent) 35%,transparent 70%);
+  filter:blur(var(--trail-blur));
+  mix-blend-mode:var(--trail-blend);
+  opacity:0;will-change:transform,opacity;
 }
 .cell-hero .hero-body{position:relative;z-index:1}
 .cell-hero .scroll-cue{z-index:1}
@@ -396,7 +405,6 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 .pw-error.visible{opacity:0.5}
 </style>
 <div id="pw-gate">
-  <canvas id="pw-trail" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%"></canvas>
   <div class="pw-box">
     <p class="pw-copy"><span class="pw-l1">Hey,</span><br><span class="pw-l2">Thanks for stopping by.</span></p>
     <div class="pw-field-wrap">
@@ -407,6 +415,87 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
   </div>
 </div>
 <script>
+// ── GLOW TRAIL: soft blurred orbs that trail the cursor, then shrink and fade ──
+// A "leader" point eases toward the cursor every frame, which gives the trail
+// its lag and inertia. Orbs are dropped along the leader's path at an even
+// spacing, drift on a little in the direction of travel, and animate to
+// scale(0) + opacity 0. They come from a fixed pool and are reused, so a long
+// scribble never piles up DOM nodes.
+window.glowTrail=function(host,opt){
+  if(!host||host.__glow) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(!Element.prototype.animate) return;
+  host.__glow=true;
+  opt=opt||{};
+  var SIZE    = opt.size    || 90;    // px, orb diameter (each varies ±25%)
+  var LIFE    = opt.life    || 800;   // ms to shrink and fade out
+  var EASE    = opt.ease    || 0.16;  // 0-1 per frame; lower = more lag, floatier
+  var SPACING = opt.spacing || 16;    // px between orbs; lower = denser trail
+  var OPACITY = opt.opacity || 0.7;   // starting opacity of each orb
+  var DRIFT   = opt.drift   || 8;     // how far orbs carry on along the motion
+  var POOL    = opt.pool    || 48;    // orbs alive at once
+
+  var layer=document.createElement('div');
+  layer.className='glow-trail';
+  layer.setAttribute('aria-hidden','true');
+  host.insertBefore(layer,host.firstChild);
+  var orbs=[], next=0;
+  for(var i=0;i<POOL;i++){
+    var o=document.createElement('div');
+    o.className='glow-orb';
+    layer.appendChild(o);
+    orbs.push(o);
+  }
+
+  var tx=0,ty=0;     // cursor (target)
+  var lx=0,ly=0;     // leader, easing toward the cursor
+  var sx=0,sy=0;     // where the last orb was dropped
+  var vx=0,vy=0;     // leader velocity, px per frame
+  var inside=false, raf=0;
+
+  function spawn(x,y){
+    var o=orbs[next]; next=(next+1)%POOL;
+    if(o.__anim) o.__anim.cancel();          // recycle the oldest orb
+    var size=SIZE*(0.75+Math.random()*0.5);
+    o.style.width=o.style.height=size+'px';
+    var x0=x-size/2, y0=y-size/2;
+    o.__anim=o.animate([
+      {transform:'translate('+x0+'px,'+y0+'px) scale(1)',opacity:OPACITY},
+      {transform:'translate('+(x0+vx*DRIFT)+'px,'+(y0+vy*DRIFT)+'px) scale(0)',opacity:0}
+    ],{duration:LIFE*(0.85+Math.random()*0.3),easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'});
+  }
+
+  function frame(){
+    raf=0;
+    var px=lx, py=ly;
+    lx+=(tx-lx)*EASE;
+    ly+=(ty-ly)*EASE;
+    vx=lx-px; vy=ly-py;
+    if(inside){
+      // walk from the last drop point to the leader, one orb every SPACING px,
+      // so fast flicks stay continuous instead of leaving gaps
+      var dx=lx-sx, dy=ly-sy, d=Math.sqrt(dx*dx+dy*dy), n=0;
+      while(d>=SPACING&&n<4){
+        sx+=dx/d*SPACING; sy+=dy/d*SPACING;
+        spawn(sx,sy);
+        d-=SPACING; n++;
+      }
+      if(n===4){ sx=lx; sy=ly; }
+    }
+    if(Math.abs(tx-lx)>0.3||Math.abs(ty-ly)>0.3) raf=requestAnimationFrame(frame);
+  }
+
+  host.addEventListener('pointermove',function(e){
+    if(e.pointerType&&e.pointerType!=='mouse') return;   // no stray orbs on touch scroll
+    var r=host.getBoundingClientRect();
+    tx=e.clientX-r.left; ty=e.clientY-r.top;
+    if(!inside){ lx=sx=tx; ly=sy=ty; }                    // start where the cursor enters
+    inside=true;
+    if(!raf) raf=requestAnimationFrame(frame);
+  });
+  host.addEventListener('pointerleave',function(){ inside=false; });
+};
+
 // ── FONT WAIT: start an intro only once the real face is in ──
 // fonts.ready is not enough this early: before anything has been laid out no
 // font is pending yet, so it resolves at once, the letters start rising in the
@@ -532,70 +621,7 @@ function pwCheck(){
 }
 
 // ── PASSWORD GATE CURSOR TRAIL ──
-(function(){
-  var gate   = document.getElementById('pw-gate');
-  var canvas = document.getElementById('pw-trail');
-  if(!gate || !canvas) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var ctx = canvas.getContext('2d');
-  if(!ctx) return;
-  var LIFE = 2000;
-  var LAYERS = [
-    {scale: 3.4, alpha: 0.10, blur: 26},
-    {scale: 2.0, alpha: 0.20, blur: 10},
-    {scale: 1.0, alpha: 0.95, blur: 0}
-  ];
-  var pts = [];
-  var raf = null;
-  var w = 0, h = 0, dpr = 1;
-  function size(){
-    w = gate.offsetWidth; h = gate.offsetHeight;
-    dpr = Math.min(window.devicePixelRatio||1, 2);
-    canvas.width  = Math.round(w * dpr);
-    canvas.height = Math.round(h * dpr);
-    canvas.style.width  = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function frame(){
-    raf = null;
-    var now = performance.now();
-    while(pts.length && now - pts[0].t > LIFE) pts.shift();
-    ctx.clearRect(0, 0, w, h);
-    if(pts.length > 1){
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#ADFF2F';
-      ctx.shadowColor = '#ADFF2F';
-      for(var L = 0; L < LAYERS.length; L++){
-        var ly = LAYERS[L];
-        ctx.shadowBlur = ly.blur;
-        for(var i = 1; i < pts.length; i++){
-          var a = 1 - (now - pts[i].t) / LIFE;
-          if(a <= 0) continue;
-          ctx.globalAlpha = a * a * ly.alpha;
-          ctx.lineWidth   = (1 + 13 * a) * ly.scale;
-          ctx.beginPath();
-          ctx.moveTo(pts[i-1].x, pts[i-1].y);
-          ctx.lineTo(pts[i].x,   pts[i].y);
-          ctx.stroke();
-        }
-      }
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-    }
-    if(pts.length) raf = requestAnimationFrame(frame);
-  }
-  function kick(){ if(raf === null) raf = requestAnimationFrame(frame); }
-  gate.addEventListener('mousemove', function(e){
-    if(gate.classList.contains('hidden')) return;
-    pts.push({x: e.clientX, y: e.clientY, t: performance.now()});
-    if(pts.length > 180) pts.shift();
-    kick();
-  });
-  size();
-  window.addEventListener('resize', size);
-})();
+window.glowTrail(document.getElementById('pw-gate'));
 
 </script>
 
@@ -612,7 +638,6 @@ function pwCheck(){
 
   <!-- HERO -->
   <div class="cell cell-hero">
-    <canvas class="hero-trail" id="hero-trail" aria-hidden="true"></canvas>
     <div class="hero-body">
     <h1 class="hero-sub" id="hero-sub">I'm a product designer who gravitates toward problems nobody has solved yet. If it's new, complex, and slightly terrifying - that's where I do my best work.</h1>
     <p class="aud-label">Who's asking?</p>
@@ -693,81 +718,15 @@ function pwCheck(){
 
 <script>
 // ── HERO CURSOR TRAIL ──
+// started from the gate's unlock paths, so it never runs hidden behind it
 window.initHeroTrail = function(){
-  var cell   = document.querySelector('.cell-hero');
-  var canvas = document.getElementById('hero-trail');
-  if(!cell || !canvas) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var ctx = canvas.getContext('2d');
-  if(!ctx) return;
-
-  var LIFE = 2000;          // ms a point stays visible
-  var MAX  = 180;           // cap stored points
-  var LAYERS = [            // outer to inner: soft edges, defined centre
-    {scale: 3.4, alpha: 0.10, blur: 26},
-    {scale: 2.0, alpha: 0.20, blur: 10},
-    {scale: 1.0, alpha: 0.95, blur: 0}
-  ];
-  var pts  = [];
-  var raf  = null;
-  var w = 0, h = 0, dpr = 1;
-
-  function size(){
-    var r = cell.getBoundingClientRect();
-    w = r.width; h = r.height;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width  = Math.round(w * dpr);
-    canvas.height = Math.round(h * dpr);
-    canvas.style.width  = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function frame(){
-    raf = null;
-    var now = performance.now();
-    while(pts.length && now - pts[0].t > LIFE) pts.shift();
-    ctx.clearRect(0, 0, w, h);
-
-    if(pts.length > 1){
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#ADFF2F';
-      ctx.shadowColor = '#ADFF2F';
-      // three passes per segment: a wide soft halo, a mid feather, then a tighter
-      // core. The falloff is what makes the edges read as blurred.
-      for(var L = 0; L < LAYERS.length; L++){
-        var ly = LAYERS[L];
-        ctx.shadowBlur = ly.blur;
-        for(var i = 1; i < pts.length; i++){
-          var a = 1 - (now - pts[i].t) / LIFE;
-          if(a <= 0) continue;
-          ctx.globalAlpha = a * a * ly.alpha;
-          ctx.lineWidth   = (1 + 13 * a) * ly.scale;
-          ctx.beginPath();
-          ctx.moveTo(pts[i-1].x, pts[i-1].y);
-          ctx.lineTo(pts[i].x,   pts[i].y);
-          ctx.stroke();
-        }
-      }
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-    }
-    if(pts.length) raf = requestAnimationFrame(frame);
-  }
-
-  function kick(){ if(raf === null) raf = requestAnimationFrame(frame); }
-
-  cell.addEventListener('mousemove', function(e){
-    var r = cell.getBoundingClientRect();
-    pts.push({x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now()});
-    if(pts.length > MAX) pts.shift();
-    kick();
-  });
-  cell.addEventListener('mouseleave', kick);
-  window.addEventListener('resize', function(){ size(); kick(); });
-  size();
+  window.glowTrail(document.querySelector('.cell-hero'));
 };
+// returning visitors skip the gate before this script exists, so start here
+(function(){
+  var gate=document.getElementById('pw-gate');
+  if(!gate||gate.classList.contains('hidden')) window.initHeroTrail();
+})();
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
