@@ -159,7 +159,7 @@ input,button{font:inherit;color:inherit;background:none;border:none}
   display:inline-block;transform:translateY(110%);
   /* strong ease-out: a decisive climb, then a soft landing. Duration is set
      per letter from JS so the timing lives in one place */
-  animation:rise 500ms cubic-bezier(.22,1,.36,1) both;
+  animation:rise 160ms cubic-bezier(.22,1,.36,1) both;
   will-change:transform;
 }
 @keyframes rise{
@@ -732,8 +732,8 @@ window.initHeroTrail = function(){
   // bottom of its own row. The next letter starts only once the previous one
   // is a few px from landing, so each reads as rising on its own rather than
   // as a sweep. Runs once on load, then holds still.
-  var RISE=500;   // ms for a single letter to climb all the way
-  var STEP=200;   // ms between letters; on this curve a letter is ~4px from landing here
+  var RISE=160;   // ms for a single letter to climb all the way
+  var STEP=55;    // ms between letters; on this curve a letter is ~7px from landing here
 
   function rise(el){
     var text=el.textContent;
