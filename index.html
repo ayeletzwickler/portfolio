@@ -397,7 +397,7 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 <script>
 (function(){
   var KEY="portfolio_auth";
-  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden")}else{document.body.style.overflow="hidden"}
+  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden");if(window.initHeroTrail)window.initHeroTrail();}else{document.body.style.overflow="hidden"}
   document.getElementById("pw-field").addEventListener("keydown",function(e){if(e.key==="Enter")pwCheck()});
 })();
 function pwCheck(){
@@ -406,6 +406,7 @@ function pwCheck(){
     localStorage.setItem("portfolio_auth","1");
     document.getElementById("pw-gate").classList.add("hidden");
     document.body.style.overflow="";
+    if(window.initHeroTrail)window.initHeroTrail();
   } else {
     var f=document.getElementById("pw-field");
     f.classList.remove("shake");
@@ -579,7 +580,7 @@ function pwCheck(){
 
 <script>
 // ── HERO CURSOR TRAIL ──
-(function(){
+window.initHeroTrail = function(){
   var cell   = document.querySelector('.cell-hero');
   var canvas = document.getElementById('hero-trail');
   if(!cell || !canvas) return;
@@ -653,7 +654,7 @@ function pwCheck(){
   cell.addEventListener('mouseleave', kick);
   window.addEventListener('resize', function(){ size(); kick(); });
   size();
-})();
+};
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
