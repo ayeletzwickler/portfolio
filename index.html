@@ -372,7 +372,7 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 #pw-gate{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
 #pw-gate.hidden{display:none}
 .pw-box{display:flex;flex-direction:column;align-items:flex-start;gap:16px;width:320px;position:relative;z-index:1}
-.pw-copy{font-size:14px;font-weight:400;color:#000;line-height:1.5;margin-bottom:8px}
+.pw-copy{font-size:16px;font-weight:400;color:#000;line-height:1.5;margin-bottom:8px}
 .pw-field-wrap{width:100%;position:relative}
 .pw-field{width:100%;border:1px solid #000;border-radius:0;padding:0 16px;height:40px;font-size:14px;background:#fff;outline:none;letter-spacing:0.06em}
 .pw-field:focus{border-color:#000;box-shadow:none}
@@ -397,7 +397,7 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 <script>
 (function(){
   var KEY="portfolio_auth";
-  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden")}
+  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden")}else{document.body.style.overflow="hidden"}
   document.getElementById("pw-field").addEventListener("keydown",function(e){if(e.key==="Enter")pwCheck()});
 })();
 function pwCheck(){
@@ -405,6 +405,7 @@ function pwCheck(){
   if(v==="blueberry"){
     localStorage.setItem("portfolio_auth","1");
     document.getElementById("pw-gate").classList.add("hidden");
+    document.body.style.overflow="";
   } else {
     var f=document.getElementById("pw-field");
     f.classList.remove("shake");
