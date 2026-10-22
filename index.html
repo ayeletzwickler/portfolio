@@ -157,7 +157,9 @@ input,button{font:inherit;color:inherit;background:none;border:none}
 }
 .rise-i{
   display:inline-block;transform:translateY(110%);
-  animation:rise 600ms cubic-bezier(.16,.84,.44,1) both;
+  /* strong ease-out: a decisive climb, then a soft landing. Duration is set
+     per letter from JS so the timing lives in one place */
+  animation:rise 500ms cubic-bezier(.22,1,.36,1) both;
   will-change:transform;
 }
 @keyframes rise{
@@ -726,11 +728,12 @@ window.initHeroTrail = function(){
     })();
   }
 
-  // the headline comes in a letter at a time, each one climbing out from the
-  // bottom of its own row a beat after the one before, so a wave crosses the
-  // sentence. Runs once on load, then holds still.
-  var STEP=10;    // ms between one letter and the next
-  var RISE=600;   // ms for a single letter to finish climbing
+  // the headline comes in one letter at a time, each climbing out from the
+  // bottom of its own row. The next letter starts only once the previous one
+  // is a few px from landing, so each reads as rising on its own rather than
+  // as a sweep. Runs once on load, then holds still.
+  var RISE=500;   // ms for a single letter to climb all the way
+  var STEP=200;   // ms between letters; on this curve a letter is ~4px from landing here
 
   function rise(el){
     var text=el.textContent;
@@ -756,6 +759,7 @@ window.initHeroTrail = function(){
         var inner=document.createElement('span');
         inner.className='rise-i';
         inner.textContent=word.charAt(i);
+        inner.style.animationDuration=RISE+'ms';
         inner.style.animationDelay=(n*STEP)+'ms';
         mask.appendChild(inner);
         w.appendChild(mask);
@@ -763,8 +767,7 @@ window.initHeroTrail = function(){
       }
       vis.appendChild(w);
       if(wi<words.length-1){
-        vis.appendChild(document.createTextNode(' '));
-        n++;                      // the gap keeps the wave moving evenly
+        vis.appendChild(document.createTextNode(' '));   // spaces take no turn
       }
     });
 
@@ -772,7 +775,7 @@ window.initHeroTrail = function(){
     el.appendChild(vis);
     el.style.visibility='visible';
 
-    return n*STEP+RISE;           // when the last letter lands
+    return (n-1)*STEP+RISE;       // when the last letter lands
   }
 
   function run(){
