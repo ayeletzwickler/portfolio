@@ -28,7 +28,54 @@ body{
   font-family:'Red Hat Display',system-ui,sans-serif;
   font-weight:400;font-size:16px;line-height:1.55;
   -webkit-font-smoothing:antialiased;
-  /* `hidden` here would make <body> a scroll container and break position:sticky,
+  /* `hidden` here would make <body>
+<style>
+#pw-gate{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#pw-gate.hidden{display:none}
+.pw-box{display:flex;flex-direction:column;align-items:center;gap:24px;width:320px}
+.pw-title{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;opacity:0.45}
+.pw-field-wrap{width:100%;position:relative}
+.pw-field{width:100%;border:1px solid #000;border-radius:0;padding:14px 16px;font-size:16px;background:#fff;outline:none;letter-spacing:0.12em}
+.pw-field:focus{border-color:#000;box-shadow:none}
+.pw-field.shake{animation:pw-shake 300ms ease}
+@keyframes pw-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pw-btn{width:100%;padding:14px;background:#000;color:#fff;border:none;border-radius:0;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:background 150ms}
+.pw-btn:hover{background:#222}
+.pw-error{font-size:12px;color:#000;opacity:0;transition:opacity 200ms;letter-spacing:0.04em}
+.pw-error.visible{opacity:0.5}
+</style>
+<div id="pw-gate">
+  <div class="pw-box">
+    <span class="pw-title">Enter password to continue</span>
+    <div class="pw-field-wrap">
+      <input id="pw-field" class="pw-field" type="password" placeholder="········" autocomplete="off" autocapitalize="none" spellcheck="false">
+    </div>
+    <button class="pw-btn" onclick="pwCheck()">Enter</button>
+    <span id="pw-error" class="pw-error">Incorrect password</span>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY="portfolio_auth";
+  if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden")}
+  document.getElementById("pw-field").addEventListener("keydown",function(e){if(e.key==="Enter")pwCheck()});
+})();
+function pwCheck(){
+  var v=document.getElementById("pw-field").value.trim().toLowerCase();
+  if(v==="blueberry"){
+    localStorage.setItem("portfolio_auth","1");
+    document.getElementById("pw-gate").classList.add("hidden");
+  } else {
+    var f=document.getElementById("pw-field");
+    f.classList.remove("shake");
+    void f.offsetWidth;
+    f.classList.add("shake");
+    document.getElementById("pw-error").classList.add("visible");
+    f.value="";
+    setTimeout(function(){document.getElementById("pw-error").classList.remove("visible")},2000);
+  }
+}
+</script> a scroll container and break position:sticky,
      which the pinned horizontal rails depend on. `clip` prevents that. */
   overflow-x:hidden;
   overflow-x:clip;
