@@ -407,6 +407,27 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
   </div>
 </div>
 <script>
+// ── FONT WAIT: start an intro only once the real face is in ──
+// fonts.ready is not enough this early: before anything has been laid out no
+// font is pending yet, so it resolves at once, the letters start rising in the
+// fallback face, and the swap lands mid-animation as a sideways jump.
+// fonts.load() requests the face itself and waits for it.
+window.whenFont=function(weights,cb,maxWait){
+  var done=false;
+  function go(){ if(done) return; done=true; cb(); }
+  if(!document.fonts||!document.fonts.load){ go(); return; }
+  (function attempt(){
+    Promise.all(weights.map(function(w){
+      return document.fonts.load(w+' 16px "Red Hat Display"');
+    })).then(function(sets){
+      // an empty set means the @font-face rule itself has not arrived yet
+      var ready=sets.every(function(faces){ return faces.length; });
+      if(ready) go(); else if(!done) setTimeout(attempt,50);
+    },go);
+  })();
+  setTimeout(go,maxWait||3000);   // font host down: animate in the fallback rather than never
+};
+
 // ── LETTER RISE: shared by the password screen and the hero ──
 // splits an element's text into letters that each climb out from the bottom
 // of their own row, one after another, starting `offset` ms from now.
@@ -490,8 +511,7 @@ window.riseText=function(el,offset,dur,step){
     end=window.riseText(l2,end+PAUSE,RISE,STEP);
     setTimeout(fadeIn,end+100);
   }
-  if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(run); setTimeout(run,700); }
-  else { run(); }
+  window.whenFont([400],run);
 })();
 function pwCheck(){
   var v=document.getElementById("pw-field").value.trim().toLowerCase();
@@ -792,12 +812,7 @@ window.initHeroTrail = function(){
   // measure against the real face, not the fallback, or the reserved height is wrong
   var started=false;
   function start(){ if(started) return; started=true; run(); }
-  function boot(){
-    if(document.fonts&&document.fonts.ready){
-      document.fonts.ready.then(start);
-      setTimeout(start,700);
-    } else { start(); }
-  }
+  function boot(){ window.whenFont([400,600],start); }
 
   // the intro is a one-shot, so it must not burn off behind the gate
   window.initHeroIntro=boot;
