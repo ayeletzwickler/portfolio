@@ -132,7 +132,7 @@ input,button{font:inherit;color:inherit;background:none;border:none}
 }
 .hero-body{width:max-content;max-width:100%;display:flex;flex-direction:column}
 
-/* ── INTRO: the headline glitches in, the label types ── */
+/* ── INTRO: the headline rises in, the label types ── */
 .js #hero-sub,
 .js .aud-label{visibility:hidden}
 .hero-caret::after{
@@ -147,70 +147,25 @@ input,button{font:inherit;color:inherit;background:none;border:none}
   .hero-caret::after{animation:none}
 }
 
-/* ── INTRO: the headline glitches in once, then holds ── */
-.g-wrap{position:relative;display:block}
-.g-layer{display:block}
-.g-ghost{
-  position:absolute;inset:0;
-  pointer-events:none;user-select:none;
-  will-change:transform,clip-path,opacity;
+/* ── INTRO: the headline rises in, one letter after the next ── */
+/* each letter sits in its own mask, so it climbs out from under its own
+   line and never bleeds into the row above or below */
+.rise-w{display:inline-block;white-space:nowrap}
+.rise-l{
+  display:inline-block;overflow:hidden;vertical-align:bottom;
+  padding-bottom:0.16em;margin-bottom:-0.16em;   /* descender room inside the mask */
 }
-.g-base{
-  animation:g-base 420ms steps(1,end) both;
-  will-change:transform,opacity;
+.rise-i{
+  display:inline-block;transform:translateY(110%);
+  animation:rise 600ms cubic-bezier(.16,.84,.44,1) both;
+  will-change:transform;
 }
-.g-ghost-a{color:var(--accent);animation:g-ghost-a 420ms steps(1,end) both}
-.g-ghost-b{color:rgba(0,0,0,0.55);animation:g-ghost-b 420ms steps(1,end) both}
-
-@keyframes g-base{
-  0%  {opacity:0;transform:translate(0,0)}
-  8%  {opacity:1;transform:translate(-7px,2px)}
-  18% {opacity:1;transform:translate(6px,-3px)}
-  28% {opacity:.4;transform:translate(-4px,0)}
-  38% {opacity:1;transform:translate(3px,2px)}
-  52% {opacity:1;transform:translate(-2px,-1px)}
-  68% {opacity:1;transform:translate(1px,0)}
-  100%{opacity:1;transform:none}
-}
-@keyframes g-ghost-a{
-  0%  {opacity:0;transform:translate(0,0);clip-path:inset(0 0 100% 0)}
-  8%  {opacity:1;transform:translate(10px,-4px);clip-path:inset(6% 0 58% 0)}
-  18% {opacity:.9;transform:translate(-9px,3px);clip-path:inset(44% 0 22% 0)}
-  28% {opacity:1;transform:translate(7px,1px);clip-path:inset(0 0 72% 0)}
-  38% {opacity:.7;transform:translate(-5px,-2px);clip-path:inset(66% 0 8% 0)}
-  52% {opacity:.45;transform:translate(3px,2px);clip-path:inset(28% 0 48% 0)}
-  68% {opacity:.2;transform:translate(-1px,0);clip-path:inset(0 0 0 0)}
-  80%,100%{opacity:0;transform:none;clip-path:inset(0)}
-}
-@keyframes g-ghost-b{
-  0%  {opacity:0;transform:translate(0,0);clip-path:inset(0 0 100% 0)}
-  8%  {opacity:.8;transform:translate(-11px,3px);clip-path:inset(52% 0 14% 0)}
-  18% {opacity:1;transform:translate(8px,-2px);clip-path:inset(18% 0 60% 0)}
-  28% {opacity:.6;transform:translate(-6px,4px);clip-path:inset(74% 0 4% 0)}
-  38% {opacity:.9;transform:translate(5px,-3px);clip-path:inset(34% 0 40% 0)}
-  52% {opacity:.4;transform:translate(-2px,1px);clip-path:inset(8% 0 66% 0)}
-  68% {opacity:.15;transform:translate(1px,0);clip-path:inset(0)}
-  80%,100%{opacity:0;transform:none;clip-path:inset(0)}
-}
-
-/* injected artifacts: solid blocks and symbols that flash over the text */
-.g-art{position:absolute;inset:0;pointer-events:none;user-select:none}
-.g-bit{
-  position:absolute;opacity:0;
-  font-size:13px;font-weight:600;line-height:1;letter-spacing:0;
-  animation:g-bit 420ms steps(1,end) both;
-}
-.g-bit.is-block{background:var(--accent);width:11px;height:11px}
-.g-bit.is-block-dark{background:var(--fg);width:7px;height:14px}
-@keyframes g-bit{
-  0%,100%{opacity:0}
-  12%,26%{opacity:1}
-  27%,43%{opacity:0}
-  44%,54%{opacity:1}
+@keyframes rise{
+  from{transform:translateY(110%)}
+  to  {transform:translateY(0)}
 }
 @media(prefers-reduced-motion:reduce){
-  .g-base,.g-ghost,.g-bit{animation:none}
-  .g-ghost,.g-bit{display:none}
+  .rise-i{animation:none;transform:none}
 }
 
 
@@ -726,7 +681,7 @@ window.initHeroTrail = function(){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 <script>
 
-// ── INTRO: tagline glitches in, then the label types, then the pills ──
+// ── INTRO: tagline rises in letter by letter, then the label types, then the pills ──
 (function(){
   var sub=document.getElementById('hero-sub');
   var label=document.querySelector('.aud-label');
@@ -771,10 +726,13 @@ window.initHeroTrail = function(){
     })();
   }
 
-  // the headline splits into offset ghost layers, flashes digital artifacts and
-  // snaps clean. Runs once on load, then holds perfectly still.
-  var GLITCH_MS=420;
-  function glitch(el){
+  // the headline comes in a letter at a time, each one climbing out from the
+  // bottom of its own row a beat after the one before, so a wave crosses the
+  // sentence. Runs once on load, then holds still.
+  var STEP=10;    // ms between one letter and the next
+  var RISE=600;   // ms for a single letter to finish climbing
+
+  function rise(el){
     var text=el.textContent;
     el.textContent='';
 
@@ -782,55 +740,45 @@ window.initHeroTrail = function(){
     sr.className='sr-only';
     sr.textContent=text;
 
-    var wrap=document.createElement('span');
-    wrap.className='g-wrap';
-    wrap.setAttribute('aria-hidden','true');
+    var vis=document.createElement('span');
+    vis.setAttribute('aria-hidden','true');
 
-    ['g-layer g-base','g-layer g-ghost g-ghost-a','g-layer g-ghost g-ghost-b']
-      .forEach(function(cls){
-        var layer=document.createElement('span');
-        layer.className=cls;
-        layer.textContent=text;
-        wrap.appendChild(layer);
-      });
-
-    // artifacts sit over the text: two solid blocks and a few symbols
-    var art=document.createElement('span');
-    art.className='g-art';
-    var bits=[
-      {cls:'is-block',     t:'',   x:14, y:8,  d:0},
-      {cls:'is-block-dark',t:'',   x:62, y:52, d:60},
-      {cls:'',             t:'#',  x:38, y:30, d:30},
-      {cls:'',             t:'11', x:84, y:16, d:90},
-      {cls:'',             t:'#',  x:6,  y:74, d:120}
-    ];
-    bits.forEach(function(b){
-      var bit=document.createElement('span');
-      bit.className='g-bit '+b.cls;
-      bit.textContent=b.t;
-      bit.style.left=b.x+'%';
-      bit.style.top=b.y+'%';
-      bit.style.animationDelay=b.d+'ms';
-      art.appendChild(bit);
+    // split on words first: a word is one unbreakable unit, so the line still
+    // wraps naturally and only whole words move to the next row
+    var words=text.split(' ');
+    var n=0;
+    words.forEach(function(word,wi){
+      var w=document.createElement('span');
+      w.className='rise-w';
+      for(var i=0;i<word.length;i++){
+        var mask=document.createElement('span');
+        mask.className='rise-l';
+        var inner=document.createElement('span');
+        inner.className='rise-i';
+        inner.textContent=word.charAt(i);
+        inner.style.animationDelay=(n*STEP)+'ms';
+        mask.appendChild(inner);
+        w.appendChild(mask);
+        n++;
+      }
+      vis.appendChild(w);
+      if(wi<words.length-1){
+        vis.appendChild(document.createTextNode(' '));
+        n++;                      // the gap keeps the wave moving evenly
+      }
     });
-    wrap.appendChild(art);
 
-    el.appendChild(sr); el.appendChild(wrap);
+    el.appendChild(sr);
+    el.appendChild(vis);
     el.style.visibility='visible';
 
-    // once it has settled, drop the ghosts and artifacts so nothing can repaint
-    setTimeout(function(){
-      var dead=wrap.querySelectorAll('.g-ghost, .g-art');
-      for(var i=0;i<dead.length;i++) dead[i].parentNode.removeChild(dead[i]);
-      var base=wrap.querySelector('.g-base');
-      if(base) base.style.animation='none';
-    },GLITCH_MS+120);
+    return n*STEP+RISE;           // when the last letter lands
   }
 
   function run(){
-    glitch(sub);
+    var total=rise(sub);
 
-    if(!label){ setTimeout(pillsIn,GLITCH_MS); return; }
+    if(!label){ setTimeout(pillsIn,total); return; }
 
     // the label still types, and emptying it would collapse the centred block
     var body=sub.parentNode;
@@ -838,12 +786,13 @@ window.initHeroTrail = function(){
     if(body&&w) body.style.minWidth=w+'px';
 
     var two=prepare(label);
+    // start just before the wave lands so the page does not sit idle
     setTimeout(function(){
       type(two,70,function(){
         if(body) body.style.minWidth='';
         setTimeout(pillsIn,200);
       });
-    },GLITCH_MS-60);
+    },Math.max(0,total-280));
   }
   function pillsIn(){
     pills.forEach(function(p,i){
@@ -861,7 +810,7 @@ window.initHeroTrail = function(){
     } else { start(); }
   }
 
-  // the glitch is a 420ms one-shot, so it must not burn off behind the gate
+  // the intro is a one-shot, so it must not burn off behind the gate
   window.initHeroIntro=boot;
   var gate=document.getElementById('pw-gate');
   if(!gate||gate.classList.contains('hidden')) boot();
