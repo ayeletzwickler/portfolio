@@ -371,7 +371,7 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 <style>
 #pw-gate{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column}
 #pw-gate.hidden{display:none}
-.pw-box{display:flex;flex-direction:column;align-items:flex-start;gap:16px;width:320px}
+.pw-box{display:flex;flex-direction:column;align-items:flex-start;gap:16px;width:320px;position:relative;z-index:1}
 .pw-copy{font-size:14px;font-weight:400;color:#000;line-height:1.5;margin-bottom:8px}
 .pw-field-wrap{width:100%;position:relative}
 .pw-field{width:100%;border:1px solid #000;border-radius:0;padding:0 16px;height:40px;font-size:14px;background:#fff;outline:none;letter-spacing:0.06em}
@@ -384,6 +384,7 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 .pw-error.visible{opacity:0.5}
 </style>
 <div id="pw-gate">
+  <canvas id="pw-trail" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%"></canvas>
   <div class="pw-box">
     <p class="pw-copy">Hey,<br>Thanks for stopping by.</p>
     <div class="pw-field-wrap">
@@ -414,6 +415,73 @@ function pwCheck(){
     setTimeout(function(){document.getElementById("pw-error").classList.remove("visible")},2000);
   }
 }
+
+// ── PASSWORD GATE CURSOR TRAIL ──
+(function(){
+  var gate   = document.getElementById('pw-gate');
+  var canvas = document.getElementById('pw-trail');
+  if(!gate || !canvas) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ctx = canvas.getContext('2d');
+  if(!ctx) return;
+  var LIFE = 2000;
+  var LAYERS = [
+    {scale: 3.4, alpha: 0.10, blur: 26},
+    {scale: 2.0, alpha: 0.20, blur: 10},
+    {scale: 1.0, alpha: 0.95, blur: 0}
+  ];
+  var pts = [];
+  var raf = null;
+  var w = 0, h = 0, dpr = 1;
+  function size(){
+    w = gate.offsetWidth; h = gate.offsetHeight;
+    dpr = Math.min(window.devicePixelRatio||1, 2);
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function frame(){
+    raf = null;
+    var now = performance.now();
+    while(pts.length && now - pts[0].t > LIFE) pts.shift();
+    ctx.clearRect(0, 0, w, h);
+    if(pts.length > 1){
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#ADFF2F';
+      ctx.shadowColor = '#ADFF2F';
+      for(var L = 0; L < LAYERS.length; L++){
+        var ly = LAYERS[L];
+        ctx.shadowBlur = ly.blur;
+        for(var i = 1; i < pts.length; i++){
+          var a = 1 - (now - pts[i].t) / LIFE;
+          if(a <= 0) continue;
+          ctx.globalAlpha = a * a * ly.alpha;
+          ctx.lineWidth   = (1 + 13 * a) * ly.scale;
+          ctx.beginPath();
+          ctx.moveTo(pts[i-1].x, pts[i-1].y);
+          ctx.lineTo(pts[i].x,   pts[i].y);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+    }
+    if(pts.length) raf = requestAnimationFrame(frame);
+  }
+  function kick(){ if(raf === null) raf = requestAnimationFrame(frame); }
+  gate.addEventListener('mousemove', function(e){
+    if(gate.classList.contains('hidden')) return;
+    pts.push({x: e.clientX, y: e.clientY, t: performance.now()});
+    if(pts.length > 180) pts.shift();
+    kick();
+  });
+  size();
+  window.addEventListener('resize', size);
+})();
+
 </script>
 
 <header class="site-nav">
