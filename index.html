@@ -393,6 +393,12 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 .pw-field.shake{animation:pw-shake 300ms ease}
 @keyframes pw-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .pw-btn{width:100%;height:40px;background:#000;color:#fff;border:none;border-radius:0;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.04em;transition:background 150ms}
+/* gate intro: the two lines rise in, then the field and button fade up */
+.js #pw-gate .pw-l1,.js #pw-gate .pw-l2{visibility:hidden}
+.js #pw-gate .pw-field-wrap,.js #pw-gate .pw-btn{opacity:0}
+#pw-gate .pw-field-wrap{transition:opacity 500ms ease}
+#pw-gate .pw-btn{transition:opacity 500ms ease,background 150ms}
+.js #pw-gate .is-in{opacity:1}
 .pw-btn:hover{background:#222}
 .pw-error{font-size:12px;color:#000;opacity:0;transition:opacity 200ms;letter-spacing:0.04em}
 .pw-error.visible{opacity:0.5}
@@ -400,7 +406,7 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
 <div id="pw-gate">
   <canvas id="pw-trail" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;z-index:0;width:100%;height:100%"></canvas>
   <div class="pw-box">
-    <p class="pw-copy">Hey,<br>Thanks for stopping by.</p>
+    <p class="pw-copy"><span class="pw-l1">Hey,</span><br><span class="pw-l2">Thanks for stopping by.</span></p>
     <div class="pw-field-wrap">
       <input id="pw-field" class="pw-field" type="password" placeholder="········" autocomplete="off" autocapitalize="none" spellcheck="false">
     </div>
@@ -409,10 +415,91 @@ a.case-row:focus-visible .case-shot{transform:scale(1.035)}
   </div>
 </div>
 <script>
+// ── LETTER RISE: shared by the password screen and the hero ──
+// splits an element's text into letters that each climb out from the bottom
+// of their own row, one after another, starting `offset` ms from now.
+// Returns the ms at which the last letter lands.
+window.riseText=function(el,offset,dur,step){
+  offset=offset||0;
+  var text=el.textContent;
+  el.textContent='';
+
+  var sr=document.createElement('span');
+  sr.className='sr-only';
+  sr.textContent=text;
+
+  var vis=document.createElement('span');
+  vis.setAttribute('aria-hidden','true');
+
+  // split on words first: a word is one unbreakable unit, so the line still
+  // wraps naturally and only whole words move to the next row
+  var words=text.split(' ');
+  var n=0;
+  words.forEach(function(word,wi){
+    var w=document.createElement('span');
+    w.className='rise-w';
+    for(var i=0;i<word.length;i++){
+      var mask=document.createElement('span');
+      mask.className='rise-l';
+      var inner=document.createElement('span');
+      inner.className='rise-i';
+      inner.textContent=word.charAt(i);
+      inner.style.animationDuration=dur+'ms';
+      inner.style.animationDelay=(offset+n*step)+'ms';
+      mask.appendChild(inner);
+      w.appendChild(mask);
+      n++;
+    }
+    vis.appendChild(w);
+    if(wi<words.length-1){
+      vis.appendChild(document.createTextNode(' '));   // spaces take no turn
+    }
+  });
+
+  el.appendChild(sr);
+  el.appendChild(vis);
+  el.style.visibility='visible';
+
+  return offset+(n-1)*step+dur;   // when the last letter lands
+};
+</script>
+<script>
 (function(){
   var KEY="portfolio_auth";
   if(localStorage.getItem(KEY)==="1"){document.getElementById("pw-gate").classList.add("hidden");if(window.initHeroTrail)window.initHeroTrail();if(window.initHeroIntro)window.initHeroIntro();}else{document.body.style.overflow="hidden"}
   document.getElementById("pw-field").addEventListener("keydown",function(e){if(e.key==="Enter")pwCheck()});
+})();
+
+// ── GATE INTRO: "Hey," rises, a beat, "Thanks for stopping by." rises,
+// then the field and button fade in ──
+(function(){
+  var gate=document.getElementById('pw-gate');
+  if(!gate||gate.classList.contains('hidden')) return;
+
+  var l1=gate.querySelector('.pw-l1'), l2=gate.querySelector('.pw-l2');
+  var fades=[gate.querySelector('.pw-field-wrap'),gate.querySelector('.pw-btn')];
+  var RISE=160, STEP=55, PAUSE=500;
+
+  function fadeIn(){
+    fades.forEach(function(el,i){
+      if(el) setTimeout(function(){ el.classList.add('is-in'); },i*150);
+    });
+  }
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    l1.style.visibility='visible'; l2.style.visibility='visible';
+    fades.forEach(function(el){ if(el) el.classList.add('is-in'); });
+    return;
+  }
+
+  var started=false;
+  function run(){
+    if(started) return; started=true;
+    var end=window.riseText(l1,0,RISE,STEP);
+    end=window.riseText(l2,end+PAUSE,RISE,STEP);
+    setTimeout(fadeIn,end+100);
+  }
+  if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(run); setTimeout(run,700); }
+  else { run(); }
 })();
 function pwCheck(){
   var v=document.getElementById("pw-field").value.trim().toLowerCase();
@@ -696,49 +783,7 @@ window.initHeroTrail = function(){
   var RISE=160;   // ms for a single letter to climb all the way
   var STEP=55;    // ms between letters; on this curve a letter is ~7px from landing here
 
-  function rise(el,offset){
-    offset=offset||0;
-    var text=el.textContent;
-    el.textContent='';
-
-    var sr=document.createElement('span');
-    sr.className='sr-only';
-    sr.textContent=text;
-
-    var vis=document.createElement('span');
-    vis.setAttribute('aria-hidden','true');
-
-    // split on words first: a word is one unbreakable unit, so the line still
-    // wraps naturally and only whole words move to the next row
-    var words=text.split(' ');
-    var n=0;
-    words.forEach(function(word,wi){
-      var w=document.createElement('span');
-      w.className='rise-w';
-      for(var i=0;i<word.length;i++){
-        var mask=document.createElement('span');
-        mask.className='rise-l';
-        var inner=document.createElement('span');
-        inner.className='rise-i';
-        inner.textContent=word.charAt(i);
-        inner.style.animationDuration=RISE+'ms';
-        inner.style.animationDelay=(offset+n*STEP)+'ms';
-        mask.appendChild(inner);
-        w.appendChild(mask);
-        n++;
-      }
-      vis.appendChild(w);
-      if(wi<words.length-1){
-        vis.appendChild(document.createTextNode(' '));   // spaces take no turn
-      }
-    });
-
-    el.appendChild(sr);
-    el.appendChild(vis);
-    el.style.visibility='visible';
-
-    return offset+(n-1)*STEP+RISE;   // when the last letter lands
-  }
+  function rise(el,offset){ return window.riseText(el,offset,RISE,STEP); }
 
   function run(){
     var end=rise(sub);
