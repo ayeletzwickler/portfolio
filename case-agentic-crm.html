@@ -324,6 +324,15 @@ figcaption{
 @media(max-width:800px){.figs{grid-template-columns:1fr}}
 .figs figure{margin-top:0}
 
+/* ── VISUAL PLACEHOLDER (temporary, until real screenshots go in) ── */
+.visual-ph{
+  width:100%;height:400px;
+  background:#f0f0f0;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  font-size:14px;line-height:1.5;color:#000;
+}
+
 /* ── BLOCKS (label column + content column) ── */
 .block{
   padding-top:clamp(48px,5.5vw,72px);
@@ -561,19 +570,12 @@ function pwCheck(){
 
 <nav class="secnav" aria-label="Sections">
   <a href="#overview">Overview</a>
-  <a href="#why">Why we built it</a>
-  <a href="#october">October 2025</a>
-  <a href="#decisions">Key decisions</a>
+  <a href="#challenge">Challenge</a>
+  <a href="#bets">Strategic bets</a>
   <a href="#patterns">Human-AI design</a>
-  <a href="#november">November 2025</a>
-  <a href="#january">January 2026</a>
-  <a href="#february">February 2026</a>
-  <a href="#march">March 2026</a>
-  <a href="#may">May 2026</a>
-  <a href="#june">June 2026</a>
-  <a href="#july-aug">July &#8211; August 2026</a>
-  <a href="#september">September 2026</a>
-  <a href="#2027">2027</a>
+  <a href="#features">Feature deep-dives</a>
+  <a href="#obstacles">Obstacles</a>
+  <a href="#outcomes">Outcomes</a>
 </nav>
 
 <header class="site-nav">
@@ -624,46 +626,41 @@ function pwCheck(){
     </div>
   </section>
 
-  <!-- ── WHY WE BUILT OUR OWN CRM ── -->
-  <section id="why">
+  <!-- ── 3. CHALLENGE ── -->
+  <section id="challenge">
     <div class="wrap">
       <div class="sec-head">
-        <p class="label">Why we built it</p>
-        <h2 class="hdr">Three reasons we stopped syncing to someone else&#8217;s CRM.</h2>
+        <p class="label">Challenge</p>
+        <h2 class="hdr">Three reasons we stopped syncing to someone else&#8217;s CRM, and three roles we had to design for.</h2>
       </div>
 
-      <div class="takes three">
-        <div class="take">
-          <p class="take-num">01</p>
-          <h3>Dealerships kept asking.</h3>
-          <p>Multiple clients, over time, making the same case. They wanted a CRM that understood what the agents were doing &#8211; not one they had to explain it to.</p>
-        </div>
-        <div class="take">
-          <p class="take-num">02</p>
-          <h3>We already had the data.</h3>
-          <p>Purchase history, engagement signals, equity position &#8211; all in the system. We were routing it through third-party CRMs and maintaining a bridge to make the agents useful. Building around what we owned made more sense.</p>
-        </div>
-        <div class="take">
-          <p class="take-num">03</p>
-          <h3>The window was open.</h3>
-          <p>AI made it possible to build in weeks what would have taken a year. Nothing like this existed in the automotive CRM space. We moved.</p>
+      <div class="block">
+        <p class="block-n">01</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Dealerships kept asking.</h3>
+          <p style="margin-top:16px;max-width:60ch">Multiple clients, over time, making the same case. They wanted a CRM that understood what the agents were doing &#8211; not one they had to explain it to.</p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ── OCTOBER 2025 ── -->
-  <section id="october">
-    <div class="wrap">
-      <div class="sec-head">
-        <p class="label" style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="0.75" y="1.75" width="11.5" height="10.5" rx="1"/><path d="M0.75 5.5h11.5"/><path d="M4 0.75v2M9 0.75v2"/></svg>October 2025</p>
-        <h2 class="hdr">Three people, two days, one prototype.</h2>
+      <div class="block" style="border-top:none">
+        <p class="block-n">02</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">We already had the data.</h3>
+          <p style="margin-top:16px;max-width:60ch">Purchase history, engagement signals, equity position &#8211; all in the system. We were routing it through third-party CRMs and maintaining a bridge to make the agents useful. Building around what we owned made more sense.</p>
+        </div>
       </div>
 
-      <div class="body">
-        <p><strong>The product didn&#8217;t start with a spec.</strong></p>
-        <p><strong>Me, the CPO, and the COO took two days offsite with one question: could we actually build this?</strong> We built a prototype, walked into a dealership, and showed it to a GM. The feedback was direct: what was missing, what felt wrong, what they actually needed.</p>
-        <p><strong>Three roles, two layers of design problem.</strong></p>
+      <div class="block" style="border-top:none">
+        <p class="block-n">03</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">The window was open.</h3>
+          <p style="margin-top:16px;max-width:60ch">AI made it possible to build in weeks what would have taken a year. Nothing like this existed in the automotive CRM space. We moved.</p>
+        </div>
+      </div>
+
+      <div class="body" style="margin-top:clamp(40px,5vw,56px)">
+        <p><strong>The product didn&#8217;t start with a spec.</strong> Me, the CPO, and the COO took two days offsite with one question: could we actually build this? We built a prototype, walked into a dealership, and showed it to a GM. The feedback was direct: what was missing, what felt wrong, what they actually needed.</p>
+        <p><strong>That feedback split into three roles, each with its own design problem.</strong></p>
       </div>
     </div>
 
@@ -679,10 +676,7 @@ function pwCheck(){
                 <p>An AI that drafts the message in their voice, surfaces the right context at the right moment, and keeps them in control of every send.</p>
               </div>
               <div class="hcard-media">
-                <div class="shot tall">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">Sales Rep view</p>
-                </div>
+                <div class="visual-ph">Visual: Sales Rep view</div>
               </div>
             </div>
           </article>
@@ -695,10 +689,7 @@ function pwCheck(){
                 <p>A live view of agent and rep activity side by side, so managers can catch a problem before it lands rather than explain it after.</p>
               </div>
               <div class="hcard-media">
-                <div class="shot tall">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">Sales Manager view</p>
-                </div>
+                <div class="visual-ph">Visual: Sales Manager view</div>
               </div>
             </div>
           </article>
@@ -711,10 +702,7 @@ function pwCheck(){
                 <p>Accountability built into the product. The GM can see what the AI did, what converted, and what was handled manually, without chasing down reports.</p>
               </div>
               <div class="hcard-media">
-                <div class="shot tall">
-                  <span class="shot-tag">Screenshot TK</span>
-                  <p class="shot-what">GM view</p>
-                </div>
+                <div class="visual-ph">Visual: GM view</div>
               </div>
             </div>
           </article>
@@ -723,24 +711,17 @@ function pwCheck(){
     </div>
 
     <div class="wrap">
-      <div style="padding-top:clamp(48px,6vw,80px)">
-        <div class="sec-head">
-          <p class="label">The old pain</p>
-          <h2 class="hdr">Broken workflows.</h2>
-        </div>
-        <div class="sec-head" style="margin-top:clamp(40px,5vw,64px)">
-          <p class="label">The new pain</p>
-          <h2 class="hdr">Getting people to hand over work to something they&#8217;d never used before.</h2>
-        </div>
+      <div class="body" style="padding-top:clamp(40px,5vw,56px)">
+        <p><strong>The old pain was broken workflows.</strong> The new pain was getting people to hand over work to something they&#8217;d never used before.</p>
       </div>
     </div>
   </section>
 
-  <!-- ── KEY DECISIONS ── -->
-  <section id="decisions">
+  <!-- ── 4. STRATEGIC BETS ── -->
+  <section id="bets">
     <div class="wrap">
       <div class="sec-head">
-        <p class="label">Key decisions</p>
+        <p class="label">Strategic bets</p>
         <h2 class="hdr">Four bets we made before we had a roadmap.</h2>
       </div>
 
@@ -778,10 +759,11 @@ function pwCheck(){
     </div>
   </section>
 
-  <!-- ── DESIGNING THE HUMAN-AI RELATIONSHIP ── -->
+  <!-- ── 5. HUMAN-AI DESIGN PATTERNS ── -->
   <section id="patterns">
     <div class="wrap">
       <div class="sec-head">
+        <p class="label">Human-AI design patterns</p>
         <h2 class="hdr">Designing the Human-AI Relationship</h2>
       </div>
 
@@ -811,67 +793,82 @@ function pwCheck(){
       </div>
 
       <figure>
-        <div class="shot">
-          <span class="shot-tag">Visual TK</span>
-          <p class="shot-what">[visual: Omni draft card with Approve/Edit/Regenerate, context transparency panel, handoff status badge]</p>
-        </div>
+        <div class="visual-ph">Visual: Omni draft card with Approve/Edit/Regenerate, context transparency panel, handoff status badge</div>
       </figure>
     </div>
   </section>
 
-  <!-- ── NOVEMBER 2025 ── -->
-  <section id="november">
+  <!-- ── 6. FEATURE DEEP-DIVES ── -->
+  <section id="features">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="hdr">November 2025 &#8212; First rep, one week in a dealership</h2>
+        <p class="label">Feature deep-dives</p>
+        <h2 class="hdr">Five features that shipped alongside a full dealership migration.</h2>
       </div>
 
-      <div class="body">
-        <p><strong>One rep, real leads, real customers, real calls.</strong></p>
-        <p><strong>Found:</strong> No stock numbers or VINs on vehicle cards. No sold badge. Dialer couldn&#8217;t be minimized during calls. Notification bell too small to tap. Real-time messaging didn&#8217;t update without refresh. Small things. Together: the product didn&#8217;t feel like it was built for someone who actually sells cars.</p>
-        <p><strong>Changed:</strong> Unified customer timeline. Inventory transparency layer: VINs, sold badges, availability status. Call window rebuilt to minimize without losing context. Notifications overhauled.</p>
-        <p><strong>Design principle: if a rep has to leave the screen to verify something basic, the AI&#8217;s output is already suspect.</strong> Every fix was about closing the gap between what the system knew and what the rep could see without looking elsewhere.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: vehicle card before/after &#8212; inventory status, sold badge, VIN visibility]</p>
-          </div>
-        </figure>
+      <div class="block">
+        <p class="block-n">01</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Pipeline Agent</h3>
+          <p style="margin-top:16px;max-width:60ch">In legacy CRMs, lead distribution is a manual morning task. Every manager sorts through the day&#8217;s leads and assigns them to reps by hand, weighing performance and capacity, before anyone on the floor makes a single call. The pipeline agent takes that off their plate. Managers configure the rules once (rep performance thresholds, lead type priorities, capacity limits) and the agent handles the daily distribution. It&#8217;s one of the clearest cases in the product of what an agent should actually do: a repetitive, judgment-based workflow that belongs to the manager conceptually but costs them real time every day.</p>
+          <figure>
+            <div class="visual-ph">Visual: Pipeline agent configuration</div>
+          </figure>
+        </div>
+      </div>
+
+      <div class="block" style="border-top:none">
+        <p class="block-n">02</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Conversations Screen</h3>
+          <p style="margin-top:16px;max-width:60ch">Reps needed a single view of every active thread, sorted in a way that told them where to focus. We settled on a hybrid: threads where the AI had a draft waiting and threads with an overdue response rise to the top.</p>
+          <figure>
+            <div class="visual-ph">Visual: Conversations screen</div>
+          </figure>
+        </div>
+      </div>
+
+      <div class="block" style="border-top:none">
+        <p class="block-n">03</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Customer Page</h3>
+          <p style="margin-top:16px;max-width:60ch">A full picture of who a rep was about to call so they could walk in prepared. The customer page gave reps conversation history, vehicle interest, prior interactions, and what the AI agents had done on that account. Everything in one place.</p>
+          <figure>
+            <div class="visual-ph">Visual: Customer page</div>
+          </figure>
+        </div>
+      </div>
+
+      <div class="block" style="border-top:none">
+        <p class="block-n">04</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">Managers Overview</h3>
+          <p style="margin-top:16px;max-width:60ch">A configurable dashboard so each manager sees the numbers they actually care about. Customizable widgets across rep activity, AI performance, lead pipeline, and follow-up coverage.</p>
+          <figure>
+            <div class="visual-ph">Visual: Managers overview</div>
+          </figure>
+        </div>
+      </div>
+
+      <div class="block" style="border-top:none">
+        <p class="block-n">05</p>
+        <div>
+          <h3 style="font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-0.01em">iOS App</h3>
+          <p style="margin-top:16px;max-width:60ch">The design question wasn&#8217;t what to show on mobile, it was what to leave out. Managers had been asking for mobile access since October. A desktop that fits in your pocket is a bad app. We gave them a live view of agent and rep activity and nothing more.</p>
+          <figure>
+            <div class="visual-ph">Visual: iOS app screens</div>
+          </figure>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── JANUARY 2026 ── -->
-  <section id="january">
+  <!-- ── 7. OBSTACLES ── -->
+  <section id="obstacles">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="hdr">January 2026 &#8212; Second iteration</h2>
-      </div>
-
-      <div class="body">
-        <p><strong>The November fixes held, but a new layer of friction surfaced around handoffs and task context.</strong> Back inside the dealership to pressure-test what we&#8217;d changed. We refined, went back the following week, and got closer to something a rep could rely on without thinking about it.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FEBRUARY 2026 ── -->
-  <section id="february">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="hdr">February 2026 &#8212; NADA: first agentic CRM in the industry</h2>
-      </div>
-
-      <div class="body">
-        <p><strong>We used NADA to announce the first agentic CRM in the automotive industry, and the response was immediate.</strong> NADA is one of the largest automotive industry conferences in the US. We ran demos for hundreds of potential customers. The product hadn&#8217;t fully launched, but the industry recognized the gap we were filling. It created the kind of momentum you can&#8217;t manufacture.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── MARCH 2026 ── -->
-  <section id="march">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="hdr">March 2026 &#8212; Fisher Honda: two reps, real accountability</h2>
+        <p class="label">Obstacles</p>
+        <h2 class="hdr">The Fisher Honda moment.</h2>
       </div>
 
       <div class="body">
@@ -887,138 +884,43 @@ function pwCheck(){
         <p><strong>Changed:</strong> Omni&#8217;s context engine rewired: no suggesting sold cars, no purchase path for a trade-in customer, no acting without full history. Szott Ford, a concurrent early dealership, reinforced the same lesson: AI released too early, felt cold, UX too complex. We pulled it back, tightened persona definitions, rebuilt onboarding before re-engaging.</p>
         <p><strong>Design insight: AI errors in a sales context aren&#8217;t just bad UX. They&#8217;re trust-breaking moments that take weeks to repair.</strong> The response had to be preventive, not corrective. Omni now surfaces relevant context inline before drafting: the customer&#8217;s last intent signal, active inventory match, prior conversation summary. The rep sees what the AI sees before it acts.</p>
         <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: Omni context panel, customer signal, inventory state, confidence indicators]</p>
-          </div>
+          <div class="visual-ph">Visual: Omni context panel, customer signal, inventory state, confidence indicators</div>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- ── MAY 2026 ── -->
-  <section id="may">
+  <!-- ── 8. OUTCOMES ── -->
+  <section id="outcomes">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="hdr">May 2026 &#8212; Iteration</h2>
+        <p class="label">Outcomes</p>
+        <h2 class="hdr">What shipped, and what&#8217;s next.</h2>
       </div>
 
-      <div class="body">
-        <p><strong>Refinements ahead of broader rollout: pipeline labels adapted to match dealer floor language, mobile media handling for lot photos, manual customer entry for walk-ins, sales rep scorecard.</strong> The product was getting harder to replicate from a spec.</p>
-        <p><strong>May brought a new agent: the pipeline agent, which replaces the most expensive manual task in a manager&#8217;s morning.</strong> In legacy CRMs, lead distribution is a manual morning task. Every manager sorts through the day&#8217;s leads and assigns them to reps by hand, weighing performance and capacity, before anyone on the floor makes a single call. The pipeline agent takes that off their plate. Managers configure the rules once (rep performance thresholds, lead type priorities, capacity limits) and the agent handles the daily distribution. It&#8217;s one of the clearest cases in the product of what an agent should actually do: a repetitive, judgment-based workflow that belongs to the manager conceptually but costs them real time every day.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── JUNE 2026 ── -->
-  <section id="june">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="hdr">June 2026 &#8212; COX Automotive acquires Fullpath</h2>
-      </div>
-
-      <div class="body">
-        <p><strong>The product led to Fullpath&#8217;s acquisition by COX Automotive, one of the largest automotive technology companies in the US.</strong></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── JULY-AUGUST 2026 ── -->
-  <section id="july-aug">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="hdr">July&#8211;August 2026 &#8212; First full dealership transition</h2>
+      <div class="stats">
+        <div class="stat">
+          <p class="stat-n">24</p>
+          <p class="stat-l">Leads worked in Fisher Honda&#8217;s first week, no manual outreach</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">5</p>
+          <p class="stat-l">Appointments set from that same week</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">1</p>
+          <p class="stat-l">Acquisition &#8211; COX Automotive acquired Fullpath</p>
+        </div>
+        <div class="stat">
+          <p class="stat-n">1</p>
+          <p class="stat-l">Full dealership migration, two months, zero missed sales</p>
+        </div>
       </div>
 
-      <div class="body">
-        <p><strong>The real test wasn&#8217;t one rep. It was an entire dealership switching from their existing CRM to ours and continuing to sell.</strong> Full two-month migration. Every sales rep moved to the system exclusively. Complete.</p>
-        <p><strong>July and August also meant shipping fast.</strong> Alongside the migration, we pushed seven significant features in those eight weeks.</p>
-
-        <p><strong>Conversations screen: AI-pending drafts and overdue threads surface first.</strong> <em>[visual: conversations screen]</em> Reps needed a single view of every active thread, sorted in a way that told them where to focus. We settled on a hybrid: threads where the AI had a draft waiting and threads with an overdue response rise to the top.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: conversations screen]</p>
-          </div>
-        </figure>
-
-        <p><strong>Task page and task panel: tasks got their own screen, but needed to stay accessible without breaking the conversation.</strong> <em>[visual: task page and task panel]</em> Tasks had lived inside conversation threads. Giving them their own page exposed a second problem: reps didn&#8217;t want to leave a conversation to manage its tasks. The inline panel kept tasks accessible without a context switch.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: task page and task panel]</p>
-          </div>
-        </figure>
-
-        <p><strong>Notifications: we flipped from reps checking in to the system pushing, with manager control over noise.</strong> <em>[visual: notifications]</em> The first version relied on reps checking in proactively. The constraint was noise: too many alerts and reps would turn them off. We gave managers control over what triggers a notification rather than defaulting to everything.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: notifications]</p>
-          </div>
-        </figure>
-
-        <p><strong>Add flows: getting a lead or customer into the CRM went from a multi-step detour to under thirty seconds.</strong> <em>[visual: add flows]</em> The add flow uses a bottom sheet that pre-fills from existing data.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: add flows]</p>
-          </div>
-        </figure>
-
-        <p><strong>Customer page: a full picture of who a rep was about to call so they could walk in prepared.</strong> <em>[visual: customer page]</em> The customer page gave reps conversation history, vehicle interest, prior interactions, and what the AI agents had done on that account. Everything in one place.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: customer page]</p>
-          </div>
-        </figure>
-
-        <p><strong>Managers overview: a configurable dashboard so each manager sees the numbers they actually care about.</strong> <em>[visual: managers overview]</em> Customizable widgets across rep activity, AI performance, lead pipeline, and follow-up coverage.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: managers overview]</p>
-          </div>
-        </figure>
-
-        <p><strong>iOS app: the design question wasn&#8217;t what to show on mobile, it was what to leave out.</strong> <em>[visual: iOS app screens]</em> Managers had been asking for mobile access since October. A desktop that fits in your pocket is a bad app. We gave them a live view of agent and rep activity and nothing more.</p>
-        <figure>
-          <div class="shot">
-            <span class="shot-tag">Visual TK</span>
-            <p class="shot-what">[visual: iOS app screens]</p>
-          </div>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── SEPTEMBER 2026 ── -->
-  <section id="september">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="hdr">September 2026 &#8212; Beta: second dealership live</h2>
-      </div>
-
-      <div class="body">
-        <p><strong>A second dealership began beta. Onboarding in progress.</strong></p>
-        <p><strong>What we track:</strong> message reply rate versus pre-agent baseline, task completion rate per rep, appointment conversion from AI-suggested outreach, time-to-first-contact on new leads. The July&#8211;August full-dealership migration is the most direct signal: not a pilot, not a cherry-picked rep, but an entire sales floor switched over and selling.</p>
-        <p><strong>The October 2025 decisions are still holding.</strong> Not because they were right on paper, but because they survived contact with the sales floor.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── 2027 ── -->
-  <section id="2027">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="hdr">2027 &#8212; Migration at scale</h2>
-      </div>
-
-      <div class="body">
-        <p><strong>COX runs on VinSolutions, a legacy CRM with churn that reflects how the product has aged.</strong> Dealerships know it hasn&#8217;t kept up technically, and they&#8217;re looking for a way out.</p>
-        <p><strong>The main target for 2027 is a full data migration: move COX&#8217;s customer history, lead data, and conversation records into Fullpath&#8217;s system, then shift users off VinSolutions onto ours.</strong> We&#8217;ve done this at one dealership. The next question is whether we can do it at scale, across COX&#8217;s network, without breaking sales operations in the process.</p>
-        <p><strong>Running parallel: continuing to build out the product so it&#8217;s ready for that volume.</strong> The data has to move cleanly. The rep experience has to feel like a real step forward. A migration that works technically but leaves people missing their old tool is not a win.</p>
+      <div class="body" style="margin-top:clamp(40px,5vw,56px)">
+        <p><strong>We used NADA, one of the largest automotive industry conferences in the US, to announce the first agentic CRM in the industry.</strong> The product hadn&#8217;t fully launched, but the industry recognized the gap we were filling. It created the kind of momentum you can&#8217;t manufacture.</p>
+        <p><strong>A second dealership is now in beta.</strong> What we track: message reply rate versus pre-agent baseline, task completion rate per rep, appointment conversion from AI-suggested outreach, time-to-first-contact on new leads. The full-dealership migration remains the most direct signal: not a pilot, not a cherry-picked rep, but an entire sales floor switched over and selling. The October 2025 decisions are still holding, not because they were right on paper, but because they survived contact with the sales floor.</p>
+        <p><strong>2027: migration at scale.</strong> COX runs on VinSolutions, a legacy CRM that dealerships know hasn&#8217;t kept up technically. The main target for 2027 is a full data migration: move COX&#8217;s customer history, lead data, and conversation records into Fullpath&#8217;s system, then shift users off VinSolutions onto ours. We&#8217;ve done this at one dealership. The next question is whether we can do it at scale, across COX&#8217;s network, without breaking sales operations in the process. Running parallel: continuing to build out the product so it&#8217;s ready for that volume. A migration that works technically but leaves people missing their old tool is not a win.</p>
       </div>
     </div>
   </section>
